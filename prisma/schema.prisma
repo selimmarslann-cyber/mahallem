@@ -1,0 +1,344 @@
+// Prisma schema for Mahallem - Esnaf/Hizmet Super App
+// Supabase PostgreSQL uyumlu
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// 1. USERS
+// ============================================
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String?   @map("password_hash") // Supabase auth kullanılırsa null olabilir
+  name          String
+  avatarUrl     String?   @map("avatar_url")
+  referralBalance Decimal @default(0) @map("referral_balance") @db.Decimal(10, 2)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  ownedBusinesses Business[] @relation("BusinessOwner")
+  orders         Order[]
+  reviews        Review[]
+  sentMessages   Message[]   @relation("MessageSender")
+  receivedMessages Message[] @relation("MessageReceiver")
+  
+  // Referral Relations
+  referralCode       ReferralCode?
+  referredBy         ReferralRelation[] @relation("Referrer")
+  referredUsers      ReferralRelation[] @relation("Referred")
+  referralRewards    ReferralReward[]
+
+  @@map("users")
+}
+
+// ============================================
+// 2. BUSINESSES (Esnaf / İşletme)
+// ============================================
+model Business {
+  id                      String            @id @default(uuid())
+  ownerUserId             String            @map("owner_user_id")
+  name                    String
+  description             String?
+  category                BusinessCategory
+  lat                     Float
+  lng                     Float
+  addressText             String            @map("address_text")
+  coverImageUrl           String?          @map("cover_image_url")
+  isActive                Boolean          @default(true) @map("is_active")
+  onlineStatus            OnlineStatus     @default(OFFLINE) @map("online_status")
+  workingHoursJson        Json?            @map("working_hours_json") // { mon: {open:"09:00", close:"19:00"}, ... }
+  avgRating               Float            @default(0) @map("avg_rating")
+  reviewCount             Int              @default(0) @map("review_count")
+  consecutiveCancellations Int             @default(0) @map("consecutive_cancellations")
+  bannedUntil             DateTime?        @map("banned_until")
+  createdAt               DateTime         @default(now()) @map("created_at")
+  updatedAt                DateTime         @updatedAt @map("updated_at")
+
+  // Relations
+  owner       User       @relation("BusinessOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  products    Product[]
+  orders      Order[]
+  reviews     Review[]
+  bans        BusinessBan[]
+
+  @@index([ownerUserId])
+  @@index([lat, lng])
+  @@index([onlineStatus])
+  @@index([category])
+  @@map("businesses")
+}
+
+enum BusinessCategory {
+  TESISAT
+  KUAFOR
+  MARKET
+  NAKLIYE
+  TEMIZLIK
+  ELEKTRIK
+  BOYA
+  MARANGOZ
+  DIGER
+}
+
+enum OnlineStatus {
+  ONLINE
+  OFFLINE
+  AUTO_OFFLINE
+}
+
+// ============================================
+// 3. PRODUCTS (Ürün/Hizmet)
+// ============================================
+model Product {
+  id           String        @id @default(uuid())
+  businessId   String        @map("business_id")
+  name         String
+  description  String?
+  price        Decimal       @db.Decimal(10, 2)
+  isService    Boolean       @default(false) @map("is_service")
+  deliveryType DeliveryType  @map("delivery_type")
+  photoUrl     String?       @map("photo_url")
+  active       Boolean       @default(true)
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  business    Business    @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  orderItems  OrderItem[]
+
+  @@index([businessId])
+  @@index([active])
+  @@map("products")
+}
+
+enum DeliveryType {
+  ON_SITE      // Müşteri işletmeye gelir
+  PICKUP       // Müşteri alır
+  DELIVERY     // Esnaf teslim eder
+}
+
+// ============================================
+// 4. ORDERS (Sipariş / Hizmet İsteği)
+// ============================================
+model Order {
+  id            String          @id @default(uuid())
+  customerId    String          @map("customer_id")
+  businessId    String          @map("business_id")
+  totalAmount   Decimal         @map("total_amount") @db.Decimal(10, 2)
+  commissionFee Decimal        @default(0) @map("commission_fee") @db.Decimal(10, 2) // Platform komisyonu
+  status        OrderStatus     @default(PENDING_CONFIRMATION)
+  paymentStatus PaymentStatus   @default(PENDING) @map("payment_status")
+  addressText   String          @map("address_text")
+  locationLat   Float?          @map("location_lat")
+  locationLng   Float?          @map("location_lng")
+  scheduledAt   DateTime?       @map("scheduled_at")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  // Relations
+  customer    User        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  business    Business    @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  items       OrderItem[]
+  payment     Payment?
+  review      Review?
+  messages    Message[]
+  referralRewards ReferralReward[]
+
+  @@index([customerId])
+  @@index([businessId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING_CONFIRMATION
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED_BY_CUSTOMER
+  CANCELLED_BY_PROVIDER
+}
+
+enum PaymentStatus {
+  PENDING
+  CAPTURED
+  REFUNDED
+}
+
+// ============================================
+// 5. ORDER_ITEMS
+// ============================================
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String   @map("order_id")
+  productId  String   @map("product_id")
+  quantity   Int
+  unitPrice  Decimal  @map("unit_price") @db.Decimal(10, 2)
+  totalPrice Decimal  @map("total_price") @db.Decimal(10, 2)
+
+  // Relations
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+// ============================================
+// 6. PAYMENTS (Mock)
+// ============================================
+model Payment {
+  id          String        @id @default(uuid())
+  orderId     String        @unique @map("order_id")
+  amount      Decimal       @db.Decimal(10, 2)
+  status      PaymentStatus @default(INITIATED)
+  provider    String        @default("mock")
+  rawResponse Json?         @map("raw_response")
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([status])
+  @@map("payments")
+}
+
+// ============================================
+// 7. REVIEWS (Puan & Yorum)
+// ============================================
+model Review {
+  id         String   @id @default(uuid())
+  orderId    String   @unique @map("order_id")
+  businessId String   @map("business_id")
+  reviewerId String   @map("reviewer_id")
+  rating     Int      // 1-5
+  comment    String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  reviewer User     @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([reviewerId])
+  @@index([rating])
+  @@map("reviews")
+}
+
+// ============================================
+// 8. MESSAGES (Chat)
+// ============================================
+model Message {
+  id         String   @id @default(uuid())
+  orderId    String   @map("order_id")
+  senderId   String   @map("sender_id")
+  receiverId String   @map("receiver_id")
+  content    String
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  order    Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  sender   User  @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User  @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+// ============================================
+// 9. BUSINESS_BANS (Log)
+// ============================================
+model BusinessBan {
+  id          String   @id @default(uuid())
+  businessId  String   @map("business_id")
+  reason      String
+  bannedFrom  DateTime @map("banned_from")
+  bannedUntil DateTime @map("banned_until")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([bannedUntil])
+  @@map("business_bans")
+}
+
+// ============================================
+// 10. REFERRAL_CODES
+// ============================================
+model ReferralCode {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  code      String   @unique // Kısa ve paylaşılabilir kod (örn: SELIM123)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([code])
+  @@index([userId])
+  @@map("referral_codes")
+}
+
+// ============================================
+// 11. REFERRAL_RELATIONS
+// ============================================
+model ReferralRelation {
+  id              String   @id @default(uuid())
+  referrerUserId  String   @map("referrer_user_id") // Davet eden
+  referredUserId  String   @map("referred_user_id") // Davet edilen
+  level           Int      // 1 veya 2
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  referrer User @relation("Referrer", fields: [referrerUserId], references: [id], onDelete: Cascade)
+  referred User @relation("Referred", fields: [referredUserId], references: [id], onDelete: Cascade)
+
+  @@unique([referredUserId, level]) // Bir kullanıcı için her seviyede sadece 1 referrer olabilir
+  @@index([referrerUserId])
+  @@index([referredUserId])
+  @@index([level])
+  @@map("referral_relations")
+}
+
+// ============================================
+// 12. REFERRAL_REWARDS
+// ============================================
+model ReferralReward {
+  id               String   @id @default(uuid())
+  userId           String   @map("user_id") // Ödülü alan kullanıcı
+  orderId          String   @map("order_id")
+  level            Int      // 1 veya 2
+  grossCommission  Decimal  @map("gross_commission") @db.Decimal(10, 2) // Siparişteki toplam platform komisyonu
+  shareRate        Decimal  @map("share_rate") @db.Decimal(5, 4) // Örn: 0.20 (20%) veya 0.10 (10%)
+  amount           Decimal  @db.Decimal(10, 2) // gross_commission * share_rate
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([orderId])
+  @@index([level])
+  @@index([createdAt])
+  @@map("referral_rewards")
+}
+
