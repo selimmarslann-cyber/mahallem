@@ -587,7 +587,6 @@ export default function BusinessStorePage() {
                                     toggleProductActive(product.id, val)
                                   }
                                   id={`active-${product.id}`}
-                                  size="sm"
                                 />
                                 <Label
                                   htmlFor={`active-${product.id}`}
