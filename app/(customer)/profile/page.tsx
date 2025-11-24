@@ -120,36 +120,54 @@ export default function CustomerProfilePage() {
         <div className="space-y-2">
           <Card>
             <CardContent className="p-0">
-              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+              <button 
+                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                onClick={() => alert('Yakında eklenecek')}
+              >
                 <div className="flex items-center gap-3">
                   <MapPin className="w-5 h-5 text-gray-400" />
                   <span>Adreslerim</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">Yakında</Badge>
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                </div>
               </button>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-0">
-              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+              <button 
+                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                onClick={() => alert('Yakında eklenecek')}
+              >
                 <div className="flex items-center gap-3">
                   <CreditCard className="w-5 h-5 text-gray-400" />
                   <span>Ödeme Yöntemlerim</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">Yakında</Badge>
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                </div>
               </button>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-0">
-              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+              <button 
+                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                onClick={() => alert('Yakında eklenecek')}
+              >
                 <div className="flex items-center gap-3">
                   <Bell className="w-5 h-5 text-gray-400" />
                   <span>Bildirim Tercihleri</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">Yakında</Badge>
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                </div>
               </button>
             </CardContent>
           </Card>
@@ -173,24 +191,36 @@ export default function CustomerProfilePage() {
 
           <Card>
             <CardContent className="p-0">
-              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+              <button 
+                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                onClick={() => alert('Yakında eklenecek')}
+              >
                 <div className="flex items-center gap-3">
                   <HelpCircle className="w-5 h-5 text-gray-400" />
                   <span>Yardım & Destek</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">Yakında</Badge>
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                </div>
               </button>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-0">
-              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+              <button 
+                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                onClick={() => alert('Yakında eklenecek')}
+              >
                 <div className="flex items-center gap-3">
                   <Info className="w-5 h-5 text-gray-400" />
                   <span>Hakkında / KVKK / Sözleşmeler</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">Yakında</Badge>
+                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                </div>
               </button>
             </CardContent>
           </Card>

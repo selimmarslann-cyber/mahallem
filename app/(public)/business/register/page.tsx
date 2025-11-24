@@ -72,7 +72,7 @@ export default function BusinessRegisterPage() {
         return
       }
 
-      router.push('/dashboard/business')
+      router.push('/business/jobs')
     } catch (err) {
       setError('Bir hata oluştu')
     } finally {
@@ -85,7 +85,10 @@ export default function BusinessRegisterPage() {
       <div className="max-w-2xl mx-auto px-4">
         <Card>
           <CardHeader>
-            <CardTitle>İşletme Kaydı</CardTitle>
+            <CardTitle>Mahallem Esnaf Kaydı</CardTitle>
+            <p className="text-sm text-muted-foreground mt-2">
+              Dükkanınızı Mahallem'e kaydedin, mahallendeki müşterilerle buluşun ve daha fazla iş alın.
+            </p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">

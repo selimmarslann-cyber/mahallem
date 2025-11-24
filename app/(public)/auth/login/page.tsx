@@ -16,6 +16,10 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // URL'den type ve redirect al
+  const type = searchParams.get('type')
+  const isBusiness = type === 'business'
+
   useEffect(() => {
     // Eğer zaten giriş yapılmışsa yönlendir
     checkAuth()
@@ -23,9 +27,9 @@ export default function LoginPage() {
 
   const checkAuth = async () => {
     try {
-      const res = await fetch('/api/auth/me')
+      const res = await fetch('/api/auth/me', { credentials: 'include' })
       if (res.ok) {
-        const redirect = searchParams.get('redirect') || '/map'
+        const redirect = searchParams.get('redirect') || (isBusiness ? '/business/jobs' : '/account')
         router.push(redirect)
       }
     } catch (err) {
@@ -46,20 +50,48 @@ export default function LoginPage() {
         credentials: 'include', // Cookie'leri gönder
       })
 
-      const data = await res.json()
+      // Response tipini kontrol et
+      const contentType = res.headers.get('content-type')
+      
+      let data
+      if (!contentType || !contentType.includes('application/json')) {
+        // JSON değilse text olarak oku
+        const text = await res.text()
+        console.error('Non-JSON response:', text.substring(0, 200))
+        
+        // Eğer HTML dönüyorsa (muhtemelen error page)
+        if (text.includes('<!DOCTYPE') || text.includes('<html')) {
+          setError('Sunucu hatası. Lütfen sayfayı yenileyin ve tekrar deneyin.')
+        } else {
+          setError(`Sunucu hatası: ${text.substring(0, 100)}`)
+        }
+        setLoading(false)
+        return
+      }
+
+      try {
+        data = await res.json()
+      } catch (jsonError) {
+        // JSON parse hatası
+        console.error('JSON parse error:', jsonError)
+        setError('Sunucu yanıtı beklenmedik formatta. Lütfen tekrar deneyin.')
+        setLoading(false)
+        return
+      }
 
       if (!res.ok) {
-        setError(data.error || 'Giriş başarısız')
+        setError(data.error || 'E-posta veya şifre hatalı. Lütfen kontrol edip tekrar deneyin.')
+        setLoading(false)
         return
       }
 
       // Başarılı - yönlendir
-      const redirect = searchParams.get('redirect') || '/map'
+      const redirect = searchParams.get('redirect') || (isBusiness ? '/business/jobs' : '/account')
       router.push(redirect)
       router.refresh() // Server component'leri yenile
-    } catch (err) {
-      setError('Bir hata oluştu')
-    } finally {
+    } catch (err: any) {
+      console.error('Login error:', err)
+      setError(err.message || 'Bağlantı hatası. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.')
       setLoading(false)
     }
   }
@@ -68,19 +100,26 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Giriş Yap</CardTitle>
+          <CardTitle>{isBusiness ? 'Esnaf Girişi' : 'Giriş Yap'}</CardTitle>
           <CardDescription>
-            Hesabınıza giriş yapın veya{' '}
-            <Link href="/auth/register" className="text-primary hover:underline">
-              yeni hesap oluşturun
-            </Link>
+            {isBusiness ? (
+              'Esnaf hesabınızla Mahallem iş panelinize giriş yapın.'
+            ) : (
+              <>
+                Hesabınıza giriş yapın veya{' '}
+                <Link href="/auth/register" className="text-primary hover:underline">
+                  yeni hesap oluşturun
+                </Link>
+              </>
+            )}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
-                {error}
+              <div className="p-4 text-sm text-red-700 bg-red-50 rounded-md border border-red-200">
+                <div className="font-semibold mb-1">⚠️ Giriş Başarısız</div>
+                <div className="text-red-600">{error}</div>
               </div>
             )}
             <div className="space-y-2">
@@ -108,6 +147,19 @@ export default function LoginPage() {
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
             </Button>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-muted-foreground">veya</span>
+              </div>
+            </div>
+            <Link href="/auth/phone-login">
+              <Button type="button" variant="outline" className="w-full">
+                Telefon ile giriş yap
+              </Button>
+            </Link>
           </form>
         </CardContent>
       </Card>

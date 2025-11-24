@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getReferralOverview } from '@/lib/services/referralService'
 import { getUserId } from '@/lib/auth/session'
+import { prisma } from '@/lib/db/prisma'
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,16 +12,177 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const overview = await getReferralOverview(userId)
+    // Kullanıcı bilgilerini al
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        referral_rank: true,
+        network_cumulative_gmv: true,
+        referralCode: {
+          select: {
+            code: true,
+          },
+        },
+      },
+    })
+
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Kullanıcı bulunamadı' },
+        { status: 404 }
+      )
+    }
+
+    // Referral kodu
+    const referralCode = user.referralCode?.code || user.id.slice(0, 8).toUpperCase()
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const referralLink = `${appUrl}/auth/register?ref=${referralCode}`
+
+    // Toplam referral kazancı (wallet_transactions'tan)
+    const referralEarningsResult = await prisma.$queryRaw<Array<{ total: any }>>`
+      SELECT COALESCE(SUM(amount), 0) as total
+      FROM wallet_transactions
+      WHERE user_id = ${userId}::uuid
+        AND source_type = 'referral'
+    `
+    const totalReferralEarnings = parseFloat(referralEarningsResult[0]?.total || '0')
+
+    // Toplam bölge kazancı
+    const regionEarningsResult = await prisma.$queryRaw<Array<{ total: any }>>`
+      SELECT COALESCE(SUM(amount), 0) as total
+      FROM wallet_transactions
+      WHERE user_id = ${userId}::uuid
+        AND source_type = 'region'
+    `
+    const totalRegionEarnings = parseFloat(regionEarningsResult[0]?.total || '0')
+
+    // Bu ayki kazanç
+    const now = new Date()
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    const monthlyReferralResult = await prisma.$queryRaw<Array<{ total: any }>>`
+      SELECT COALESCE(SUM(amount), 0) as total
+      FROM wallet_transactions
+      WHERE user_id = ${userId}::uuid
+        AND source_type = 'referral'
+        AND created_at >= ${startOfMonth}
+    `
+    const monthlyReferralEarnings = parseFloat(monthlyReferralResult[0]?.total || '0')
+
+    const monthlyRegionResult = await prisma.$queryRaw<Array<{ total: any }>>`
+      SELECT COALESCE(SUM(amount), 0) as total
+      FROM wallet_transactions
+      WHERE user_id = ${userId}::uuid
+        AND source_type = 'region'
+        AND created_at >= ${startOfMonth}
+    `
+    const monthlyRegionEarnings = parseFloat(monthlyRegionResult[0]?.total || '0')
+
+    // Level bazlı sayılar (L1-L5)
+    const levelCounts = await prisma.$queryRaw<Array<{ level: number; count: bigint }>>`
+      SELECT level, COUNT(DISTINCT referred_user_id) as count
+      FROM (
+        WITH RECURSIVE referral_tree AS (
+          SELECT id as referred_user_id, referrer_id, 1 as level
+          FROM users
+          WHERE referrer_id = ${userId}::uuid
+          UNION ALL
+          SELECT u.id, u.referrer_id, rt.level + 1
+          FROM users u
+          INNER JOIN referral_tree rt ON u.referrer_id = rt.referred_user_id
+          WHERE rt.level < 5
+        )
+        SELECT referred_user_id, level
+        FROM referral_tree
+      ) sub
+      GROUP BY level
+      ORDER BY level
+    `
+
+    const levelCountsMap: Record<number, number> = {}
+    levelCounts.forEach((item) => {
+      levelCountsMap[item.level] = Number(item.count)
+    })
+
+    // Level bazlı kazançlar
+    const levelEarnings = await prisma.$queryRaw<Array<{ level: number; total: any }>>`
+      SELECT level, COALESCE(SUM(amount), 0) as total
+      FROM wallet_transactions
+      WHERE user_id = ${userId}::uuid
+        AND source_type = 'referral'
+        AND level IS NOT NULL
+      GROUP BY level
+      ORDER BY level
+    `
+
+    const levelEarningsMap: Record<number, number> = {}
+    levelEarnings.forEach((item) => {
+      levelEarningsMap[item.level] = parseFloat(item.total || '0')
+    })
+
+    // Cüzdan bakiyesi
+    const walletResult = await prisma.$queryRaw<Array<{ balance: any }>>`
+      SELECT COALESCE(balance, 0) as balance
+      FROM wallets
+      WHERE user_id = ${userId}::uuid
+    `
+    const currentBalance = parseFloat(walletResult[0]?.balance || '0')
+
+    // Rank bilgisi ve bir sonraki level için kalan
+    const currentRank = user.referral_rank || 0
+    const currentGMV = parseFloat(user.network_cumulative_gmv?.toString() || '0')
+    
+    let nextRankThreshold = 0
+    let nextRankName = ''
+    let remainingForNext = 0
+    
+    if (currentRank < 4) {
+      switch (currentRank) {
+        case 0:
+          nextRankThreshold = 1000000
+          nextRankName = 'Mahalle Lideri'
+          break
+        case 1:
+          nextRankThreshold = 10000000
+          nextRankName = 'İlçe Yöneticisi'
+          break
+        case 2:
+          nextRankThreshold = 100000000
+          nextRankName = 'İl Yöneticisi'
+          break
+        case 3:
+          nextRankThreshold = 500000000
+          nextRankName = 'Ülke Yöneticisi'
+          break
+      }
+      remainingForNext = Math.max(0, nextRankThreshold - currentGMV)
+    }
 
     return NextResponse.json({
-      ...overview,
-      // Decimal'ları number'a çevir
-      totalEarnings: overview.totalEarnings.toNumber(),
-      monthlyEarnings: overview.monthlyEarnings.toNumber(),
-      level1Earnings: overview.level1Earnings.toNumber(),
-      level2Earnings: overview.level2Earnings.toNumber(),
-      currentBalance: overview.currentBalance.toNumber(),
+      currentReferralCode: referralCode,
+      referralLink,
+      totalReferralEarnings,
+      totalRegionEarnings,
+      totalEarnings: totalReferralEarnings + totalRegionEarnings,
+      monthlyReferralEarnings,
+      monthlyRegionEarnings,
+      monthlyEarnings: monthlyReferralEarnings + monthlyRegionEarnings,
+      level1Count: levelCountsMap[1] || 0,
+      level2Count: levelCountsMap[2] || 0,
+      level3Count: levelCountsMap[3] || 0,
+      level4Count: levelCountsMap[4] || 0,
+      level5Count: levelCountsMap[5] || 0,
+      level1Earnings: levelEarningsMap[1] || 0,
+      level2Earnings: levelEarningsMap[2] || 0,
+      level3Earnings: levelEarningsMap[3] || 0,
+      level4Earnings: levelEarningsMap[4] || 0,
+      level5Earnings: levelEarningsMap[5] || 0,
+      currentBalance,
+      currentRank,
+      currentGMV,
+      nextRankThreshold,
+      nextRankName,
+      remainingForNext,
     })
   } catch (error: any) {
     console.error('Referral overview error:', error)
@@ -31,4 +192,3 @@ export async function GET(request: NextRequest) {
     )
   }
 }
-

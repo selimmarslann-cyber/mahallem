@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import BottomTabBar, { TabItem } from '@/components/layout/BottomTabBar'
 import AppHeader from '@/components/layout/AppHeader'
+import AppFooter from '@/components/layout/AppFooter'
 import { Briefcase, Store, Activity, Wallet, User } from 'lucide-react'
 
 const businessTabs: TabItem[] = [
@@ -42,11 +43,12 @@ export default function BusinessLayout({
   children: ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <AppHeader showLocation={false} />
-      <main className="pb-16">
+      <main className="flex-1 pb-16">
         {children}
       </main>
+      <AppFooter />
       <BottomTabBar items={businessTabs} />
     </div>
   )

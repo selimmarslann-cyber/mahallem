@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getBusinessById } from '@/lib/services/businessService'
+import { getBusinessById, updateBusiness } from '@/lib/services/businessService'
+import { getUserId } from '@/lib/auth/session'
+import { z } from 'zod'
+
+const updateBusinessSchema = z.object({
+  name: z.string().min(2).optional(),
+  description: z.string().optional(),
+  addressText: z.string().optional(),
+  coverImageUrl: z.string().url().optional().nullable(),
+})
 
 export async function GET(
   request: NextRequest,
@@ -25,3 +34,39 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const userId = await getUserId()
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'Kullanıcı girişi gerekli' },
+        { status: 401 }
+      )
+    }
+
+    // İşletmenin sahibi olduğunu kontrol et
+    const business = await getBusinessById(params.id)
+    if (!business || business.ownerUserId !== userId) {
+      return NextResponse.json(
+        { error: 'İşletme bulunamadı veya yetkiniz yok' },
+        { status: 404 }
+      )
+    }
+
+    const body = await request.json()
+    const validated = updateBusinessSchema.parse(body)
+
+    const updated = await updateBusiness(params.id, validated)
+
+    return NextResponse.json(updated)
+  } catch (error: any) {
+    console.error('Business update error:', error)
+    return NextResponse.json(
+      { error: error.message || 'İşletme güncellenemedi' },
+      { status: 400 }
+    )
+  }
+}

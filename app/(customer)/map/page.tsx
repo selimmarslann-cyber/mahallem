@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { calculateDistance, formatDistance } from '@/lib/utils/distance'
+import { cn } from '@/lib/utils/cn'
 import EmptyState from '@/components/ui/empty-state'
 
 const BusinessMap = dynamic(
@@ -124,96 +125,119 @@ export default function CustomerMapPage() {
   })
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50">
-      {/* Üst header */}
-      <header className="border-b bg-white sticky top-0 z-20">
-        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-4">
-          <div className="flex-1">
-            <h1 className="text-lg font-semibold text-slate-900 mb-2">
-              Mahalle Haritası
-            </h1>
-            <button className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200 transition-colors">
-              <MapPin className="h-3.5 w-3.5" />
-              Konum: <span className="font-semibold">Yakınımdaki Esnaflar</span>
-            </button>
-          </div>
+    <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+      {/* Premium Header */}
+      <header className="border-b border-slate-200/60 bg-white/80 backdrop-blur-md sticky top-16 z-20 shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <div className="flex-1">
+              <motion.h1
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-2xl md:text-3xl font-bold text-slate-900 mb-2 display-font"
+              >
+                Mahalle Haritası
+              </motion.h1>
+              <motion.button
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 px-4 py-1.5 text-sm font-semibold text-orange-700 border border-orange-200/50 hover:shadow-md transition-all"
+              >
+                <MapPin className="h-4 w-4" />
+                <span>Konum: <span className="font-bold">Yakınımdaki Esnaflar</span></span>
+              </motion.button>
+            </div>
 
-          <div className="hidden md:flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-xs flex items-center gap-1.5"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              Filtreler
-            </Button>
+            <div className="hidden md:flex items-center gap-2">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-sm flex items-center gap-2 border-2 border-slate-300 hover:border-orange-400 hover:bg-orange-50 rounded-full px-4"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filtreler
+                </Button>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+
+        {/* Premium Search Bar */}
+        <div className="border-t border-slate-100 bg-white/50">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 z-10" />
+                <Input
+                  placeholder="Mahalle, cadde veya esnaf adı ile ara..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-12 pr-10 py-6 text-base bg-white border-2 border-slate-200 rounded-2xl shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all"
+                  aria-label="İşletme ara"
+                />
+                {search && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    onClick={() => setSearch('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors"
+                    aria-label="Aramayı temizle"
+                  >
+                    <X className="h-4 w-4" />
+                  </motion.button>
+                )}
+              </div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="md:hidden">
+                <Button variant="outline" size="lg" className="rounded-2xl px-4 border-2">
+                  <SlidersHorizontal className="h-5 w-5" />
+                </Button>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+
+        {/* Premium Filter Chips */}
+        <div className="border-t border-slate-100 bg-white/50">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+              {[
+                { key: 'all', label: 'Tümü', icon: null },
+                { key: 'online', label: 'Sadece Açık', icon: null },
+                { key: 'nearest', label: 'En Yakın', icon: MapPin },
+                { key: 'toprated', label: 'En Yüksek Puan', icon: Star },
+              ].map((filterOption) => {
+                const Icon = filterOption.icon
+                const isActive = filter === filterOption.key
+                return (
+                  <motion.div
+                    key={filterOption.key}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex-shrink-0"
+                  >
+                    <Button
+                      variant={isActive ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setFilter(filterOption.key as any)}
+                      className={cn(
+                        "rounded-full px-4 py-2 text-sm font-semibold transition-all",
+                        isActive
+                          ? "bg-gradient-to-r from-[#FF7A00] to-[#FF8A00] text-white shadow-md border-0"
+                          : "bg-white border-2 border-slate-300 text-slate-700 hover:border-orange-400 hover:bg-orange-50"
+                      )}
+                    >
+                      {Icon && <Icon className="h-4 w-4 mr-1.5" />}
+                      {filterOption.label}
+                    </Button>
+                  </motion.div>
+                )
+              })}
+            </div>
           </div>
         </div>
       </header>
-
-      {/* Arama alanı */}
-      <div className="border-b bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-3 flex gap-3">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-            <Input
-              placeholder="Mahalle, cadde veya esnaf adı ile ara..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-slate-50 border-slate-200 focus-visible:ring-slate-300"
-            />
-            {search && (
-              <button
-                onClick={() => setSearch('')}
-                className="absolute right-3 top-2.5 h-4 w-4 text-slate-400 hover:text-slate-600"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-          <Button variant="outline" className="md:hidden" size="sm">
-            <SlidersHorizontal className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Mobil Filtre Chips */}
-        <div className="md:hidden px-4 pb-3">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-            <Button
-              variant={filter === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('all')}
-              className="flex-shrink-0 text-xs"
-            >
-              Tümü
-            </Button>
-            <Button
-              variant={filter === 'online' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('online')}
-              className="flex-shrink-0 text-xs"
-            >
-              Sadece Açık
-            </Button>
-            <Button
-              variant={filter === 'nearest' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('nearest')}
-              className="flex-shrink-0 text-xs"
-            >
-              En Yakın
-            </Button>
-            <Button
-              variant={filter === 'toprated' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('toprated')}
-              className="flex-shrink-0 text-xs"
-            >
-              En Yüksek Puan
-            </Button>
-          </div>
-        </div>
-      </div>
 
       {/* MAP + LİSTE layout */}
       <main className="mx-auto flex w-full max-w-6xl flex-1 gap-4 px-4 py-4 overflow-hidden pb-16 lg:pb-4">

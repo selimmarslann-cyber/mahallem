@@ -65,9 +65,9 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Kayıt Ol</CardTitle>
+          <CardTitle>Kullanıcı Kaydı</CardTitle>
           <CardDescription>
-            Yeni hesap oluşturun veya{' '}
+            Mahallem'e katılın ve mahallendeki esnaflarla buluşun. Yeni hesap oluşturun veya{' '}
             <Link href="/auth/login" className="text-primary hover:underline">
               giriş yapın
             </Link>

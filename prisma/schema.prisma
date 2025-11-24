@@ -29,6 +29,7 @@ model User {
   reviews        Review[]
   sentMessages   Message[]   @relation("MessageSender")
   receivedMessages Message[] @relation("MessageReceiver")
+  jobs           Job[]        @relation("JobCustomer")
   
   // Referral Relations
   referralCode       ReferralCode?
@@ -59,6 +60,11 @@ model Business {
   reviewCount             Int              @default(0) @map("review_count")
   consecutiveCancellations Int             @default(0) @map("consecutive_cancellations")
   bannedUntil             DateTime?        @map("banned_until")
+  
+  // Yeni: Usta hizmet tercihleri (Mahallem kategori sistemi için)
+  mainCategories          String[]         @default([]) @map("main_categories") // ["electricity", "plumbing"]
+  subServices             String[]         @default([]) @map("sub_services")    // ["home-repair", "full-installation"]
+  
   createdAt               DateTime         @default(now()) @map("created_at")
   updatedAt                DateTime         @updatedAt @map("updated_at")
 
@@ -68,11 +74,13 @@ model Business {
   orders      Order[]
   reviews     Review[]
   bans        BusinessBan[]
+  jobs        Job[]      // Ustanın alabileceği işler
 
   @@index([ownerUserId])
   @@index([lat, lng])
   @@index([onlineStatus])
   @@index([category])
+  @@index([mainCategories]) // GIN index için (PostgreSQL array)
   @@map("businesses")
 }
 
@@ -340,5 +348,48 @@ model ReferralReward {
   @@index([level])
   @@index([createdAt])
   @@map("referral_rewards")
+}
+
+// ============================================
+// 13. JOBS (İşler - Müşteri İstekleri)
+// ============================================
+model Job {
+  id              String      @id @default(uuid())
+  customerId      String      @map("customer_id")
+  mainCategoryId  String      @map("main_category_id") // "electricity", "plumbing", vb.
+  subServiceId    String?     @map("sub_service_id")   // "home-repair", "full-installation", vb. (null ise "Diğer")
+  isOther         Boolean     @default(false) @map("is_other")
+  description     String      // Müşterinin iş açıklaması
+  city            String
+  district        String
+  addressText     String?     @map("address_text")
+  locationLat     Float?      @map("location_lat")
+  locationLng     Float?      @map("location_lng")
+  scheduledAt     DateTime?   @map("scheduled_at")
+  status          JobStatus   @default(PENDING) // PENDING, ACCEPTED, IN_PROGRESS, COMPLETED, CANCELLED
+  acceptedByBusinessId String? @map("accepted_by_business_id") // Hangi usta kabul etti
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  customer        User        @relation("JobCustomer", fields: [customerId], references: [id], onDelete: Cascade)
+  acceptedBy      Business?   @relation("JobBusiness", fields: [acceptedByBusinessId], references: [id], onDelete: SetNull)
+
+  @@index([customerId])
+  @@index([mainCategoryId])
+  @@index([subServiceId])
+  @@index([isOther])
+  @@index([status])
+  @@index([acceptedByBusinessId])
+  @@index([createdAt])
+  @@map("jobs")
+}
+
+enum JobStatus {
+  PENDING           // Beklemede (henüz usta kabul etmedi)
+  ACCEPTED          // Usta tarafından kabul edildi
+  IN_PROGRESS       // İş devam ediyor
+  COMPLETED         // İş tamamlandı
+  CANCELLED         // İptal edildi
 }
 

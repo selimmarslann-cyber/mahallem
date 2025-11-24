@@ -8,7 +8,10 @@ export const createProductSchema = z.object({
   price: z.number().positive('Fiyat pozitif olmalı'),
   isService: z.boolean().default(false),
   deliveryType: deliveryTypeSchema,
-  photoUrl: z.string().url().optional().nullable(),
+  photoUrl: z
+    .union([z.string().url(), z.literal(''), z.null()])
+    .optional()
+    .nullable(),
   active: z.boolean().default(true),
 })
 
