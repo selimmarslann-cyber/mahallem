@@ -355,15 +355,6 @@ export default function BusinessStorePage() {
       const updatedBusiness = await statusRes.json()
       setBusiness({ ...business, ...updatedBusiness, name: businessName })
       alert('Mağaza bilgileri kaydedildi')
-
-      if (res.ok) {
-        const updatedBusiness = await res.json()
-        setBusiness(updatedBusiness)
-        alert('Mağaza bilgileri kaydedildi')
-      } else {
-        const error = await res.json()
-        alert(error.error || 'Kaydedilemedi')
-      }
     } catch (err) {
       console.error('Mağaza kaydetme hatası:', err)
       alert('Bir hata oluştu')
