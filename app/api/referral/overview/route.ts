@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
       FROM wallet_transactions
       WHERE user_id = ${userId}::uuid
         AND source_type = 'referral'
-        AND created_at >= ${startOfMonth}
+        AND created_at >= ${startOfMonth}::timestamp
     `
     const monthlyReferralEarnings = parseFloat(monthlyReferralResult[0]?.total || '0')
 
@@ -72,27 +72,16 @@ export async function GET(request: NextRequest) {
       FROM wallet_transactions
       WHERE user_id = ${userId}::uuid
         AND source_type = 'region'
-        AND created_at >= ${startOfMonth}
+        AND created_at >= ${startOfMonth}::timestamp
     `
     const monthlyRegionEarnings = parseFloat(monthlyRegionResult[0]?.total || '0')
 
-    // Level bazlı sayılar (L1-L5)
+    // Level bazlı sayılar (L1-L5) - ReferralRelation üzerinden
     const levelCounts = await prisma.$queryRaw<Array<{ level: number; count: bigint }>>`
       SELECT level, COUNT(DISTINCT referred_user_id) as count
-      FROM (
-        WITH RECURSIVE referral_tree AS (
-          SELECT id as referred_user_id, referrer_id, 1 as level
-          FROM users
-          WHERE referrer_id = ${userId}::uuid
-          UNION ALL
-          SELECT u.id, u.referrer_id, rt.level + 1
-          FROM users u
-          INNER JOIN referral_tree rt ON u.referrer_id = rt.referred_user_id
-          WHERE rt.level < 5
-        )
-        SELECT referred_user_id, level
-        FROM referral_tree
-      ) sub
+      FROM referral_relations
+      WHERE referrer_user_id = ${userId}::uuid
+        AND level <= 5
       GROUP BY level
       ORDER BY level
     `

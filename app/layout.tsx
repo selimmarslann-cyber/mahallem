@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://mahallem-rrz7.vercel.app'),
   title: 'Hizmetgo - Esnaf/Hizmet Süper Uygulaması',
   description: 'Mahalle esnafı ve hizmet sağlayıcıları ile müşterileri buluşturan platform',
 }

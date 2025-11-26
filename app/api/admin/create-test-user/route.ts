@@ -47,11 +47,15 @@ export async function POST(request: NextRequest) {
     const referralCode = await getOrCreateReferralCodeForUser(user.id)
 
     // Wallet oluştur
-    await prisma.$executeRaw`
-      INSERT INTO wallets (user_id, balance, updated_at)
-      VALUES (${user.id}::uuid, 0, now())
-      ON CONFLICT (user_id) DO NOTHING
-    `
+    await prisma.wallet.upsert({
+      where: { userId: user.id },
+      create: {
+        userId: user.id,
+        balance: 0,
+        pendingBalance: 0,
+      },
+      update: {},
+    })
 
     return NextResponse.json({
       message: 'Test kullanıcısı oluşturuldu',

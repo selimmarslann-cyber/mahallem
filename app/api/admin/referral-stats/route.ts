@@ -17,38 +17,35 @@ export async function GET(request: NextRequest) {
       user_id: string
       name: string
       total_earnings: any
-      network_gmv: any
-      referral_rank: number
     }>>`
       SELECT 
         u.id as user_id,
         u.name,
-        COALESCE(SUM(wt.amount), 0) as total_earnings,
-        COALESCE(u.network_cumulative_gmv, 0) as network_gmv,
-        COALESCE(u.referral_rank, 0) as referral_rank
+        COALESCE(SUM(wt.amount), 0) as total_earnings
       FROM users u
       LEFT JOIN wallet_transactions wt ON wt.user_id = u.id
         AND wt.source_type IN ('referral', 'region')
-      GROUP BY u.id, u.name, u.network_cumulative_gmv, u.referral_rank
+      GROUP BY u.id, u.name
       ORDER BY total_earnings DESC
       LIMIT 20
     `
 
-    // En yüksek network GMV
+    // En yüksek network GMV (orders üzerinden hesapla)
     const topGMV = await prisma.$queryRaw<Array<{
       user_id: string
       name: string
       network_gmv: any
-      referral_rank: number
     }>>`
       SELECT 
         u.id as user_id,
         u.name,
-        COALESCE(u.network_cumulative_gmv, 0) as network_gmv,
-        COALESCE(u.referral_rank, 0) as referral_rank
+        COALESCE(SUM(o.total_amount), 0) as network_gmv
       FROM users u
-      WHERE u.network_cumulative_gmv > 0
-      ORDER BY u.network_cumulative_gmv DESC
+      LEFT JOIN orders o ON o.customer_id = u.id
+        AND o.status = 'COMPLETED'
+      GROUP BY u.id, u.name
+      HAVING COALESCE(SUM(o.total_amount), 0) > 0
+      ORDER BY network_gmv DESC
       LIMIT 20
     `
 
@@ -82,14 +79,11 @@ export async function GET(request: NextRequest) {
         user_id: e.user_id,
         name: e.name,
         total_earnings: parseFloat(e.total_earnings?.toString() || '0'),
-        network_gmv: parseFloat(e.network_gmv?.toString() || '0'),
-        referral_rank: e.referral_rank,
       })),
       topGMV: topGMV.map(u => ({
         user_id: u.user_id,
         name: u.name,
         network_gmv: parseFloat(u.network_gmv?.toString() || '0'),
-        referral_rank: u.referral_rank,
       })),
       regionStats: regionStats.map(s => ({
         region_type: s.region_type,

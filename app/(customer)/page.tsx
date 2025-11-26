@@ -15,6 +15,22 @@ import CategoryCard from '@/components/home/CategoryCard'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { getKeywordSuggestions } from '@/lib/utils/keywords'
+import { SERVICE_CATEGORIES } from '@/lib/data/service-categories'
+
+// Popüler kategorilerin SERVICE_CATEGORIES ID mapping'i
+// Eğer mapping yoksa, kategori adından eşleştirme yapılacak
+const CATEGORY_ID_MAPPING: Record<string, string> = {
+  'temizlik': 'cleaning',
+  'elektrik': 'electricity',
+  'tesisat': 'plumbing',
+  'boya': 'painting',
+  'nakliyat': 'moving',
+  'beyaz-esya': 'appliance-repair',
+  'evcil': 'pet-care-services',
+  'marangoz': 'carpentry',
+  'klima': 'ac-installation',
+  // Diğerleri için isimden eşleştirme yapılacak
+}
 
 const BANNERS = [
   {
@@ -357,13 +373,31 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-            {POPULAR_CATEGORIES.map((category) => (
-              <CategoryCard 
-                key={category.id} 
-                {...category} 
-                href={`/request?q=${encodeURIComponent(category.name.toLowerCase())}`}
-              />
-            ))}
+            {POPULAR_CATEGORIES.map((category) => {
+              // SERVICE_CATEGORIES ID'sine çevir
+              let serviceCategoryId = CATEGORY_ID_MAPPING[category.id]
+              
+              // Mapping yoksa, kategori adından eşleştirme yap
+              if (!serviceCategoryId) {
+                const matchedCategory = SERVICE_CATEGORIES.find(cat => 
+                  cat.name.toLowerCase().includes(category.name.toLowerCase()) ||
+                  category.name.toLowerCase().includes(cat.name.toLowerCase())
+                )
+                serviceCategoryId = matchedCategory?.id
+              }
+              
+              const href = serviceCategoryId 
+                ? `/request?categoryId=${serviceCategoryId}`
+                : `/request?q=${encodeURIComponent(category.name.toLowerCase())}`
+              
+              return (
+                <CategoryCard 
+                  key={category.id} 
+                  {...category} 
+                  href={href}
+                />
+              )
+            })}
           </div>
         </div>
       </section>

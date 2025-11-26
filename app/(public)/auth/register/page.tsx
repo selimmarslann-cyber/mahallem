@@ -81,7 +81,14 @@ export default function RegisterPage() {
       }
 
       if (!res.ok) {
-        setErrorMessage(data.error || 'Kayıt başarısız.')
+        // Detaylı hata mesajı göster
+        const errorMsg = data.error || data.message || 'Kayıt başarısız.'
+        setErrorMessage(errorMsg)
+        // Development modunda detayları göster
+        if (data.details && process.env.NODE_ENV === 'development') {
+          console.error('Register error details:', data.details)
+        }
+        error(errorMsg) // Toast göster
         setLoading(false)
         return
       }

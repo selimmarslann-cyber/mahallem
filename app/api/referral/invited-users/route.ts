@@ -12,36 +12,65 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Direkt davet edilen kullanıcılar (L1)
-    const invitedUsers = await prisma.$queryRaw<Array<{
-      id: string
-      name: string
-      created_at: Date
-      total_gmv: any
-      total_earnings: any
-    }>>`
-      SELECT 
-        u.id,
-        u.name,
-        u.created_at,
-        COALESCE(u.network_cumulative_gmv, 0) as total_gmv,
-        COALESCE((
-          SELECT SUM(wt.amount)
+    // Direkt davet edilen kullanıcılar (L1) - ReferralRelation üzerinden
+    const referralRelations = await prisma.referralRelation.findMany({
+      where: {
+        referrerId: userId,
+        level: 1,
+      },
+      include: {
+        referred: {
+          select: {
+            id: true,
+            name: true,
+            createdAt: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+
+    // Her kullanıcı için GMV ve earnings hesapla
+    const invitedUsers = await Promise.all(
+      referralRelations.map(async (relation) => {
+        const user = relation.referred
+        
+        // Total GMV (orders üzerinden)
+        const totalGMVResult = await prisma.$queryRaw<Array<{ total: any }>>`
+          SELECT COALESCE(SUM(total_amount), 0) as total
+          FROM orders
+          WHERE customer_id = ${user.id}::uuid
+            AND status = 'COMPLETED'
+        `
+        const total_gmv = parseFloat(totalGMVResult[0]?.total || '0')
+
+        // Total earnings (wallet_transactions üzerinden)
+        const totalEarningsResult = await prisma.$queryRaw<Array<{ total: any }>>`
+          SELECT COALESCE(SUM(wt.amount), 0) as total
           FROM wallet_transactions wt
           WHERE wt.order_id IN (
             SELECT o.id
             FROM orders o
-            WHERE o.customer_id = u.id
+            WHERE o.customer_id = ${user.id}::uuid
               AND o.status = 'COMPLETED'
           )
           AND wt.user_id = ${userId}::uuid
           AND wt.source_type = 'referral'
           AND wt.level = 1
-        ), 0) as total_earnings
-      FROM users u
-      WHERE u.referrer_id = ${userId}::uuid
-      ORDER BY u.created_at DESC
-    `
+        `
+        const total_earnings = parseFloat(totalEarningsResult[0]?.total || '0')
+
+        return {
+          id: user.id,
+          name: user.name,
+          created_at: user.createdAt,
+          total_gmv,
+          total_earnings,
+        }
+      })
+    )
 
     // Her kullanıcının sipariş sayısını kontrol et (aktif/pasif)
     const usersWithStatus = await Promise.all(

@@ -59,11 +59,15 @@ export async function POST(request: NextRequest) {
 
     // Wallet oluştur
     try {
-      await prisma.$executeRaw`
-        INSERT INTO wallets (user_id, balance, updated_at)
-        VALUES (${user.id}::uuid, 0, now())
-        ON CONFLICT (user_id) DO NOTHING
-      `
+      await prisma.wallet.upsert({
+        where: { userId: user.id },
+        create: {
+          userId: user.id,
+          balance: 0,
+          pendingBalance: 0,
+        },
+        update: {}, // Update yapılmasın, sadece yoksa oluşturulsun
+      })
     } catch (walletError) {
       console.error('Wallet oluşturma hatası:', walletError)
       // Wallet hatası kayıt işlemini engellemez
@@ -125,9 +129,35 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Daha detaylı hata mesajı
     console.error('Register error:', error)
+    
+    // Hata tipine göre mesaj belirle
+    let errorMessage = 'Kayıt işlemi başarısız'
+    
+    if (error instanceof Error) {
+      // Database bağlantı hatası
+      if (error.message.includes('P1001') || error.message.includes('connect')) {
+        errorMessage = 'Veritabanı bağlantı hatası. Lütfen daha sonra tekrar deneyin.'
+      }
+      // Unique constraint hatası (email zaten var)
+      else if (error.message.includes('Unique constraint') || error.message.includes('P2002')) {
+        errorMessage = 'Bu e-posta adresi zaten kullanılıyor'
+      }
+      // Diğer Prisma hataları
+      else if (error.message.includes('P')) {
+        errorMessage = 'Veritabanı hatası. Lütfen tekrar deneyin.'
+      }
+      else {
+        errorMessage = error.message || errorMessage
+      }
+    }
+
     return NextResponse.json(
-      { error: 'Kayıt işlemi başarısız' },
+      { 
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : undefined
+      },
       { status: 500 }
     )
   }
