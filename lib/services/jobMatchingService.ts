@@ -1,5 +1,5 @@
 /**
- * Mahallem - İş Eşleştirme Servisi
+ * Hizmetgo - İş Eşleştirme Servisi
  * 
  * Bu dosya, yeni oluşturulan işleri (jobs) uygun ustalara (providers)
  * eşleştiren fonksiyonları içerir.

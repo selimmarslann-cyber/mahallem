@@ -1,4 +1,4 @@
-# Mahallem - Esnaf/Hizmet Süper Uygulaması
+# Hizmetgo - Esnaf/Hizmet Süper Uygulaması
 
 Türkiye pazarı için mahalle esnafı ve hizmet sağlayıcıları ile müşterileri buluşturan platform.
 

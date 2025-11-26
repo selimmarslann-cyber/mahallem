@@ -1,7 +1,17 @@
-import React, { createContext, useContext, useState, useCallback } from 'react'
+/**
+ * AppStateContext - Mobile
+ * 
+ * FAZ 2: Backend API'lerine bağlandı.
+ * Mock data sadece fallback olarak kullanılıyor (dev ortamı için).
+ */
+
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { mockVendors } from '../data/mockVendors'
 import { mockCategories } from '../data/mockCategories'
 import { mockKeywords } from '../data/mockKeywords'
+import * as authApi from '../api/auth'
+import type { User } from '../types/domain'
 
 export type UserRole = 'guest' | 'customer' | 'vendor'
 
@@ -10,9 +20,10 @@ export type OrderStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled'
 export interface UserProfile {
   id: string
   name: string
-  phone: string
+  phone?: string
+  email?: string
   neighborhood?: string
-  avatarUrl?: string
+  avatarUrl?: string | null
   role: UserRole
 }
 
@@ -60,6 +71,10 @@ export interface Keyword {
 
 export interface AppState {
   currentUser: UserProfile | null
+  currentVendor: VendorProfile | null
+  authToken: string | null
+  isLoadingAuth: boolean
+  isLoggedIn: boolean
   vendors: VendorProfile[]
   orders: Order[]
   keywords: Keyword[]
@@ -68,19 +83,11 @@ export interface AppState {
 }
 
 export interface AppActions {
-  loginAsCustomer: (profileInput: {
-    name: string
-    phone: string
-    neighborhood?: string
-  }) => void
-  loginAsVendor: (input: {
-    name: string
-    businessName: string
-    phone: string
-    category: string
-    location?: Partial<VendorProfile['location']>
-  }) => void
-  logout: () => void
+  loginAsCustomer: (email: string, password: string) => Promise<void>
+  loginAsVendor: (email: string, password: string) => Promise<void>
+  registerUser: (email: string, password: string, name: string) => Promise<void>
+  registerVendor: (email: string, password: string, name: string) => Promise<void>
+  logout: () => Promise<void>
   registerVendorMenuItem: (
     vendorId: string,
     item: { name: string; price: number; description?: string }
@@ -96,16 +103,19 @@ export interface AppActions {
   }) => void
 }
 
+const AUTH_TOKEN_KEY = '@mahallem:authToken'
+const USER_DATA_KEY = '@mahallem:userData'
+
 const AppStateContext = createContext<AppState | undefined>(undefined)
 const AppActionsContext = createContext<AppActions | undefined>(undefined)
 
-// Convert mock vendors to VendorProfile format
+// Convert mock vendors to VendorProfile format (fallback)
 const convertMockVendorsToProfiles = (): VendorProfile[] => {
   return mockVendors.map((v) => ({
     id: v.id.toString(),
     name: v.name.split(' ')[0] || v.name,
     businessName: v.name,
-    phone: '+90 555 000 00 00', // Mock phone
+    phone: '+90 555 000 00 00',
     category: v.category,
     rating: v.rating,
     location: {
@@ -116,14 +126,28 @@ const convertMockVendorsToProfiles = (): VendorProfile[] => {
       neighborhood: 'Aydoğdu Mahallesi',
     },
     about: v.description,
-    menu: [], // Will be populated from mockServices or added dynamically
+    menu: [],
   }))
+}
+
+// Convert backend User to UserProfile
+const convertUserToProfile = (user: User, role: UserRole = 'customer'): UserProfile => {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    avatarUrl: user.avatarUrl,
+    role,
+  }
 }
 
 export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null)
+  const [currentVendor, setCurrentVendor] = useState<VendorProfile | null>(null)
+  const [authToken, setAuthToken] = useState<string | null>(null)
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true)
   const [vendors, setVendors] = useState<VendorProfile[]>(() =>
     convertMockVendorsToProfiles()
   )
@@ -132,61 +156,155 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>()
   const [selectedVendorId, setSelectedVendorId] = useState<string | undefined>()
 
-  const loginAsCustomer = useCallback(
-    (profileInput: { name: string; phone: string; neighborhood?: string }) => {
-      const newUser: UserProfile = {
-        id: `user-${Date.now()}`,
-        name: profileInput.name,
-        phone: profileInput.phone,
-        neighborhood: profileInput.neighborhood,
-        role: 'customer',
+  // Initialize auth state from AsyncStorage
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem(AUTH_TOKEN_KEY)
+        const storedUserData = await AsyncStorage.getItem(USER_DATA_KEY)
+
+        if (storedToken && storedUserData) {
+          // Verify token by fetching user data
+          try {
+            const { user } = await authApi.getMe(storedToken)
+            const userProfile = convertUserToProfile(user, 'customer')
+            
+            setAuthToken(storedToken)
+            setCurrentUser(userProfile)
+            
+            // Save updated user data
+            await AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(user))
+          } catch (error) {
+            // Token invalid, clear storage
+            console.error('Token validation failed:', error)
+            await AsyncStorage.multiRemove([AUTH_TOKEN_KEY, USER_DATA_KEY])
+            setAuthToken(null)
+            setCurrentUser(null)
+          }
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error)
+      } finally {
+        setIsLoadingAuth(false)
       }
-      setCurrentUser(newUser)
+    }
+
+    initializeAuth()
+  }, [])
+
+  const loginAsCustomer = useCallback(
+    async (email: string, password: string) => {
+      try {
+        setIsLoadingAuth(true)
+        const response = await authApi.loginWithEmail(email, password, false)
+        
+        const userProfile = convertUserToProfile(response.user, 'customer')
+        
+        setAuthToken(response.sessionToken)
+        setCurrentUser(userProfile)
+        setCurrentVendor(null)
+        
+        // Save to AsyncStorage
+        await AsyncStorage.setItem(AUTH_TOKEN_KEY, response.sessionToken)
+        await AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(response.user))
+      } catch (error: any) {
+        console.error('Login error:', error)
+        throw new Error(error.message || 'Giriş yapılamadı')
+      } finally {
+        setIsLoadingAuth(false)
+      }
     },
     []
   )
 
   const loginAsVendor = useCallback(
-    (input: {
-      name: string
-      businessName: string
-      phone: string
-      category: string
-      location?: Partial<VendorProfile['location']>
-    }) => {
-      const newUser: UserProfile = {
-        id: `vendor-${Date.now()}`,
-        name: input.name,
-        phone: input.phone,
-        role: 'vendor',
+    async (email: string, password: string) => {
+      try {
+        setIsLoadingAuth(true)
+        const response = await authApi.loginWithEmail(email, password, true)
+        
+        const userProfile = convertUserToProfile(response.user, 'vendor')
+        
+        setAuthToken(response.sessionToken)
+        setCurrentUser(userProfile)
+        setCurrentVendor(null) // Vendor profile will be loaded separately if needed
+        
+        // Save to AsyncStorage
+        await AsyncStorage.setItem(AUTH_TOKEN_KEY, response.sessionToken)
+        await AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(response.user))
+      } catch (error: any) {
+        console.error('Vendor login error:', error)
+        throw new Error(error.message || 'Giriş yapılamadı')
+      } finally {
+        setIsLoadingAuth(false)
       }
-      setCurrentUser(newUser)
-
-      const newVendor: VendorProfile = {
-        id: `vendor-${Date.now()}`,
-        name: input.name,
-        businessName: input.businessName,
-        phone: input.phone,
-        category: input.category,
-        rating: 0,
-        location: {
-          lat: input.location?.lat || 40.978,
-          lng: input.location?.lng || 27.511,
-          city: input.location?.city || 'Tekirdağ',
-          district: input.location?.district || 'Süleymanpaşa',
-          neighborhood: input.location?.neighborhood || 'Aydoğdu Mahallesi',
-        },
-        menu: [],
-      }
-      setVendors((prev) => [...prev, newVendor])
     },
     []
   )
 
-  const logout = useCallback(() => {
-    setCurrentUser(null)
-    setSelectedCategoryId(undefined)
-    setSelectedVendorId(undefined)
+  const registerUser = useCallback(
+    async (email: string, password: string, name: string) => {
+      try {
+        setIsLoadingAuth(true)
+        const response = await authApi.registerUser({ email, password, name })
+        
+        const userProfile = convertUserToProfile(response.user, 'customer')
+        
+        setAuthToken(response.sessionToken)
+        setCurrentUser(userProfile)
+        setCurrentVendor(null)
+        
+        // Save to AsyncStorage
+        await AsyncStorage.setItem(AUTH_TOKEN_KEY, response.sessionToken)
+        await AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(response.user))
+      } catch (error: any) {
+        console.error('Register error:', error)
+        throw new Error(error.message || 'Kayıt olunamadı')
+      } finally {
+        setIsLoadingAuth(false)
+      }
+    },
+    []
+  )
+
+  const registerVendor = useCallback(
+    async (email: string, password: string, name: string) => {
+      try {
+        setIsLoadingAuth(true)
+        const response = await authApi.registerVendor({ email, password, name })
+        
+        const userProfile = convertUserToProfile(response.user, 'vendor')
+        
+        setAuthToken(response.sessionToken)
+        setCurrentUser(userProfile)
+        setCurrentVendor(null)
+        
+        // Save to AsyncStorage
+        await AsyncStorage.setItem(AUTH_TOKEN_KEY, response.sessionToken)
+        await AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(response.user))
+      } catch (error: any) {
+        console.error('Vendor register error:', error)
+        throw new Error(error.message || 'Kayıt olunamadı')
+      } finally {
+        setIsLoadingAuth(false)
+      }
+    },
+    []
+  )
+
+  const logout = useCallback(async () => {
+    try {
+      setAuthToken(null)
+      setCurrentUser(null)
+      setCurrentVendor(null)
+      setSelectedCategoryId(undefined)
+      setSelectedVendorId(undefined)
+      
+      // Clear AsyncStorage
+      await AsyncStorage.multiRemove([AUTH_TOKEN_KEY, USER_DATA_KEY])
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
   }, [])
 
   const registerVendorMenuItem = useCallback(
@@ -244,8 +362,14 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({
     [currentUser]
   )
 
+  const isLoggedIn = authToken !== null && currentUser !== null
+
   const state: AppState = {
     currentUser,
+    currentVendor,
+    authToken,
+    isLoadingAuth,
+    isLoggedIn,
     vendors,
     orders,
     keywords,
@@ -256,6 +380,8 @@ export const AppStateProvider: React.FC<{ children: React.ReactNode }> = ({
   const actions: AppActions = {
     loginAsCustomer,
     loginAsVendor,
+    registerUser,
+    registerVendor,
     logout,
     registerVendorMenuItem,
     setSelectedCategoryId,
@@ -287,4 +413,3 @@ export const useAppActions = (): AppActions => {
   }
   return context
 }
-

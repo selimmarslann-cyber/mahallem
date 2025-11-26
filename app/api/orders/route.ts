@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createOrder } from '@/lib/services/orderService'
 import { createOrderSchema } from '@/lib/validations/order'
 import { getUserId } from '@/lib/auth/session'
+import { requireCustomer } from '@/lib/auth/roleCheck'
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = await getUserId()
+    const userId = await getUserId(request)
     if (!userId) {
       return NextResponse.json(
         { error: 'Kullanıcı girişi gerekli' },
@@ -13,6 +14,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // FAZ 3: Sadece customer sipariş oluşturabilir
+    await requireCustomer(userId)
+
+    const body = await request.json()
     const validated = createOrderSchema.parse(body)
 
     const order = await createOrder({

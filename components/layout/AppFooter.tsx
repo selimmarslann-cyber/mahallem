@@ -1,98 +1,98 @@
 'use client'
 
 import Link from 'next/link'
-import { Shield, FileText, Lock, Copyright } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function AppFooter() {
-  const currentYear = new Date().getFullYear()
+  const footerLinks = {
+    legal: [
+      { label: 'Kullanıcı Sözleşmesi', href: '/legal/terms' },
+      { label: 'Gizlilik Politikası', href: '/legal/privacy' },
+      { label: 'KVKK', href: '/legal/kvkk' },
+    ],
+    support: [
+      { label: 'SSS', href: '/support/faq' },
+      { label: 'İletişim', href: '/support/contact' },
+      { label: 'Yardım Merkezi', href: '/support/help' },
+    ],
+    company: [
+      { label: 'Hakkımızda', href: '/about' },
+      { label: 'Basın Kiti', href: '/press' },
+      { label: 'Kariyer', href: '/careers' },
+    ],
+  }
 
   return (
-    <footer className="bg-gray-50 border-t border-gray-200 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          {/* Hakkımızda */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">Mahallem</h3>
-            <p className="text-xs text-gray-600 leading-relaxed">
-              Mahalle esnafı ve hizmet sağlayıcıları ile müşterileri buluşturan platform.
-              Güvenilir, hızlı ve kolay hizmet alışverişi için yanınızdayız.
+    <footer className="bg-white text-black border-t border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-1">
+            <h3 className="text-black font-bold text-lg mb-4">Hizmetgo</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Mahallendeki esnaflarla buluş, hizmet al, kazan.
             </p>
           </div>
 
-          {/* Yasal */}
+          {/* Legal */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">Yasal</h3>
+            <h4 className="text-black font-semibold text-sm mb-4">Yasal</h4>
             <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/legal/terms"
-                  className="text-xs text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  Kullanıcı Sözleşmesi
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/legal/privacy"
-                  className="text-xs text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
-                >
-                  <Lock className="w-3.5 h-3.5" />
-                  Gizlilik ve Kişisel Verilerin Korunması Politikası
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/legal/cookies"
-                  className="text-xs text-gray-600 hover:text-primary transition-colors flex items-center gap-2"
-                >
-                  <Shield className="w-3.5 h-3.5" />
-                  Çerez Politikası
-                </Link>
-              </li>
+              {footerLinks.legal.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-gray-600 hover:text-[#FF6000] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* İletişim */}
+          {/* Support */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">İletişim</h3>
-            <ul className="space-y-2 text-xs text-gray-600">
-              <li>
-                <a
-                  href="mailto:destek@mahallem.app"
-                  className="hover:text-primary transition-colors"
-                >
-                  destek@mahallem.app
-                </a>
-              </li>
-              <li>
-                <a
-                  href="tel:+905551234567"
-                  className="hover:text-primary transition-colors"
-                >
-                  +90 (555) 123 45 67
-                </a>
-              </li>
+            <h4 className="text-black font-semibold text-sm mb-4">Destek</h4>
+            <ul className="space-y-2">
+              {footerLinks.support.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-gray-600 hover:text-[#FF6000] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <h4 className="text-black font-semibold text-sm mb-4">Şirket</h4>
+            <ul className="space-y-2">
+              {footerLinks.company.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-gray-600 hover:text-[#FF6000] transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        {/* Alt Çizgi */}
-        <div className="pt-6 border-t border-gray-200">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <Copyright className="w-3.5 h-3.5" />
-              <span>
-                {currentYear} Mahallem. Tüm hakları saklıdır.
-              </span>
-            </div>
-            <div className="flex items-center gap-4 text-xs text-gray-500">
-              <span>Versiyon 1.0.0</span>
-            </div>
-          </div>
+        {/* Copyright */}
+        <div className="mt-8 pt-8 border-t border-gray-200 text-center">
+          <p className="text-sm text-gray-600">
+            © {new Date().getFullYear()} Hizmetgo. Tüm hakları saklıdır.
+          </p>
         </div>
       </div>
     </footer>
   )
 }
-

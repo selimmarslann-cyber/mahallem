@@ -116,7 +116,7 @@ export default function AccountReferralPage() {
   const shareWhatsApp = () => {
     if (!overview) return
     const text = encodeURIComponent(
-      `Mahallem'e katıl, mahalle ekonomisini büyüt, ömür boyu kazan! Bu link ile kayıt ol: ${overview.referralLink}`
+      `Hizmetgo'e katıl, mahalle ekonomisini büyüt, ömür boyu kazan! Bu link ile kayıt ol: ${overview.referralLink}`
     )
     window.open(`https://wa.me/?text=${text}`, '_blank')
   }
@@ -540,7 +540,7 @@ export default function AccountReferralPage() {
                 <div>
                   <h3 className="font-semibold mb-1">Arkadaşın Sipariş Versin</h3>
                   <p className="text-sm text-gray-600">
-                    Arkadaşın linkinle kayıt olsun ve Mahallem'den sipariş versin. Her siparişte platform komisyonundan pay kazan.
+                    Arkadaşın linkinle kayıt olsun ve Hizmetgo'den sipariş versin. Her siparişte platform komisyonundan pay kazan.
                   </p>
                 </div>
               </div>

@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db/prisma'
 
 export async function GET(request: NextRequest) {
   try {
-    const userId = await getUserId()
+    const userId = await getUserId(request)
     if (!userId) {
       return NextResponse.json(
         { error: 'Kullanıcı girişi gerekli' },
@@ -17,8 +17,6 @@ export async function GET(request: NextRequest) {
       where: { id: userId },
       select: {
         id: true,
-        referral_rank: true,
-        network_cumulative_gmv: true,
         referralCode: {
           select: {
             code: true,
@@ -129,15 +127,16 @@ export async function GET(request: NextRequest) {
     const currentBalance = parseFloat(walletResult[0]?.balance || '0')
 
     // Rank bilgisi ve bir sonraki level için kalan
-    const currentRank = user.referral_rank || 0
-    const currentGMV = parseFloat(user.network_cumulative_gmv?.toString() || '0')
+    // Not: referral_rank ve network_cumulative_gmv schema'da yok, şimdilik 0 olarak ayarlıyoruz
+    const currentRank = 0
+    const currentGMV = 0
     
     let nextRankThreshold = 0
     let nextRankName = ''
     let remainingForNext = 0
     
     if (currentRank < 4) {
-      switch (currentRank) {
+      switch (currentRank as number) {
         case 0:
           nextRankThreshold = 1000000
           nextRankName = 'Mahalle Lideri'

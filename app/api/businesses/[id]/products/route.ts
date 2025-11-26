@@ -38,9 +38,10 @@ export async function GET(
       where: {
         businessId,
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
+      orderBy: [
+        { sortOrder: 'asc' },
+        { createdAt: 'desc' },
+      ],
     })
 
     return NextResponse.json(products)
@@ -87,6 +88,13 @@ export async function POST(
     const body = await request.json()
     const validated = createProductSchema.parse(body)
 
+    // Get max sortOrder for this business
+    const maxSortOrder = await prisma.product.findFirst({
+      where: { businessId },
+      orderBy: { sortOrder: 'desc' },
+      select: { sortOrder: true },
+    })
+
     const product = await prisma.product.create({
       data: {
         businessId,
@@ -97,6 +105,8 @@ export async function POST(
         deliveryType: validated.deliveryType,
         photoUrl: validated.photoUrl || null,
         active: validated.active,
+        stock: validated.stock ?? null,
+        sortOrder: validated.sortOrder ?? (maxSortOrder?.sortOrder ?? 0) + 1,
       },
     })
 

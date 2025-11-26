@@ -51,11 +51,11 @@ interface Business {
   onlineStatus: string
 }
 
-interface MahallemMapPreviewProps {
+interface HizmetgoMapPreviewProps {
   className?: string
 }
 
-export default function MahallemMapPreview({ className }: MahallemMapPreviewProps) {
+export default function HizmetgoMapPreview({ className }: HizmetgoMapPreviewProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const [hoveredBusiness, setHoveredBusiness] = useState<Business | null>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
@@ -65,7 +65,7 @@ export default function MahallemMapPreview({ className }: MahallemMapPreviewProp
 
     // Dynamic import for MapLibre
     import('maplibre-gl').then((maplibregl) => {
-      import('maplibre-gl/dist/maplibre-gl.css')
+      // CSS import is handled at the top level
 
       // Use a light, Google Maps-like style
       const mapStyle =

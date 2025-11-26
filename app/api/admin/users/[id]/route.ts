@@ -101,9 +101,9 @@ export async function GET(
         balance: user.referralBalance.toNumber(),
         level1Count,
         level2Count,
-        level1Earnings: level1Earnings.toNumber(),
-        level2Earnings: level2Earnings.toNumber(),
-        totalEarnings: totalEarnings.toNumber(),
+        level1Earnings: typeof level1Earnings === 'number' ? level1Earnings : level1Earnings.toNumber(),
+        level2Earnings: typeof level2Earnings === 'number' ? level2Earnings : level2Earnings.toNumber(),
+        totalEarnings: typeof totalEarnings === 'number' ? totalEarnings : totalEarnings.toNumber(),
       },
     })
   } catch (error: any) {

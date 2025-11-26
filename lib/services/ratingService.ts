@@ -64,6 +64,29 @@ export async function createReview(data: {
       })
     }
 
+    // FAZ 3: Review oluşturulduğunda business owner'a bildirim gönder
+    Promise.resolve().then(async () => {
+      try {
+        const { createNotification } = await import('@/lib/notifications/createNotification')
+        const business = await prisma.business.findUnique({
+          where: { id: data.businessId },
+          select: { ownerUserId: true, name: true },
+        })
+
+        if (business) {
+          await createNotification({
+            userId: business.ownerUserId,
+            type: 'REVIEW_RECEIVED',
+            title: 'Yeni Değerlendirme',
+            body: `${data.rating} yıldız değerlendirme aldınız.`,
+            data: { orderId: data.orderId, businessId: data.businessId, rating: data.rating },
+          })
+        }
+      } catch (notifError) {
+        console.error('Review notification hatası:', notifError)
+      }
+    })
+
     return review
   })
 }

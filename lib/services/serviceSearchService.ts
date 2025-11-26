@@ -1,5 +1,5 @@
 /**
- * Mahallem - Hizmet Arama ve Eşleştirme Servisi
+ * Hizmetgo - Hizmet Arama ve Eşleştirme Servisi
  * 
  * Bu dosya, kullanıcı aramalarını kategori ve alt hizmetlerle eşleştiren
  * fonksiyonları içerir.

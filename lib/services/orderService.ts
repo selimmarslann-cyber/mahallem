@@ -47,6 +47,17 @@ export async function createOrder(data: {
   // Platform komisyonu hesapla (%10 örnek - ileride config'den alınabilir)
   const COMMISSION_RATE = 0.10
   const commissionFee = totalAmount.mul(COMMISSION_RATE)
+  const vendorAmount = totalAmount.sub(commissionFee) // Vendor'ın alacağı pay
+
+  // Business owner'ı bul (vendorId için)
+  const business = await prisma.business.findUnique({
+    where: { id: data.businessId },
+    select: { ownerUserId: true },
+  })
+
+  if (!business) {
+    throw new Error('İşletme bulunamadı')
+  }
 
   // Transaction ile sipariş ve ödeme kaydı oluştur
   const result = await prisma.$transaction(async (tx) => {
@@ -55,9 +66,10 @@ export async function createOrder(data: {
         customerId: data.customerId,
         businessId: data.businessId,
         totalAmount,
+        vendorAmount, // FAZ 3: Vendor pay
         commissionFee, // Platform komisyonu
         status: 'PENDING_CONFIRMATION',
-        paymentStatus: 'PENDING',
+        paymentStatus: 'INITIATED', // FAZ 3: INITIATED
         addressText: data.addressText,
         locationLat: data.locationLat,
         locationLng: data.locationLng,
@@ -77,11 +89,15 @@ export async function createOrder(data: {
       },
     })
 
-    // Mock ödeme kaydı
+    // FAZ 3: Payment kaydı (customerId, vendorId, platformFee, vendorShare ile)
     await tx.payment.create({
       data: {
         orderId: order.id,
+        customerId: data.customerId,
+        vendorId: business.ownerUserId,
         amount: totalAmount,
+        platformFee: commissionFee,
+        vendorShare: vendorAmount,
         status: 'INITIATED',
         provider: 'mock',
       },
@@ -123,10 +139,10 @@ export async function acceptOrder(orderId: string, businessId: string) {
 
   // Transaction ile güncelle
   return prisma.$transaction(async (tx) => {
-    // Ödeme capture
+    // Ödeme authorize (henüz capture değil, iş tamamlanınca capture olacak)
     await tx.payment.update({
       where: { orderId },
-      data: { status: 'CAPTURED' },
+      data: { status: 'AUTHORIZED' },
     })
 
     // Sipariş durumu
@@ -134,7 +150,7 @@ export async function acceptOrder(orderId: string, businessId: string) {
       where: { id: orderId },
       data: {
         status: 'ACCEPTED',
-        paymentStatus: 'CAPTURED',
+        paymentStatus: 'AUTHORIZED', // FAZ 3: AUTHORIZED
       },
       include: {
         items: {
@@ -339,12 +355,43 @@ export async function updateOrderStatus(
     throw new Error('Sadece ACCEPTED veya IN_PROGRESS siparişler tamamlanabilir')
   }
 
-  // COMPLETED durumunda consecutive_cancellations sıfırla ve referral reward dağıt
+  // COMPLETED durumunda: completedAt set, payment capture, wallet update, notification
   if (status === 'COMPLETED') {
+    // Business owner'ı bul (vendorId için)
+    const business = await prisma.business.findUnique({
+      where: { id: order.businessId },
+      select: { ownerUserId: true },
+    })
+
+    if (!business) {
+      throw new Error('İşletme bulunamadı')
+    }
+
     return prisma.$transaction(async (tx) => {
+      // Payment'ı CAPTURED yap
+      const payment = await tx.payment.findUnique({
+        where: { orderId },
+      })
+
+      if (payment) {
+        await tx.payment.update({
+          where: { orderId },
+          data: { status: 'CAPTURED' },
+        })
+      }
+
+      // Order'ı COMPLETED yap ve completedAt set et
       const updatedOrder = await tx.order.update({
         where: { id: orderId },
-        data: { status },
+        data: {
+          status: 'COMPLETED',
+          paymentStatus: 'CAPTURED',
+          completedAt: new Date(),
+        },
+        include: {
+          business: true,
+          customer: true,
+        },
       })
 
       // İşletmenin iptal sayacını sıfırla
@@ -355,17 +402,53 @@ export async function updateOrderStatus(
         },
       })
 
-      // Referral reward dağıtımı (async olarak çalıştır, hata olsa bile sipariş tamamlanmış sayılsın)
-      // Not: Transaction dışında çalıştırıyoruz çünkü referral reward dağıtımı başarısız olsa bile
-      // sipariş tamamlanmış olmalı
-      // Promise.resolve() ile asenkron olarak çalıştır
+      // Vendor wallet'a ödeme ekle (pendingBalance'e)
+      if (payment && payment.vendorShare) {
+        const { addVendorPayment } = await import('@/lib/services/walletService')
+        // Transaction dışında çalıştır (wallet service kendi transaction'ını yönetir)
+        Promise.resolve().then(async () => {
+          try {
+            await addVendorPayment(business.ownerUserId, payment.vendorShare, orderId)
+          } catch (walletError) {
+            console.error('Wallet güncelleme hatası:', walletError)
+          }
+        })
+      }
+
+      // Notification oluştur (transaction dışında)
+      Promise.resolve().then(async () => {
+        try {
+          const { createNotification } = await import('@/lib/notifications/createNotification')
+          
+          // Müşteriye bildirim
+          await createNotification({
+            userId: order.customerId,
+            type: 'ORDER_COMPLETED',
+            title: 'Sipariş Tamamlandı',
+            body: `${updatedOrder.business.name} siparişinizi tamamladı. Lütfen değerlendirme yapın.`,
+            data: { orderId: orderId },
+          })
+
+          // Vendor'a bildirim
+          await createNotification({
+            userId: business.ownerUserId,
+            type: 'ORDER_COMPLETED',
+            title: 'Sipariş Tamamlandı',
+            body: `Sipariş #${orderId.slice(0, 8)} tamamlandı. Ödeme cüzdanınıza eklendi.`,
+            data: { orderId: orderId },
+          })
+        } catch (notifError) {
+          console.error('Notification oluşturma hatası:', notifError)
+        }
+      })
+
+      // Referral reward dağıtımı (async olarak çalıştır)
       Promise.resolve().then(async () => {
         try {
           const { distributeReferralRewards } = await import('@/lib/services/referralService')
           await distributeReferralRewards(orderId)
         } catch (refError) {
           console.error('Referral reward dağıtım hatası:', refError)
-          // Hata loglanır ama sipariş durumu etkilenmez
         }
       })
 

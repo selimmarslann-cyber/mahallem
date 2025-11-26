@@ -2,16 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createReview } from '@/lib/services/ratingService'
 import { createReviewSchema } from '@/lib/validations/review'
 import { getUserId } from '@/lib/auth/session'
+import { requireCustomer } from '@/lib/auth/roleCheck'
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = await getUserId()
+    const userId = await getUserId(request)
     if (!userId) {
       return NextResponse.json(
         { error: 'Kullanıcı girişi gerekli' },
         { status: 401 }
       )
     }
+
+    // FAZ 3: Sadece customer review yazabilir
+    await requireCustomer(userId)
 
     const body = await request.json()
     const validated = createReviewSchema.parse(body)

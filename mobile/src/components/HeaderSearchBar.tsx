@@ -5,40 +5,42 @@ import colors from '../theme/colors'
 import spacing from '../theme/spacing'
 
 interface HeaderSearchBarProps {
-  onSearch?: (query: string) => void
+  value?: string
+  onChangeText?: (text: string) => void
+  onSubmitSearch?: (query: string) => void
   onFilterPress?: () => void
   placeholder?: string
 }
 
 export default function HeaderSearchBar({
-  onSearch,
+  value = '',
+  onChangeText,
+  onSubmitSearch,
   onFilterPress,
   placeholder = 'Hangi hizmete ihtiyacın var?',
 }: HeaderSearchBarProps) {
-  const [searchQuery, setSearchQuery] = useState('')
-
   const handleSearch = () => {
-    if (onSearch) {
-      onSearch(searchQuery)
+    if (onSubmitSearch && value.trim()) {
+      onSubmitSearch(value.trim())
     }
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <Ionicons name="search-outline" size={20} color={colors.textMuted} style={styles.searchIcon} />
+        <Ionicons name="search-outline" size={18} color={colors.textMuted} style={styles.searchIcon} />
         <TextInput
           style={styles.input}
           placeholder={placeholder}
           placeholderTextColor={colors.textMuted}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
+          value={value}
+          onChangeText={onChangeText}
           onSubmitEditing={handleSearch}
           returnKeyType="search"
         />
         {onFilterPress && (
           <TouchableOpacity onPress={onFilterPress} style={styles.filterButton}>
-            <Ionicons name="options-outline" size={20} color={colors.primary} />
+            <Ionicons name="options-outline" size={18} color={colors.primary} />
           </TouchableOpacity>
         )}
       </View>
@@ -48,34 +50,32 @@ export default function HeaderSearchBar({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
     backgroundColor: colors.cardBg,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.background,
-    borderRadius: 12,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    borderRadius: 10,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 8,
     shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
+    elevation: 2,
   },
   searchIcon: {
-    marginRight: spacing.sm,
+    marginRight: spacing.xs,
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     color: colors.textDark,
-    paddingVertical: spacing.xs,
+    paddingVertical: 4,
   },
   filterButton: {
-    marginLeft: spacing.sm,
+    marginLeft: spacing.xs,
     padding: spacing.xs,
   },
 })

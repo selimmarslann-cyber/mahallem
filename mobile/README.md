@@ -1,85 +1,87 @@
 # Mahallem Mobile App
 
-Mahallem platformunun React Native (Expo) mobil uygulaması.
+Expo + React Native mobile application for Mahallem platform.
 
-## Kurulum
+## Setup
 
-1. **Bağımlılıkları yükleyin:**
+1. Install dependencies:
 ```bash
-cd mobile
 npm install
 ```
 
-2. **Expo CLI'yi global olarak yükleyin (opsiyonel):**
-```bash
-npm install -g expo-cli
-```
+2. Configure environment:
+- Copy `.env.example` to `.env`
+- Set `EXPO_PUBLIC_API_BASE_URL` (dev: `http://localhost:3000`, prod: `https://api.mahallem.app`)
 
-3. **Uygulamayı başlatın:**
+3. Start development server:
 ```bash
 npm start
-# veya
-expo start
 ```
 
-## Özellikler
+## Build
 
-- ✅ Ana sayfa (Kategoriler, Öne çıkan hizmetler)
-- ✅ Harita görünümü (Esnaf konumları)
-- ✅ Anlık işler listesi
-- ✅ Kullanıcı profili
-- ✅ Ayarlar sayfası
-
-## Teknolojiler
-
-- **Expo**: React Native framework
-- **React Navigation**: Navigasyon
-- **React Native Maps**: Harita entegrasyonu
-- **TypeScript**: Tip güvenliği
-
-## Geliştirme
-
-### Android
+### Development Build
 ```bash
-npm run android
+eas build --profile development --platform android
+eas build --profile development --platform ios
 ```
 
-### iOS
+### Preview Build (Internal Testing)
 ```bash
-npm run ios
+eas build --profile preview --platform android
+eas build --profile preview --platform ios
 ```
 
-### Web
+### Production Build (Store)
 ```bash
-npm run web
+eas build --profile production --platform android
+eas build --profile production --platform ios
 ```
 
-## Proje Yapısı
+## Submit to Stores
 
-```
-mobile/
-├── App.tsx
-├── src/
-│   ├── navigation/
-│   │   └── BottomTabs.tsx
-│   ├── screens/
-│   │   ├── HomeScreen.tsx
-│   │   ├── MapScreen.tsx
-│   │   ├── LiveJobsScreen.tsx
-│   │   ├── ProfileScreen.tsx
-│   │   └── SettingsScreen.tsx
-│   └── data/
-│       ├── mockCategories.ts
-│       ├── mockJobs.ts
-│       ├── mockServices.ts
-│       └── mockVendors.ts
-├── package.json
-└── app.json
+### Android (Google Play)
+```bash
+eas submit --platform android --profile production
 ```
 
-## Notlar
+### iOS (App Store)
+```bash
+eas submit --platform ios --profile production
+```
 
-- Şu an mock data kullanılıyor
-- Backend API entegrasyonu yapılacak
-- Harita için Google Maps API key gerekli (production)
+## OTA Updates
 
+Updates are automatically checked on app load. To manually trigger:
+```bash
+eas update --branch production --message "Update description"
+```
+
+## Environment Variables
+
+- `EXPO_PUBLIC_API_BASE_URL`: Backend API URL
+- `EXPO_PUBLIC_SENTRY_DSN`: Sentry DSN (production only)
+
+## Assets
+
+Required assets (place in `./assets/`):
+- `icon.png` (1024x1024)
+- `splash.png` (1284x2778 recommended)
+- `adaptive-icon.png` (1024x1024, with padding)
+- `notification-icon.png` (96x96)
+- `favicon.png` (48x48)
+
+## EAS Project ID
+
+After creating EAS project:
+1. Run `eas init`
+2. Update `app.json` with project ID:
+```json
+{
+  "extra": {
+    "eas": {
+      "projectId": "YOUR_PROJECT_ID"
+    }
+  }
+}
+```

@@ -3,11 +3,10 @@
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Bell, ShoppingCart, Menu, X, Home, Map, Briefcase, Wallet, User } from 'lucide-react'
+import { Bell, ShoppingCart, Menu, X, Home, Map, Briefcase, Wallet, User, Zap, Bike, Gauge, Wrench } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import Logo from './Logo'
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils/cn'
 
@@ -39,7 +38,7 @@ const customerTabs = [
   },
   {
     key: 'wallet',
-    label: 'Cüzdan',
+    label: 'Kazancım',
     icon: Wallet,
     href: '/account/wallet',
   },
@@ -83,102 +82,100 @@ export default function AppHeader({
     }
   }
 
+  const isPartnerPage = pathname === '/partner'
+  
+  // Beyaz arka planlı sayfalar - header turuncu olacak
+  const whiteBackgroundPages = [
+    '/auth',
+    '/account',
+    '/jobs',
+    '/map',
+    '/profile',
+    '/wallet',
+    '/business/register',
+    '/cart',
+  ]
+  const hasWhiteBackground = whiteBackgroundPages.some(page => pathname.startsWith(page)) && pathname !== '/partner'
+  
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-transparent">
+    <header className={`fixed top-[50px] left-0 right-0 z-fixed w-full transition-all ${
+      isPartnerPage 
+        ? 'bg-slate-400/90 backdrop-blur-md shadow-md' 
+        : 'bg-[#FF6000] shadow-lg'
+    }`}>
       <div className="max-w-[90rem] mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between gap-4 py-4">
-          {/* Logo + Brand - Premium Kurumsal Tasarım */}
+          {/* Logo + Brand - Trendyol Tarzı: hizmetgo (hizmet siyah, go turuncu) */}
           <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-            <Logo className="w-10 h-10" />
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-              className="relative"
+            <motion.div 
+              className="flex items-center gap-1"
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
             >
-              {/* Premium Brand Text */}
-              <div className="relative">
-                <span
-                  className="text-3xl font-black text-white tracking-tight relative z-10"
-                  style={{
-                    fontFamily: "'Poppins', 'Inter', -apple-system, sans-serif",
-                    letterSpacing: '-1.2px',
-                    fontWeight: 900,
-                    textShadow: '2px 2px 12px rgba(0,0,0,0.4), 0 0 20px rgba(0,0,0,0.2)',
-                    lineHeight: '1.1',
-                  }}
-                >
-                  Mahallem
-                </span>
-                {/* Premium Underline Accent */}
-                <motion.div
-                  className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-white via-white/80 to-white rounded-full opacity-60"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.3, duration: 0.6, type: 'spring' }}
-                />
-                {/* Glow Effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/10 to-white/20 blur-xl -z-10 opacity-50" />
-              </div>
-              {/* Tagline - Küçük ve Kurumsal */}
-              <motion.p
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="text-[9px] font-semibold text-white/80 tracking-widest uppercase mt-0.5"
-                style={{
-                  fontFamily: "'Inter', sans-serif",
-                  letterSpacing: '1.5px',
-                  textShadow: '1px 1px 4px rgba(0,0,0,0.3)',
+              <motion.span 
+                className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none text-black lowercase"
+                style={{ 
+                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
+                  letterSpacing: '-0.02em',
+                  fontWeight: 700,
+                  fontStyle: 'normal'
                 }}
+                whileHover={{ opacity: 0.9 }}
+                transition={{ duration: 0.2 }}
               >
-                Mahalle Platformu
-              </motion.p>
+                hizmet
+              </motion.span>
+              <motion.span 
+                className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none lowercase relative"
+                style={{ 
+                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
+                  letterSpacing: '-0.02em',
+                  fontWeight: 700,
+                  color: '#FF6000',
+                  fontStyle: 'normal',
+                  WebkitTextStroke: '2px white',
+                  textStroke: '2px white',
+                  paintOrder: 'stroke fill'
+                }}
+                whileHover={{ opacity: 0.9 }}
+                transition={{ duration: 0.2 }}
+              >
+                go
+              </motion.span>
             </motion.div>
           </Link>
 
-          {/* Center Nav - Main Tabs - Beyaz Yazı */}
-          <nav className="hidden md:flex items-center gap-2 flex-1 justify-center" aria-label="Main navigation">
-            {customerTabs.map((tab) => {
-              const isActive = pathname === tab.href || (tab.href !== '/' && pathname.startsWith(tab.href + '/'))
+          {/* Center Nav - Three Main CTAs */}
+          <nav className="hidden md:flex items-center gap-3 flex-1 justify-center" aria-label="Main navigation">
+            {[
+              { label: 'Hizmetgo Go', href: '/map', icon: Bike, key: 'map', position: 'bottom-right' },
+              { label: 'Hizmetgo Ek Gelir', href: '/jobs?tab=instant', icon: Gauge, key: 'instant', position: 'bottom-right' },
+              { label: 'Hizmetgo Hizmet', href: '/request', icon: Wrench, key: 'service', position: 'bottom-right' },
+            ].map((item) => {
+              const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+              const Icon = item.icon
               
               return (
-                <Link key={tab.key} href={tab.href} aria-label={tab.label}>
+                <Link key={item.key} href={item.href} aria-label={item.label}>
                   <motion.div
                     whileHover={{ y: -2 }}
                     whileTap={{ y: 0 }}
                     className="relative"
                   >
-                    <span
+                    <Button
+                      variant={isActive ? "default" : "outline"}
+                      size="sm"
                       className={cn(
-                        "relative px-5 py-2.5 text-base font-semibold text-white transition-all duration-300 cursor-pointer",
-                        "hover:text-white",
-                        isActive && "text-white font-bold"
+                        "relative px-5 py-2.5 text-sm font-bold transition-all duration-200 bg-[#FF6000] text-black hover:bg-[#FF7000] border-0",
+                        isActive && "shadow-lg"
                       )}
-                      style={{
-                        fontFamily: "'Poppins', 'Inter', sans-serif",
-                        letterSpacing: '-0.3px',
-                        fontWeight: isActive ? 700 : 600,
-                        textShadow: '1px 1px 6px rgba(0,0,0,0.4)',
-                      }}
                     >
-                      {tab.label}
-                      {/* Hover Box Effect - Beyaz Kutu */}
-                      <motion.span
-                        className="absolute inset-0 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 shadow-lg -z-10"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        whileHover={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.2 }}
-                      />
-                      {/* Active Indicator */}
-                      {isActive && (
-                        <motion.span
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-white to-white/80 rounded-full"
-                          layoutId="activeIndicator"
-                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                        />
-                      )}
-                    </span>
+                      <span className="relative z-10">{item.label}</span>
+                      <Icon className={cn(
+                        "absolute w-5 h-5 text-black/60",
+                        item.position === 'bottom-right' && "bottom-1 right-1"
+                      )} />
+                    </Button>
                   </motion.div>
                 </Link>
               )
@@ -196,14 +193,14 @@ export default function AppHeader({
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center gap-2 cursor-pointer"
                   >
-                    <Avatar className="w-10 h-10 border-2 border-white/30">
+                    <Avatar className="w-10 h-10 border-2 border-gray-300">
                       <AvatarImage src={user.avatarUrl} />
-                      <AvatarFallback className="bg-white/20 text-white">
+                      <AvatarFallback className="bg-gray-200 text-black">
                         {user.name?.charAt(0)?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden xl:block">
-                      <p className="text-sm font-semibold text-white" style={{ textShadow: '1px 1px 6px rgba(0,0,0,0.4)' }}>
+                      <p className="text-sm font-semibold text-black">
                         {user.name}
                       </p>
                     </div>
@@ -213,12 +210,12 @@ export default function AppHeader({
             ) : (
               /* Desktop CTAs - Beyaz Yazı */
               isPublic && (
-                <div className="hidden lg:flex items-center gap-3">
+                <div className="hidden lg:flex items-center gap-2">
                   {[
-                    { label: 'Kullanıcı Girişi', href: '/auth/login?redirect=/account' },
-                    { label: 'Hizmet ver', href: '/partner' },
-                    { label: 'Sıfır yatırımla ortak ol', href: '/partner' },
-                    { label: 'Esnaf girişi', href: '/auth/login?type=business&redirect=/business/jobs' },
+                    { label: 'Giriş Yap', href: '/auth/login?redirect=/account' },
+                    { label: 'Esnaf Girişi', href: '/auth/business-login' },
+                    { label: 'Kayıt Ol', href: '/auth/register' },
+                    { label: 'Ortak Ol', href: '/partner', highlight: true },
                   ].map((item) => (
                     <motion.div
                       key={item.label}
@@ -226,24 +223,26 @@ export default function AppHeader({
                       whileTap={{ y: 0 }}
                       className="relative"
                     >
-                      <span
-                        onClick={() => router.push(item.href)}
-                        className="relative px-4 py-2 text-sm font-semibold text-white cursor-pointer transition-all duration-300 hover:text-white"
-                        style={{
-                          fontFamily: "'Poppins', 'Inter', sans-serif",
-                          letterSpacing: '-0.2px',
-                          fontWeight: 600,
-                          textShadow: '1px 1px 6px rgba(0,0,0,0.4)',
-                        }}
-                      >
-                        {item.label}
-                        <motion.span
-                          className="absolute inset-0 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 shadow-md -z-10"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          whileHover={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.2 }}
-                        />
-                      </span>
+                      {item.highlight ? (
+                        <Button
+                          onClick={() => router.push(item.href)}
+                          size="sm"
+                          className="bg-white text-[#FF6000] hover:bg-gray-50 font-bold shadow-lg"
+                        >
+                          {item.label}
+                        </Button>
+                      ) : (
+                        <span
+                          onClick={() => router.push(item.href)}
+                          className="relative px-4 py-2 text-sm font-bold text-black cursor-pointer transition-all duration-300 hover:text-gray-700"
+                          style={{
+                            fontFamily: "'Poppins', 'Inter', sans-serif",
+                            letterSpacing: '-0.2px',
+                          }}
+                        >
+                          {item.label}
+                        </span>
+                      )}
                     </motion.div>
                   ))}
                 </div>
@@ -254,7 +253,7 @@ export default function AppHeader({
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden text-white hover:bg-white/20 rounded-lg"
+              className="md:hidden text-black hover:bg-gray-100 rounded-lg"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
@@ -270,7 +269,7 @@ export default function AppHeader({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Button variant="ghost" size="sm" className="relative text-white hover:bg-white/20 rounded-lg">
+                <Button variant="ghost" size="sm" className="relative text-black hover:bg-gray-100 rounded-lg">
                   <Bell className="w-5 h-5" />
                   <Badge
                     variant="destructive"
@@ -288,7 +287,7 @@ export default function AppHeader({
                 whileTap={{ scale: 0.9 }}
               >
                 <Link href="/cart">
-                  <Button variant="ghost" size="sm" className="relative text-white hover:bg-white/20 rounded-lg">
+                  <Button variant="ghost" size="sm" className="relative text-black hover:bg-gray-100 rounded-lg">
                     <ShoppingCart className="w-5 h-5" />
                     {cartCount > 0 && (
                       <Badge
@@ -311,7 +310,7 @@ export default function AppHeader({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-white/20 bg-white/10 backdrop-blur-md rounded-b-2xl shadow-xl py-4 space-y-2"
+            className="md:hidden border-t border-white/20 bg-[#FF6000] backdrop-blur-md rounded-b-2xl shadow-xl py-4 space-y-2"
           >
             {/* Main Tabs */}
             {customerTabs.map((tab) => {
@@ -364,27 +363,40 @@ export default function AppHeader({
               isPublic && (
                 <div className="pt-4 border-t border-white/20 space-y-2">
                   {[
-                    { label: 'Kullanıcı Girişi', href: '/auth/login?redirect=/account' },
-                    { label: 'Hizmet ver', href: '/partner' },
-                    { label: 'Sıfır yatırımla ortak ol', href: '/partner' },
-                    { label: 'Esnaf girişi', href: '/auth/login?type=business&redirect=/business/jobs' },
+                    { label: 'Giriş Yap', href: '/auth/login?redirect=/account' },
+                    { label: 'Esnaf Girişi', href: '/auth/business-login' },
+                    { label: 'Kayıt Ol', href: '/auth/register' },
+                    { label: 'Ortak Ol', href: '/partner', highlight: true },
                   ].map((item) => (
-                    <span
-                      key={item.label}
-                      className="block w-full px-4 py-3 text-sm font-semibold text-white rounded-lg transition-all duration-200 hover:bg-white/20 hover:text-white cursor-pointer"
-                      style={{
-                        fontFamily: "'Poppins', 'Inter', sans-serif",
-                        letterSpacing: '-0.2px',
-                        fontWeight: 600,
-                        textShadow: '1px 1px 6px rgba(0,0,0,0.4)',
-                      }}
-                      onClick={() => {
-                        router.push(item.href)
-                        setMobileMenuOpen(false)
-                      }}
-                    >
-                      {item.label}
-                    </span>
+                    item.highlight ? (
+                      <Button
+                        key={item.label}
+                        onClick={() => {
+                          router.push(item.href)
+                          setMobileMenuOpen(false)
+                        }}
+                        className="w-full bg-slate-500 text-white hover:bg-slate-600 font-semibold"
+                      >
+                        {item.label}
+                      </Button>
+                    ) : (
+                      <span
+                        key={item.label}
+                        className="block w-full px-4 py-3 text-sm font-semibold text-white rounded-lg transition-all duration-200 hover:bg-white/20 hover:text-white cursor-pointer"
+                        style={{
+                          fontFamily: "'Poppins', 'Inter', sans-serif",
+                          letterSpacing: '-0.2px',
+                          fontWeight: 600,
+                          textShadow: '1px 1px 6px rgba(0,0,0,0.4)',
+                        }}
+                        onClick={() => {
+                          router.push(item.href)
+                          setMobileMenuOpen(false)
+                        }}
+                      >
+                        {item.label}
+                      </span>
+                    )
                   ))}
                 </div>
               )

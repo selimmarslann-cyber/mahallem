@@ -42,6 +42,8 @@ export default function BottomTabBar({ items, className }: BottomTabBarProps) {
                   ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               )}
+              aria-label={item.label}
+              aria-current={isActive ? 'page' : undefined}
             >
               <div className={cn(
                 'mb-1',

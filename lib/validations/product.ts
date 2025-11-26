@@ -13,6 +13,8 @@ export const createProductSchema = z.object({
     .optional()
     .nullable(),
   active: z.boolean().default(true),
+  stock: z.number().int().min(0).nullable().optional(),
+  sortOrder: z.number().int().default(0).optional(),
 })
 
 export const updateProductSchema = createProductSchema.partial()

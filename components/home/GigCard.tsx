@@ -33,11 +33,11 @@ export default function GigCard({
       transition={{ duration: 0.3, type: 'spring', stiffness: 300 }}
       className="flex-shrink-0"
     >
-      <Card className="bg-white border-2 border-slate-200 rounded-3xl p-6 w-80 min-w-[320px] min-h-[280px] shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col group relative overflow-hidden">
+      <Card className="bg-white border-2 border-slate-200 rounded-3xl p-6 w-80 min-w-[320px] h-[320px] shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col group relative overflow-hidden">
         {/* Premium Gradient Accent */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF7A00] via-[#FFB347] to-[#FF7A00] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
-        <CardContent className="p-0 flex flex-col flex-1">
+        <CardContent className="p-0 flex flex-col flex-1 h-full">
           {/* Premium Badges */}
           <div className="flex items-start justify-between mb-5 gap-3">
             <Badge className="bg-gradient-to-r from-orange-500 to-amber-500 text-white border-0 px-3 py-1.5 rounded-full text-xs font-bold shadow-md">
@@ -61,7 +61,7 @@ export default function GigCard({
           </h3>
 
           {/* Premium Info Section */}
-          <div className="space-y-3 mb-6 flex-1">
+          <div className="space-y-3 mb-6 flex-1 min-h-0">
             <div className="flex items-center gap-2.5 text-slate-600 group-hover:text-slate-700 transition-colors">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0">
                 <MapPin className="w-4 h-4 text-blue-600" />
@@ -84,21 +84,23 @@ export default function GigCard({
             )}
           </div>
 
-          {/* Premium Button */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Button
-              className="w-full bg-gradient-to-r from-[#FF7A00] to-[#FF8A00] hover:from-[#FF8A00] hover:to-[#FF9A00] text-white rounded-xl py-6 font-bold shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
-              onClick={onApply}
+          {/* Premium Button - Always at bottom */}
+          <div className="mt-auto pt-4">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <span className="flex items-center justify-center gap-2">
-                Başvur
-                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-              </span>
-            </Button>
-          </motion.div>
+              <Button
+                className="w-full bg-gradient-to-r from-[#FF7A00] to-[#FF8A00] hover:from-[#FF8A00] hover:to-[#FF9A00] text-white rounded-xl py-6 font-bold shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
+                onClick={onApply}
+              >
+                <span className="flex items-center justify-center gap-2">
+                  Başvur
+                  <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                </span>
+              </Button>
+            </motion.div>
+          </div>
         </CardContent>
       </Card>
     </motion.div>

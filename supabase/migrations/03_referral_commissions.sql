@@ -14,10 +14,51 @@
 -- ============================================
 -- 1. USERS TABLOSUNA YENİ ALANLAR EKLE
 -- ============================================
-ALTER TABLE public.users
-  ADD COLUMN IF NOT EXISTS referrer_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
-  ADD COLUMN IF NOT EXISTS referral_rank INT NOT NULL DEFAULT 0 CHECK (referral_rank >= 0 AND referral_rank <= 4),
-  ADD COLUMN IF NOT EXISTS network_cumulative_gmv NUMERIC(18,2) NOT NULL DEFAULT 0;
+-- Önce kolonları ekle (foreign key olmadan)
+DO $$
+BEGIN
+  -- referrer_id kolonu (foreign key olmadan)
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'users' 
+    AND column_name = 'referrer_id'
+  ) THEN
+    ALTER TABLE public.users ADD COLUMN referrer_id UUID;
+  END IF;
+
+  -- referral_rank kolonu
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'users' 
+    AND column_name = 'referral_rank'
+  ) THEN
+    ALTER TABLE public.users 
+      ADD COLUMN referral_rank INT NOT NULL DEFAULT 0;
+    
+    -- Check constraint'i ayrı ekle
+    ALTER TABLE public.users 
+      ADD CONSTRAINT users_referral_rank_check 
+      CHECK (referral_rank >= 0 AND referral_rank <= 4);
+  END IF;
+
+  -- network_cumulative_gmv kolonu
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+    AND table_name = 'users' 
+    AND column_name = 'network_cumulative_gmv'
+  ) THEN
+    ALTER TABLE public.users 
+      ADD COLUMN network_cumulative_gmv NUMERIC(18,2) NOT NULL DEFAULT 0;
+  END IF;
+END $$;
+
+-- Foreign key constraint'i ekleme (Prisma schema'da zaten tanımlı olabilir)
+-- NOT: Foreign key constraint'i Prisma schema'da zaten tanımlı olabilir
+-- Bu migration sadece ek alanlar ve fonksiyonlar için
+-- Eğer foreign key constraint gerekirse, Prisma schema'dan veya manuel olarak eklenebilir
 
 CREATE INDEX IF NOT EXISTS idx_users_referrer ON public.users(referrer_id);
 CREATE INDEX IF NOT EXISTS idx_users_referral_rank ON public.users(referral_rank);

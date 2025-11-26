@@ -17,7 +17,7 @@ const updateProfileSchema = z.object({
 
 export async function PATCH(request: NextRequest) {
   try {
-    const userId = await getUserId()
+    const userId = await getUserId(request)
     if (!userId) {
       return NextResponse.json(
         { error: 'Kullanıcı girişi gerekli' },
@@ -44,22 +44,21 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
-    // Profili güncelle
+    // Profili güncelle - null değerleri undefined'a çevir
+    const updateData: any = {}
+    if (validated.name !== undefined) updateData.name = validated.name
+    if (validated.email !== undefined && validated.email !== null) updateData.email = validated.email
+    if (validated.avatarUrl !== undefined && validated.avatarUrl !== null) updateData.avatarUrl = validated.avatarUrl
+    if (validated.city !== undefined && validated.city !== null) updateData.city = validated.city
+    
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: {
-        ...validated,
-      },
+      data: updateData,
       select: {
         id: true,
         name: true,
         email: true,
-        phone: true,
         city: true,
-        district: true,
-        neighborhood: true,
-        address: true,
-        bio: true,
         avatarUrl: true,
       },
     })

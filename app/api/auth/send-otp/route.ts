@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { setOtp } from '@/lib/auth/otpStore'
 
 const sendOtpSchema = z.object({
   phone: z.string().min(10, 'Geçerli bir telefon numarası girin'),
 })
-
-// Mock OTP storage (production'da Redis veya database kullanılmalı)
-const otpStore = new Map<string, { code: string; expiresAt: number }>()
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,10 +13,9 @@ export async function POST(request: NextRequest) {
 
     // 6 haneli OTP kodu oluştur
     const code = Math.floor(100000 + Math.random() * 900000).toString()
-    const expiresAt = Date.now() + 5 * 60 * 1000 // 5 dakika
 
     // OTP'yi sakla (production'da Redis kullanılmalı)
-    otpStore.set(validated.phone, { code, expiresAt })
+    setOtp(validated.phone, code, 5 * 60 * 1000) // 5 dakika
 
     // Production'da burada SMS servisi çağrılacak (Twilio, AWS SNS, vb.)
     console.log(`[MOCK] OTP sent to ${validated.phone}: ${code}`)
@@ -47,14 +44,4 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-
-// Cleanup expired OTPs (production'da cron job olmalı)
-setInterval(() => {
-  const now = Date.now()
-  for (const [phone, data] of otpStore.entries()) {
-    if (data.expiresAt < now) {
-      otpStore.delete(phone)
-    }
-  }
-}, 60000) // Her dakika temizle
 

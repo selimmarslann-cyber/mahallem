@@ -109,7 +109,7 @@ export default function CookiesPage() {
                 <p className="text-sm leading-relaxed">
                   Çerezler hakkında sorularınız için bizimle iletişime geçebilirsiniz:
                   <br />
-                  E-posta: destek@mahallem.app
+                  E-posta: destek@hizmetgo.app
                   <br />
                   Telefon: +90 (555) 123 45 67
                 </p>

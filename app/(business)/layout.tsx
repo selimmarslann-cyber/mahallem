@@ -2,9 +2,16 @@ import { ReactNode } from 'react'
 import BottomTabBar, { TabItem } from '@/components/layout/BottomTabBar'
 import AppHeader from '@/components/layout/AppHeader'
 import AppFooter from '@/components/layout/AppFooter'
+import PromotionalBanner from '@/components/layout/PromotionalBanner'
 import { Briefcase, Store, Activity, Wallet, User } from 'lucide-react'
 
 const businessTabs: TabItem[] = [
+  {
+    key: 'dashboard',
+    label: 'Ana Sayfa',
+    icon: <Briefcase className="w-5 h-5" />,
+    href: '/business',
+  },
   {
     key: 'jobs',
     label: 'Gelen İşler',
@@ -18,12 +25,6 @@ const businessTabs: TabItem[] = [
     href: '/business/store',
   },
   {
-    key: 'status',
-    label: 'Durum',
-    icon: <Activity className="w-5 h-5" />,
-    href: '/business/status',
-  },
-  {
     key: 'wallet',
     label: 'Cüzdan',
     icon: <Wallet className="w-5 h-5" />,
@@ -33,7 +34,7 @@ const businessTabs: TabItem[] = [
     key: 'profile',
     label: 'Profil',
     icon: <User className="w-5 h-5" />,
-    href: '/profile',
+    href: '/account/profile',
   },
 ]
 
@@ -44,8 +45,9 @@ export default function BusinessLayout({
 }) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <AppHeader showLocation={false} />
-      <main className="flex-1 pb-16">
+      <PromotionalBanner />
+      <AppHeader />
+      <main className="flex-1 pb-16 pt-[170px]">
         {children}
       </main>
       <AppFooter />

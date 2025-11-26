@@ -6,10 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Star } from 'lucide-react'
+import { useToast } from '@/lib/hooks/useToast'
 
 export default function OrderDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { success, error } = useToast()
   const [order, setOrder] = useState<any>(null)
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
@@ -38,7 +40,7 @@ export default function OrderDetailPage() {
 
   const handleReviewSubmit = async () => {
     if (!rating) {
-      alert('Lütfen puan verin')
+      error('Lütfen puan verin')
       return
     }
 
@@ -57,13 +59,13 @@ export default function OrderDetailPage() {
 
       if (res.ok) {
         loadOrder() // Review'i yükle
-        alert('Değerlendirme gönderildi')
+        success('Değerlendirme gönderildi')
       } else {
         const data = await res.json()
-        alert(data.error || 'Değerlendirme gönderilemedi')
+        error(data.error || 'Değerlendirme gönderilemedi')
       }
     } catch (err) {
-      alert('Bir hata oluştu')
+      error('Bir hata oluştu')
     } finally {
       setSubmittingReview(false)
     }

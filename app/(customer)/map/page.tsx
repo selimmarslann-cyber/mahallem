@@ -1,46 +1,135 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { MapPin, SlidersHorizontal, Star, Search, X } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  Star, 
+  MapPin, 
+  ShoppingCart, 
+  Plus, 
+  Minus, 
+  X,
+  Store,
+  Phone,
+  ArrowRight,
+  Zap,
+  List,
+  Map as MapIcon,
+  Filter,
+  Search
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { calculateDistance, formatDistance } from '@/lib/utils/distance'
-import { cn } from '@/lib/utils/cn'
-import EmptyState from '@/components/ui/empty-state'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import MapFilters from '@/components/map/MapFilters'
+import BusinessCard from '@/components/home/BusinessCard'
 
-const BusinessMap = dynamic(
-  () => import('@/components/map/BusinessMap'),
+const LeafletMap = dynamic(
+  () => import('@/components/map/LeafletMapBusinesses'),
   { ssr: false }
 )
 
-export default function CustomerMapPage() {
+interface Business {
+  id: string
+  name: string
+  description?: string
+  category: string
+  lat: number
+  lng: number
+  addressText?: string
+  coverImageUrl?: string
+  onlineStatus: 'ONLINE' | 'OFFLINE' | 'AUTO_OFFLINE'
+  avgRating: number
+  reviewCount: number
+  products?: Product[]
+  distance?: number
+  priceRange?: string
+}
+
+interface Product {
+  id: string
+  name: string
+  description?: string
+  price: number
+  imageUrl?: string
+  active: boolean
+}
+
+interface CartItem {
+  productId: string
+  productName: string
+  price: number
+  quantity: number
+  imageUrl?: string
+}
+
+const CATEGORIES = [
+  'Temizlik',
+  'Elektrik',
+  'Tesisat',
+  'Boya / Badana',
+  'Nakliyat',
+  'Beyaz Eşya',
+  'Özel Ders',
+  'Evcil Hayvan',
+]
+
+export default function MapPage() {
   const router = useRouter()
-  const [allBusinesses, setAllBusinesses] = useState<any[]>([])
-  const [visibleBusinesses, setVisibleBusinesses] = useState<any[]>([])
-  const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<'all' | 'online' | 'nearest' | 'toprated'>('all')
+  const [businesses, setBusinesses] = useState<Business[]>([])
+  const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([])
+  const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null)
+  const [cart, setCart] = useState<CartItem[]>([])
+  const [userLocation, setUserLocation] = useState<[number, number]>([41.0082, 28.9784])
   const [loading, setLoading] = useState(true)
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+  
+  // Search
+  const [searchQuery, setSearchQuery] = useState('')
+  
+  // Filters
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [maxDistance, setMaxDistance] = useState(10)
+  const [sortBy, setSortBy] = useState<'distance' | 'rating' | 'price'>('distance')
+  
+  // Mobile view toggle
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map')
+  const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
-    loadBusinesses()
-    // Mock user location - İstanbul
-    setUserLocation({ lat: 41.0082, lng: 28.9784 })
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const loc: [number, number] = [
+            position.coords.latitude,
+            position.coords.longitude,
+          ]
+          setUserLocation(loc)
+          loadBusinesses(loc[0], loc[1])
+        },
+        () => {
+          loadBusinesses(userLocation[0], userLocation[1])
+        }
+      )
+    } else {
+      loadBusinesses(userLocation[0], userLocation[1])
+    }
   }, [])
 
-  const loadBusinesses = async () => {
+  useEffect(() => {
+    applyFilters()
+  }, [businesses, selectedCategories, maxDistance, sortBy, searchQuery])
+
+  const loadBusinesses = async (lat: number, lng: number) => {
     try {
-      const res = await fetch('/api/businesses', { credentials: 'include' })
+      setLoading(true)
+      const res = await fetch(`/api/businesses/map?lat=${lat}&lng=${lng}&limit=50`)
       if (res.ok) {
         const data = await res.json()
-        setAllBusinesses(data)
-        applyFilters(data, search, filter)
+        setBusinesses(data)
       }
     } catch (err) {
       console.error('İşletmeler yüklenemedi:', err)
@@ -49,356 +138,385 @@ export default function CustomerMapPage() {
     }
   }
 
-  const applyFilters = (
-    businesses: any[],
-    searchTerm: string,
-    filterType: string
-  ) => {
+  const applyFilters = () => {
     let filtered = [...businesses]
 
-    // Arama filtresi
-    if (searchTerm.trim()) {
-      const searchLower = searchTerm.toLowerCase()
-      filtered = filtered.filter(
-        (business) =>
-          business.name.toLowerCase().includes(searchLower) ||
-          business.category.toLowerCase().includes(searchLower) ||
-          business.addressText?.toLowerCase().includes(searchLower)
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(b => 
+        b.name.toLowerCase().includes(query) ||
+        b.category.toLowerCase().includes(query) ||
+        b.description?.toLowerCase().includes(query)
       )
     }
 
-    // Filtre tipi
-    switch (filterType) {
-      case 'online':
-        filtered = filtered.filter((b) => b.onlineStatus === 'ONLINE')
-        break
-      case 'nearest':
-        // Mesafeye göre sırala
-        if (userLocation) {
-          filtered = filtered
-            .filter((b) => b.onlineStatus === 'ONLINE')
-            .map((business) => {
-              const distance = calculateDistance(
-                userLocation.lat,
-                userLocation.lng,
-                business.lat,
-                business.lng
-              )
-              return { ...business, distance }
-            })
-            .sort((a, b) => a.distance - b.distance)
-        }
-        break
-      case 'toprated':
-        filtered = filtered
-          .filter((b) => b.avgRating > 0)
-          .sort((a, b) => b.avgRating - a.avgRating)
-        break
+    // Category filter
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((b) => selectedCategories.includes(b.category))
     }
 
-    setVisibleBusinesses(filtered)
+    // Distance filter (mock - would need actual distance calculation)
+    // For now, we'll just use the businesses as-is
+
+    // Sort
+    filtered.sort((a, b) => {
+      if (sortBy === 'rating') {
+        return b.avgRating - a.avgRating
+      } else if (sortBy === 'price') {
+        // Mock price comparison
+        return 0
+      } else {
+        // Distance (mock)
+        return 0
+      }
+    })
+
+    setFilteredBusinesses(filtered)
   }
 
-  useEffect(() => {
-    applyFilters(allBusinesses, search, filter)
-  }, [search, filter, allBusinesses, userLocation])
-
-  const handleMapMove = useCallback((bounds: { ne: [number, number]; sw: [number, number] }) => {
-    // Viewport filtreleme - şimdilik tüm işletmeleri göster
-    // TODO: Backend'den viewport'a göre filtreli fetch
-  }, [])
-
-  const hasData = visibleBusinesses.length > 0
-
-  // Mesafe hesaplama ile business listesi
-  const businessesWithDistance = visibleBusinesses.map((business) => {
-    if (userLocation) {
-      const distance = calculateDistance(
-        userLocation.lat,
-        userLocation.lng,
-        business.lat,
-        business.lng
-      )
-      return { ...business, distance, distanceText: formatDistance(distance) }
+  const handleBusinessClick = (business: Business) => {
+    setSelectedBusiness(business)
+    if (!business.products) {
+      loadBusinessProducts(business.id)
     }
-    return { ...business, distance: 0, distanceText: '-' }
-  })
+  }
+
+  const loadBusinessProducts = async (businessId: string) => {
+    try {
+      const res = await fetch(`/api/businesses/${businessId}/products`)
+      if (res.ok) {
+        const products = await res.json()
+        setBusinesses((prev) =>
+          prev.map((b) =>
+            b.id === businessId ? { ...b, products } : b
+          )
+        )
+        setSelectedBusiness((prev) =>
+          prev?.id === businessId ? { ...prev, products } : prev
+        )
+      }
+    } catch (err) {
+      console.error('Ürünler yüklenemedi:', err)
+    }
+  }
+
+  const addToCart = (product: Product) => {
+    const existingItem = cart.find((item) => item.productId === product.id)
+    
+    if (existingItem) {
+      setCart(
+        cart.map((item) =>
+          item.productId === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      )
+    } else {
+      setCart([
+        ...cart,
+        {
+          productId: product.id,
+          productName: product.name,
+          price: product.price,
+          quantity: 1,
+          imageUrl: product.imageUrl,
+        },
+      ])
+    }
+  }
+
+  const removeFromCart = (productId: string) => {
+    const item = cart.find((i) => i.productId === productId)
+    if (item && item.quantity > 1) {
+      setCart(
+        cart.map((i) =>
+          i.productId === productId ? { ...i, quantity: i.quantity - 1 } : i
+        )
+      )
+    } else {
+      setCart(cart.filter((i) => i.productId !== productId))
+    }
+  }
+
+  const getCartTotal = () => {
+    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  }
+
+  const getCartItemCount = () => {
+    return cart.reduce((sum, item) => sum + item.quantity, 0)
+  }
+
+  const resetFilters = () => {
+    setSelectedCategories([])
+    setMaxDistance(10)
+    setSortBy('distance')
+  }
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
-      {/* Premium Header */}
-      <header className="border-b border-slate-200/60 bg-white/80 backdrop-blur-md sticky top-16 z-20 shadow-sm">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between gap-4 mb-3">
-            <div className="flex-1">
-              <motion.h1
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-2xl md:text-3xl font-bold text-slate-900 mb-2 display-font"
-              >
-                Mahalle Haritası
-              </motion.h1>
-              <motion.button
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 px-4 py-1.5 text-sm font-semibold text-orange-700 border border-orange-200/50 hover:shadow-md transition-all"
-              >
-                <MapPin className="h-4 w-4" />
-                <span>Konum: <span className="font-bold">Yakınımdaki Esnaflar</span></span>
-              </motion.button>
-            </div>
-
-            <div className="hidden md:flex items-center gap-2">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-sm flex items-center gap-2 border-2 border-slate-300 hover:border-orange-400 hover:bg-orange-50 rounded-full px-4"
-                >
-                  <SlidersHorizontal className="h-4 w-4" />
-                  Filtreler
-                </Button>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-
-        {/* Premium Search Bar */}
-        <div className="border-t border-slate-100 bg-white/50">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
-            <div className="flex gap-3">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400 z-10" />
-                <Input
-                  placeholder="Mahalle, cadde veya esnaf adı ile ara..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-12 pr-10 py-6 text-base bg-white border-2 border-slate-200 rounded-2xl shadow-md hover:shadow-lg focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:border-orange-500 transition-all"
-                  aria-label="İşletme ara"
-                />
-                {search && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    onClick={() => setSearch('')}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 h-8 w-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors"
-                    aria-label="Aramayı temizle"
-                  >
-                    <X className="h-4 w-4" />
-                  </motion.button>
-                )}
-              </div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="md:hidden">
-                <Button variant="outline" size="lg" className="rounded-2xl px-4 border-2">
-                  <SlidersHorizontal className="h-5 w-5" />
-                </Button>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-
-        {/* Premium Filter Chips */}
-        <div className="border-t border-slate-100 bg-white/50">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
-            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-              {[
-                { key: 'all', label: 'Tümü', icon: null },
-                { key: 'online', label: 'Sadece Açık', icon: null },
-                { key: 'nearest', label: 'En Yakın', icon: MapPin },
-                { key: 'toprated', label: 'En Yüksek Puan', icon: Star },
-              ].map((filterOption) => {
-                const Icon = filterOption.icon
-                const isActive = filter === filterOption.key
-                return (
-                  <motion.div
-                    key={filterOption.key}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex-shrink-0"
-                  >
-                    <Button
-                      variant={isActive ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setFilter(filterOption.key as any)}
-                      className={cn(
-                        "rounded-full px-4 py-2 text-sm font-semibold transition-all",
-                        isActive
-                          ? "bg-gradient-to-r from-[#FF7A00] to-[#FF8A00] text-white shadow-md border-0"
-                          : "bg-white border-2 border-slate-300 text-slate-700 hover:border-orange-400 hover:bg-orange-50"
-                      )}
-                    >
-                      {Icon && <Icon className="h-4 w-4 mr-1.5" />}
-                      {filterOption.label}
-                    </Button>
-                  </motion.div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* MAP + LİSTE layout */}
-      <main className="mx-auto flex w-full max-w-6xl flex-1 gap-4 px-4 py-4 overflow-hidden pb-16 lg:pb-4">
-        {/* Map */}
-        <section className="relative flex-1 min-h-[320px] rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shadow-sm">
-          {loading ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
-              <div className="text-center text-slate-500">
-                <p className="text-sm">Harita yükleniyor...</p>
-              </div>
-            </div>
-          ) : (
-            <>
-              <BusinessMap
-                businesses={visibleBusinesses}
-                onBusinessClick={(business) => {
-                  // Marker'a tıklandığında yapılacak işlemler
-                }}
-                onMapMove={handleMapMove}
+    <div className="min-h-screen bg-[#F5F5F7]">
+      {/* Search Bar - Sol Üst */}
+      <div className="sticky top-16 z-30 bg-white border-b shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Input
+                type="text"
+                placeholder="Esnaf veya kategori ara..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 h-10 border-2 border-gray-200 focus:border-[#FF6000]"
               />
-              {/* Map üzerinde küçük legend */}
-              <div className="pointer-events-none absolute left-4 top-4 rounded-full bg-white/90 backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-slate-700 shadow-sm flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
-                Açık esnaflar
-              </div>
-            </>
-          )}
-        </section>
-
-        {/* Esnaf listesi / Desktop sidebar */}
-        <aside className="hidden lg:flex w-[360px] flex-col gap-3 overflow-hidden">
-          <Card className="border-slate-200 shadow-sm flex flex-col overflow-hidden">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-slate-900">
-                Yakındaki Esnaflar
-                {hasData && (
-                  <span className="ml-2 text-xs font-normal text-slate-500">
-                    ({visibleBusinesses.length})
-                  </span>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 overflow-y-auto flex-1">
-              {!hasData ? (
-                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center">
-                  <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-slate-200">
-                    <MapPin className="h-5 w-5 text-slate-500" />
-                  </div>
-                  <p className="text-sm font-medium text-slate-700">
-                    Henüz yakın esnaf bulunamadı
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Haritayı hareket ettirerek veya konumunuzu güncelleyerek daha fazla esnaf keşfedebilirsiniz.
-                  </p>
-                </div>
-              ) : (
-                businessesWithDistance.map((business) => (
-                  <motion.div
-                    key={business.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Link href={`/business/${business.id}`}>
-                      <button className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-left hover:border-slate-300 hover:bg-slate-50 transition-all">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="text-sm font-semibold text-slate-900 truncate">
-                                {business.name}
-                              </p>
-                              {business.onlineStatus === 'ONLINE' && (
-                                <Badge variant="success" className="text-xs flex-shrink-0">
-                                  Aktif
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-xs text-slate-500 mb-1">
-                              {business.category} • {business.distanceText}
-                            </p>
-                            {business.avgRating > 0 && (
-                              <div className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
-                                <Star className="h-3 w-3 fill-emerald-500 text-emerald-500" />
-                                {business.avgRating.toFixed(1)}
-                                {business.reviewCount > 0 && (
-                                  <span className="text-emerald-600">
-                                    {' '}({business.reviewCount})
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </button>
-                    </Link>
-                  </motion.div>
-                ))
-              )}
-            </CardContent>
-          </Card>
-        </aside>
-      </main>
-
-      {/* Mobil Bottom Sheet */}
-      {hasData && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg z-30 max-h-[40vh] flex flex-col border-t border-slate-200">
-          {/* Drag Handle */}
-          <div className="flex justify-center pt-2 pb-1">
-            <div className="h-1.5 w-12 bg-slate-300 rounded-full" />
-          </div>
-
-          {/* Header */}
-          <div className="px-4 py-3 border-b border-slate-200">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm text-slate-900">
-                Bu bölgede {visibleBusinesses.length} esnaf bulundu
-              </h3>
+            </div>
+            <div className="md:hidden flex items-center gap-2">
+              <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'map' | 'list')}>
+                <TabsList className="grid grid-cols-2">
+                  <TabsTrigger value="list" className="flex items-center gap-2">
+                    <List className="w-4 h-4" />
+                    Liste
+                  </TabsTrigger>
+                  <TabsTrigger value="map" className="flex items-center gap-2">
+                    <MapIcon className="w-4 h-4" />
+                    Harita
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
-                onClick={() => {}}
-                className="h-6 w-6 p-0"
+                onClick={() => setShowFilters(!showFilters)}
               >
-                <X className="w-4 h-4" />
+                <Filter className="w-4 h-4" />
               </Button>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Scrollable List */}
-          <div className="flex-1 overflow-y-auto px-4 py-2">
-            <div className="space-y-2">
-              {businessesWithDistance.slice(0, 5).map((business) => (
-                <Link key={business.id} href={`/business/${business.id}`}>
-                  <motion.div
-                    whileTap={{ scale: 0.98 }}
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 hover:bg-slate-50 transition-colors"
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-900 truncate">
-                          {business.name}
-                        </p>
-                        <p className="text-xs text-slate-500">
-                          {business.category} • {business.distanceText}
-                        </p>
+      {/* Mobile Filters Panel */}
+      {showFilters && (
+        <div className="md:hidden bg-white border-b shadow-sm">
+          <MapFilters
+            categories={CATEGORIES}
+            selectedCategories={selectedCategories}
+            onCategoriesChange={setSelectedCategories}
+            maxDistance={maxDistance}
+            onDistanceChange={setMaxDistance}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            onReset={resetFilters}
+          />
+        </div>
+      )}
+
+      <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)]">
+        {/* Desktop: Left Filters Panel */}
+        <div className="hidden md:block w-80 border-r bg-white overflow-y-auto">
+          <MapFilters
+            categories={CATEGORIES}
+            selectedCategories={selectedCategories}
+            onCategoriesChange={setSelectedCategories}
+            maxDistance={maxDistance}
+            onDistanceChange={setMaxDistance}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            onReset={resetFilters}
+          />
+        </div>
+
+        {/* Mobile: List View */}
+        {viewMode === 'list' && (
+          <div className="md:hidden flex-1 overflow-y-auto bg-white p-4">
+            <div className="space-y-4">
+              {filteredBusinesses.length > 0 ? (
+                filteredBusinesses.map((business) => (
+                  <BusinessCard
+                    key={business.id}
+                    id={business.id}
+                    name={business.name}
+                    category={business.category}
+                    rating={business.avgRating}
+                    reviewCount={business.reviewCount}
+                    distance={business.distance}
+                    priceRange={business.priceRange}
+                    isOnline={business.onlineStatus === 'ONLINE'}
+                    href={`/business/${business.id}`}
+                  />
+                ))
+              ) : (
+                <div className="text-center py-12 text-slate-500">
+                  <Store className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>Esnaf bulunamadı</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Map View */}
+        <div className={`flex-1 relative ${viewMode === 'list' ? 'hidden md:block' : ''}`}>
+          {!loading && (
+            <LeafletMap
+              businesses={filteredBusinesses}
+              center={userLocation}
+              zoom={13}
+              onBusinessClick={handleBusinessClick}
+            />
+          )}
+        </div>
+
+        {/* Right: Business Details / Products */}
+        {selectedBusiness && (
+          <div className="w-full md:w-96 bg-white border-t md:border-l shadow-lg flex flex-col">
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="flex flex-col h-full"
+            >
+              {/* Business Header */}
+              <div className="p-4 border-b bg-gradient-to-r from-primary/10 to-primary/5">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h2 className="text-base md:text-xl font-bold text-slate-900">
+                        {selectedBusiness.name}
+                      </h2>
+                      <Badge
+                        variant={selectedBusiness.onlineStatus === 'ONLINE' ? 'default' : 'secondary'}
+                        className={selectedBusiness.onlineStatus === 'ONLINE' ? 'bg-green-500 text-white' : ''}
+                      >
+                        {selectedBusiness.onlineStatus === 'ONLINE' ? 'Açık' : 'Kapalı'}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-slate-600">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="font-semibold">
+                          {selectedBusiness.avgRating.toFixed(1)}
+                        </span>
+                        <span className="text-slate-400">
+                          ({selectedBusiness.reviewCount})
+                        </span>
                       </div>
-                      {business.avgRating > 0 && (
-                        <div className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 flex-shrink-0">
-                          <Star className="h-3 w-3 fill-emerald-500 text-emerald-500" />
-                          {business.avgRating.toFixed(1)}
+                      {selectedBusiness.addressText && (
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4" />
+                          <span className="text-xs">
+                            {selectedBusiness.addressText}
+                          </span>
                         </div>
                       )}
                     </div>
-                  </motion.div>
-                </Link>
-              ))}
-            </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSelectedBusiness(null)}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Products List */}
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-4 space-y-4">
+                  {selectedBusiness.products && selectedBusiness.products.length > 0 ? (
+                    selectedBusiness.products
+                      .filter((p) => p.active)
+                      .map((product) => {
+                        const cartItem = cart.find((item) => item.productId === product.id)
+                        const quantity = cartItem?.quantity || 0
+
+                        return (
+                          <motion.div
+                            key={product.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex gap-3 p-3 border rounded-lg hover:bg-slate-50 transition-colors"
+                          >
+                            {product.imageUrl && (
+                              <img
+                                src={product.imageUrl}
+                                alt={product.name}
+                                className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                              />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-slate-900 mb-1">
+                                {product.name}
+                              </h3>
+                              {product.description && (
+                                <p className="text-sm text-slate-600 mb-2 line-clamp-2">
+                                  {product.description}
+                                </p>
+                              )}
+                              <div className="flex items-center justify-between">
+                                <span className="text-lg font-bold text-[#FF6000]">
+                                  {product.price.toFixed(2)} ₺
+                                </span>
+                                <div className="flex items-center gap-2">
+                                  {quantity > 0 && (
+                                    <>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => removeFromCart(product.id)}
+                                        className="h-8 w-8 p-0"
+                                      >
+                                        <Minus className="w-3 h-3" />
+                                      </Button>
+                                      <span className="w-8 text-center font-semibold">
+                                        {quantity}
+                                      </span>
+                                    </>
+                                  )}
+                                  <Button
+                                    size="sm"
+                                    onClick={() => addToCart(product)}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Plus className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )
+                      })
+                  ) : (
+                    <div className="text-center py-8 text-slate-500">
+                      <Store className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p>Henüz ürün eklenmemiş</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Cart Summary */}
+              {cart.length > 0 && (
+                <div className="border-t bg-white p-4 space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-600">Sepet Toplamı:</span>
+                    <span className="text-lg font-bold text-[#FF6000]">
+                      {getCartTotal().toFixed(2)} ₺
+                    </span>
+                  </div>
+                  <Button
+                    className="w-full"
+                    onClick={() => router.push('/cart')}
+                  >
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    Sipariş Ver ({getCartItemCount()})
+                  </Button>
+                </div>
+              )}
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

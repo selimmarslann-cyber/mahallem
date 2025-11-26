@@ -44,7 +44,7 @@ export default function CustomerWalletPage() {
 
   const shareWhatsApp = () => {
     if (!overview) return
-    const text = encodeURIComponent('Mahallem\'e katıl, kazan! Bu link ile kayıt ol: ' + overview.referralLink)
+    const text = encodeURIComponent('Hizmetgo\'e katıl, kazan! Bu link ile kayıt ol: ' + overview.referralLink)
     window.open(`https://wa.me/?text=${text}`, '_blank')
   }
 

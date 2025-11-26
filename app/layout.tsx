@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Mahallem - Esnaf/Hizmet Süper Uygulaması',
+  title: 'Hizmetgo - Esnaf/Hizmet Süper Uygulaması',
   description: 'Mahalle esnafı ve hizmet sağlayıcıları ile müşterileri buluşturan platform',
 }
 
@@ -16,7 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   )
 }

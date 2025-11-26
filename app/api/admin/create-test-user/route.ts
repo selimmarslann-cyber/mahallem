@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     // }
 
     const body = await request.json()
-    const { email = 'selimarslan@mahallem.test', password = 'selimarslan', name = 'Selim Arslan' } = body
+    const { email = 'admin@admin.com', password = 'admin', name = 'admin' } = body
 
     // Mevcut kullanıcıyı kontrol et
     const existingUser = await getUserByEmail(email)

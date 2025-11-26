@@ -6,9 +6,11 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Coins, TrendingUp, Copy, MessageCircle } from 'lucide-react'
+import { useToast } from '@/lib/hooks/useToast'
 
 export default function BusinessWalletPage() {
   const router = useRouter()
+  const { success } = useToast()
   const [overview, setOverview] = useState<any>(null)
   const [business, setBusiness] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -49,7 +51,7 @@ export default function BusinessWalletPage() {
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text)
-      alert('Kopyalandı!')
+      success('Kopyalandı!')
     } catch (err) {
       console.error('Kopyalama hatası:', err)
     }
@@ -57,16 +59,8 @@ export default function BusinessWalletPage() {
 
   const shareWhatsApp = () => {
     if (!overview) return
-    const text = encodeURIComponent('Mahallem\'e katıl, kazan! Bu link ile kayıt ol: ' + overview.referralLink)
+    const text = encodeURIComponent('Hizmetgo\'e katıl, kazan! Bu link ile kayıt ol: ' + overview.referralLink)
     window.open(`https://wa.me/?text=${text}`, '_blank')
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div>Yükleniyor...</div>
-      </div>
-    )
   }
 
   // İşletme kazancını hesapla (tamamlanan siparişlerden)
@@ -110,6 +104,14 @@ export default function BusinessWalletPage() {
       calculateBusinessEarnings().then(setBusinessEarnings)
     }
   }, [business])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div>Yükleniyor...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

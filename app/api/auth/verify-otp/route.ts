@@ -3,14 +3,12 @@ import { z } from 'zod'
 import { signToken } from '@/lib/auth/jwt'
 import { prisma } from '@/lib/db/prisma'
 import { getOrCreateReferralCodeForUser } from '@/lib/services/referralService'
+import { getOtp, deleteOtp } from '@/lib/auth/otpStore'
 
 const verifyOtpSchema = z.object({
   phone: z.string().min(10, 'Geçerli bir telefon numarası girin'),
   code: z.string().length(6, 'Kod 6 haneli olmalı'),
 })
-
-// Mock OTP storage (production'da Redis kullanılmalı)
-const otpStore = new Map<string, { code: string; expiresAt: number }>()
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +16,7 @@ export async function POST(request: NextRequest) {
     const validated = verifyOtpSchema.parse(body)
 
     // OTP'yi kontrol et
-    const storedOtp = otpStore.get(validated.phone)
+    const storedOtp = getOtp(validated.phone)
     
     if (!storedOtp) {
       return NextResponse.json(
@@ -28,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (storedOtp.expiresAt < Date.now()) {
-      otpStore.delete(validated.phone)
+      deleteOtp(validated.phone)
       return NextResponse.json(
         { error: 'Kod süresi dolmuş' },
         { status: 400 }
@@ -44,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     // OTP doğrulandı, kullanıcıyı bul veya oluştur
     // Not: Schema'da phone alanı yoksa, email ile eşleştirme yap
-    const tempEmail = `phone_${validated.phone}@mahallem.local`
+    const tempEmail = `phone_${validated.phone}@hizmetgo.local`
     let user = await prisma.user.findFirst({
       where: {
         email: tempEmail,
@@ -54,7 +52,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       // Yeni kullanıcı oluştur
       // Not: Schema'da phone alanı yoksa, email olarak phone kullan veya unique bir email oluştur
-      const tempEmail = `phone_${validated.phone}@mahallem.local`
+      const tempEmail = `phone_${validated.phone}@hizmetgo.local`
       user = await prisma.user.create({
         data: {
           email: tempEmail,
@@ -74,11 +72,11 @@ export async function POST(request: NextRequest) {
     // JWT token oluştur
     const token = signToken({
       userId: user.id,
-      email: user.email || undefined,
+      email: user.email || '',
     })
 
     // OTP'yi sil
-    otpStore.delete(validated.phone)
+    deleteOtp(validated.phone)
 
     // HTTP-only cookie olarak set et
     const response = NextResponse.json({
@@ -86,7 +84,6 @@ export async function POST(request: NextRequest) {
         id: user.id,
         email: user.email,
         name: user.name,
-        phone: user.phone,
         avatarUrl: user.avatarUrl,
       },
     })

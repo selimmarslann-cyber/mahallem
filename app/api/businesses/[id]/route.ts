@@ -8,6 +8,7 @@ const updateBusinessSchema = z.object({
   description: z.string().optional(),
   addressText: z.string().optional(),
   coverImageUrl: z.string().url().optional().nullable(),
+  workingHoursJson: z.any().optional(), // JSON object for working hours
 })
 
 export async function GET(
@@ -59,7 +60,13 @@ export async function PATCH(
     const body = await request.json()
     const validated = updateBusinessSchema.parse(body)
 
-    const updated = await updateBusiness(params.id, validated)
+    // null değerleri undefined'a çevir
+    const updateData = {
+      ...validated,
+      coverImageUrl: validated.coverImageUrl ?? undefined,
+    }
+
+    const updated = await updateBusiness(params.id, updateData)
 
     return NextResponse.json(updated)
   } catch (error: any) {

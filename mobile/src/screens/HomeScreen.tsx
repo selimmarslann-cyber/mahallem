@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   View,
   Text,
@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   FlatList,
+  ImageBackground,
+  TextInput,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
@@ -27,12 +29,22 @@ export default function HomeScreen() {
   const navigation = useNavigation()
   const { currentUser, selectedCategoryId, vendors, keywords } = useAppState()
   const { setSelectedCategoryId } = useAppActions()
+  const [rawSearch, setRawSearch] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
 
-  // Filter keywords based on search query
+  // Debounce: rawSearch değişince 250ms sonra searchQuery'yi güncelle
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSearchQuery(rawSearch.trim())
+    }, 250)
+
+    return () => clearTimeout(timeoutId)
+  }, [rawSearch])
+
+  // Filter keywords based on search query (debounced)
   const filteredKeywords = useMemo(() => {
-    if (!searchQuery.trim()) return []
+    if (!searchQuery) return []
     const query = searchQuery.toLowerCase()
     return keywords.filter(
       (kw) =>
@@ -82,6 +94,7 @@ export default function HomeScreen() {
   }, [searchQuery, vendors])
 
   const handleKeywordSelect = (keyword: typeof keywords[0]) => {
+    setRawSearch('')
     setSearchQuery('')
     setShowSuggestions(false)
     if (keyword.categoryId) {
@@ -99,47 +112,87 @@ export default function HomeScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerTop}>
-            <Logo size={48} showText={true} />
+        {/* Header with Hero Background - PC Başında Aile */}
+        <ImageBackground
+          source={{
+            uri: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop',
+          }}
+          style={styles.heroBackground}
+          imageStyle={styles.heroImage}
+        >
+          <View style={styles.heroOverlay}>
+            <View style={styles.header}>
+              <View style={styles.headerTop}>
+                <Logo size={40} showText={true} variant="light" />
+              </View>
+              
+              {/* 0 Yatırımla Ortak Ol Button - Hero Section'da */}
+              <TouchableOpacity
+                style={styles.heroReferralButton}
+                onPress={() => {
+                  if (currentUser) {
+                    navigation.navigate('ReferralScreen' as never)
+                  } else {
+                    navigation.navigate('UserRegister' as never)
+                  }
+                }}
+                activeOpacity={0.8}
+              >
+                <View style={styles.heroReferralButtonContent}>
+                  <View style={styles.heroReferralIconContainer}>
+                    <Ionicons name="gift" size={20} color="#FF9500" />
+                  </View>
+                  <View style={styles.heroReferralTextContainer}>
+                    <Text style={styles.heroReferralButtonTitle}>0 Yatırımla Ortak Ol</Text>
+                    <Text style={styles.heroReferralButtonSubtitle}>
+                      Referans sistemi ile ömür boyu kazanç
+                    </Text>
+                  </View>
+                  <Ionicons name="arrow-forward" size={18} color={colors.cardBg} />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
-          <Text style={styles.headerTitle}>Hangi hizmete ihtiyacın var?</Text>
-          <View style={styles.headerButtons}>
-            {!currentUser && (
-              <>
-                <TouchableOpacity
-                  style={styles.headerButton}
-                  onPress={() => navigation.navigate('UserRegister' as never)}
-                >
-                  <Text style={styles.headerButtonText}>Kullanıcı Giriş</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.headerButton, styles.vendorButton]}
-                  onPress={() => navigation.navigate('VendorRegister' as never)}
-                >
-                  <Text style={[styles.headerButtonText, styles.vendorButtonText]}>
-                    Esnaf Giriş
-                  </Text>
-                </TouchableOpacity>
-              </>
-            )}
-            {currentUser && (
-              <Text style={styles.welcomeText}>
-                Hoş geldin, {currentUser.name} ({currentUser.role === 'vendor' ? 'Esnaf' : 'Kullanıcı'})
-              </Text>
-            )}
+        </ImageBackground>
+
+        {/* Anlık İşler Mini Bölümü */}
+        <View style={styles.instantJobsSection}>
+          <View style={styles.instantJobsCard}>
+            <View style={styles.instantJobsHeader}>
+              <Ionicons name="flash" size={20} color={colors.primary} />
+              <Text style={styles.instantJobsTitle}>Anlık işler</Text>
+            </View>
+            <View style={styles.instantJobsList}>
+              <Text style={styles.instantJobsItem}>• Şimdi müsait ustaları gör</Text>
+              <Text style={styles.instantJobsItem}>• 30 dakika içinde dönüş al</Text>
+              <Text style={styles.instantJobsItem}>• Haritadan canlı takip et</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.instantJobsButton}
+              onPress={() => {
+                // Navigate to LiveJobsScreen or MapScreen
+                navigation.navigate('LiveJobsScreen' as never)
+              }}
+            >
+              <Text style={styles.instantJobsButtonText}>Anlık işleri gör</Text>
+              <Ionicons name="arrow-forward" size={16} color={colors.cardBg} />
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <HeaderSearchBar
-            onSearch={(query) => {
-              setSearchQuery(query)
-              setShowSuggestions(query.length > 0)
+            value={rawSearch}
+            onChangeText={(text) => {
+              setRawSearch(text)
+              setShowSuggestions(text.length > 0)
             }}
-            placeholder="Hangi hizmete ihtiyacın var?"
+            onSubmitSearch={(query) => {
+              setSearchQuery(query)
+              setShowSuggestions(false)
+            }}
+            placeholder="Hizmet ara..."
           />
           {/* Keyword Suggestions */}
           {showSuggestions && filteredKeywords.length > 0 && (
@@ -156,33 +209,6 @@ export default function HomeScreen() {
               ))}
             </View>
           )}
-        </View>
-
-        {/* Sıfır Yatırımla Ortak Ol Button */}
-        <View style={styles.referralButtonContainer}>
-          <TouchableOpacity
-            style={styles.referralButton}
-            onPress={() => {
-              if (currentUser) {
-                navigation.navigate('ReferralScreen' as never)
-              } else {
-                navigation.navigate('UserRegister' as never)
-              }
-            }}
-          >
-            <View style={styles.referralButtonContent}>
-              <View style={styles.referralIconContainer}>
-                <Ionicons name="gift" size={24} color={colors.cardBg} />
-              </View>
-              <View style={styles.referralTextContainer}>
-                <Text style={styles.referralButtonTitle}>Sıfır Yatırımla Ortak Ol</Text>
-                <Text style={styles.referralButtonSubtitle}>
-                  Referans sistemi ile ömür boyu kazanç
-                </Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.cardBg} />
-            </View>
-          </TouchableOpacity>
         </View>
 
         {/* Categories Section */}
@@ -280,8 +306,29 @@ export default function HomeScreen() {
         </View>
 
         <FooterLegal />
-        <View style={{ height: spacing.xl }} />
+        <View style={{ height: spacing.xl * 3 }} />
       </ScrollView>
+
+      {/* Alt Sabit Arama Barı */}
+      <View style={styles.bottomSearchBar}>
+        <View style={styles.bottomSearchContainer}>
+          <Ionicons name="search" size={18} color={colors.textMuted} />
+          <TextInput
+            style={styles.bottomSearchInput}
+            placeholder="Ne hizmete ihtiyacın var?"
+            placeholderTextColor={colors.textMuted}
+            value={rawSearch}
+            onChangeText={(text) => {
+              setRawSearch(text)
+              setShowSuggestions(text.length > 0)
+            }}
+            onSubmitEditing={() => {
+              setSearchQuery(rawSearch.trim())
+              setShowSuggestions(false)
+            }}
+          />
+        </View>
+      </View>
     </SafeAreaView>
   )
 }
@@ -294,52 +341,72 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  heroBackground: {
+    width: '100%',
+    minHeight: 200,
+    marginBottom: spacing.sm,
+  },
+  heroImage: {
+    resizeMode: 'cover',
+  },
+  heroOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    paddingTop: spacing.md,
+  },
   header: {
     paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.sm,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.md,
   },
   headerTop: {
     marginBottom: spacing.md,
   },
-  headerTitle: {
-    ...typography.h1,
-    fontSize: 28,
-    color: colors.textDark,
-    marginBottom: spacing.sm,
+  heroReferralButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 16,
+    padding: spacing.md,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: '#FF9500',
   },
-  headerButtons: {
+  heroReferralButtonContent: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: spacing.sm,
-    flexWrap: 'wrap',
   },
-  headerButton: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: 8,
-    backgroundColor: colors.primary,
+  heroReferralIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FF9500',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  headerButtonText: {
+  heroReferralTextContainer: {
+    flex: 1,
+  },
+  heroReferralButtonTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.textDark,
+    marginBottom: 2,
+  },
+  heroReferralButtonSubtitle: {
     fontSize: 12,
-    color: colors.cardBg,
-    fontWeight: '600',
-  },
-  vendorButton: {
-    backgroundColor: colors.cardBg,
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  vendorButtonText: {
-    color: colors.primary,
-  },
-  welcomeText: {
-    fontSize: 14,
     color: colors.textMuted,
-    fontStyle: 'italic',
+    fontWeight: '500',
   },
   searchContainer: {
     position: 'relative',
     zIndex: 10,
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.xs,
+    marginBottom: spacing.xs,
   },
   suggestionsContainer: {
     position: 'absolute',
@@ -371,7 +438,7 @@ const styles = StyleSheet.create({
   },
   section: {
     marginTop: spacing.lg,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: spacing.lg,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -381,7 +448,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     ...typography.h3,
-    fontSize: 20,
+    fontSize: 18,
     color: colors.textDark,
     marginBottom: spacing.md,
   },
@@ -403,45 +470,85 @@ const styles = StyleSheet.create({
   vendorsList: {
     paddingRight: spacing.md,
   },
-  referralButtonContainer: {
-    paddingHorizontal: spacing.md,
+  instantJobsSection: {
     marginTop: spacing.md,
-    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.md,
   },
-  referralButton: {
-    backgroundColor: colors.primary,
+  instantJobsCard: {
+    backgroundColor: colors.cardBg,
     borderRadius: 16,
     padding: spacing.md,
     shadowColor: colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
-  referralButtonContent: {
+  instantJobsHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.md,
+    gap: spacing.sm,
+    marginBottom: spacing.sm,
   },
-  referralIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.cardBg + '20',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  referralTextContainer: {
-    flex: 1,
-  },
-  referralButtonTitle: {
-    fontSize: 18,
+  instantJobsTitle: {
+    fontSize: 16,
     fontWeight: '700',
-    color: colors.cardBg,
+    color: colors.textDark,
+  },
+  instantJobsList: {
+    marginBottom: spacing.md,
+  },
+  instantJobsItem: {
+    fontSize: 13,
+    color: colors.textMuted,
     marginBottom: spacing.xs,
   },
-  referralButtonSubtitle: {
-    fontSize: 13,
-    color: colors.cardBg + 'CC',
+  instantJobsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    gap: spacing.xs,
+  },
+  instantJobsButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.cardBg,
+  },
+  bottomSearchBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.cardBg,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  bottomSearchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+    borderRadius: 12,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    gap: spacing.sm,
+  },
+  bottomSearchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: colors.textDark,
+    paddingVertical: spacing.xs,
   },
 })

@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSession } from '@/lib/auth/session'
+import { extractUserIdFromRequest } from '@/lib/auth/session'
 import { prisma } from '@/lib/db/prisma'
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getSession()
+    // Support both cookie (web) and Bearer token (mobile)
+    const userId = await extractUserIdFromRequest(request)
     
-    if (!session) {
+    if (!userId) {
       return NextResponse.json(
         { error: 'Oturum bulunamadı' },
         { status: 401 }
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: session.userId },
+      where: { id: userId },
       select: {
         id: true,
         email: true,

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Star, MessageCircle, MapPin, Clock, User } from 'lucide-react'
+import { useToast } from '@/lib/hooks/useToast'
 import {
   Dialog,
   DialogContent,
@@ -17,6 +18,7 @@ import {
 export default function JobDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { success, error } = useToast()
   const [order, setOrder] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false)
@@ -45,7 +47,7 @@ export default function JobDetailPage() {
 
   const handleReviewSubmit = async () => {
     if (!rating) {
-      alert('Lütfen puan verin')
+      error('Lütfen puan verin')
       return
     }
 
@@ -64,13 +66,13 @@ export default function JobDetailPage() {
       if (res.ok) {
         setReviewDialogOpen(false)
         loadOrder()
-        alert('Değerlendirme gönderildi')
+        success('Değerlendirme gönderildi')
       } else {
         const data = await res.json()
-        alert(data.error || 'Değerlendirme gönderilemedi')
+        error(data.error || 'Değerlendirme gönderilemedi')
       }
     } catch (err) {
-      alert('Bir hata oluştu')
+      error('Bir hata oluştu')
     }
   }
 
@@ -224,7 +226,7 @@ export default function JobDetailPage() {
               className="w-full"
               onClick={() => {
                 // TODO: Chat sayfasına yönlendir
-                alert('Chat özelliği yakında eklenecek')
+                info('Chat özelliği yakında eklenecek')
               }}
             >
               <MessageCircle className="w-4 h-4 mr-2" />

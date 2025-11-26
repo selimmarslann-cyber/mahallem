@@ -11,8 +11,14 @@ import { CheckCircle2, Sparkles, ArrowRight, Home, Briefcase } from 'lucide-reac
 export default function RequestSuccessPage() {
   const router = useRouter()
   const [confettiActive, setConfettiActive] = useState(true)
+  const [windowHeight, setWindowHeight] = useState(800) // Default height
 
   useEffect(() => {
+    // Window height'ı client-side'da al
+    if (typeof window !== 'undefined') {
+      setWindowHeight(window.innerHeight)
+    }
+
     // Konfeti animasyonunu 3 saniye sonra durdur
     const timer = setTimeout(() => setConfettiActive(false), 3000)
     return () => clearTimeout(timer)
@@ -35,7 +41,7 @@ export default function RequestSuccessPage() {
                 ],
               }}
               animate={{
-                y: [0, window.innerHeight + 100],
+                y: [0, windowHeight + 100],
                 x: [0, (Math.random() - 0.5) * 200],
                 rotate: [0, 360],
                 opacity: [1, 0],

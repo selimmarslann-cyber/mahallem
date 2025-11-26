@@ -1,5 +1,5 @@
 /**
- * Mahallem - Hizmet Kategorileri Veri Seti
+ * Hizmetgo - Hizmet Kategorileri Veri Seti
  * 
  * Armut.com tarzında basit ve pratik kategori yapısı
  * 
@@ -10950,7 +10950,39 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
 
               'tırnak sanatı lazım',
 
-              'nail art lazım'
+              'nail art lazım',
+
+              'protez tırnak',
+
+              'protez tırnak yapımı',
+
+              'tırnak protezi',
+
+              'nail extension',
+
+              'akrilik tırnak',
+
+              'jel tırnak',
+
+              'gel nail',
+
+              'tırnak uzatma',
+
+              'tırnak kaplama',
+
+              'tırnak bakımı',
+
+              'manikür',
+
+              'pedikür',
+
+              'nail salon',
+
+              'tırnak salonu',
+
+              'nail technician',
+
+              'tırnak teknisyeni'
 
     ],
     subServices: [
@@ -10969,7 +11001,47 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
 
                   'tırnak sanatı lazım',
 
-                  'nail art lazım'
+                  'nail art lazım',
+
+                  'protez tırnak',
+
+                  'protez tırnak yapımı',
+
+                  'tırnak protezi',
+
+                  'nail extension',
+
+                  'akrilik tırnak',
+
+                  'jel tırnak',
+
+                  'gel nail',
+
+                  'tırnak uzatma',
+
+                  'tırnak kaplama',
+
+                  'tırnak bakımı',
+
+                  'manikür',
+
+                  'pedikür',
+
+                  'nail salon',
+
+                  'tırnak salonu',
+
+                  'nail technician',
+
+                  'tırnak teknisyeni',
+
+                  'tırnak tasarımı',
+
+                  'nail design',
+
+                  'french manicure',
+
+                  'fransız manikür'
 
         ]
       },
@@ -10991,7 +11063,31 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
 
                   'nail art lazım',
 
-                  'tırnak sanatı hizmeti'
+                  'tırnak sanatı hizmeti',
+
+                  'protez tırnak',
+
+                  'protez tırnak yapımı',
+
+                  'tırnak protezi',
+
+                  'nail extension',
+
+                  'akrilik tırnak',
+
+                  'jel tırnak',
+
+                  'gel nail',
+
+                  'tırnak uzatma',
+
+                  'tırnak kaplama',
+
+                  'tırnak bakımı',
+
+                  'manikür',
+
+                  'pedikür'
 
         ]
       }

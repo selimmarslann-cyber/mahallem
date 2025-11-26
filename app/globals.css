@@ -2,26 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Leaflet CSS - imported here to ensure it loads */
+@import 'leaflet/dist/leaflet.css';
+
 @layer base {
   :root {
-    /* Mahallem Premium Color System */
-    --background: 0 0% 100%;
+    /* Hizmetgo Premium Color System - Trendyol Inspired */
+    --background: 0 0% 96.5%; /* #F5F5F7 off-white */
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
     
-    /* Primary Orange - Mahallem Brand */
-    --primary: 25 100% 50%; /* #FF7A00 */
+    /* Primary Orange - Trendyol Orange */
+    --primary: 20 100% 50%; /* #FF6000 Trendyol Orange */
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 25 100% 55%; /* #FF8A00 */
-    --primary-light: 25 100% 95%; /* #FFF5E6 */
-    --primary-dark: 25 100% 45%; /* #FF6A00 */
+    --primary-hover: 20 100% 45%; /* #FF5500 */
+    --primary-light: 20 100% 97%; /* #FFF4E6 */
+    --primary-dark: 20 100% 40%; /* #FF4D00 */
     
-    /* Secondary Colors */
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary Colors - Slate tones */
+    --secondary: 222.2 47.4% 11.2%; /* #0F172A dark slate */
+    --secondary-foreground: 210 40% 98%;
+    --slate-50: 210 40% 98%;
+    --slate-100: 210 40% 96.1%;
+    --slate-200: 214.3 31.8% 91.4%;
+    --slate-800: 222.2 47.4% 11.2%;
+    --slate-900: 222.2 84% 4.9%;
     
     /* Accent Colors */
     --accent: 210 40% 96.1%;
@@ -52,7 +60,7 @@
     /* Borders & Inputs */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 25 100% 50%; /* Orange focus ring */
+    --ring: 20 100% 50%; /* Trendyol Orange focus ring */
     --radius: 1rem; /* Increased for premium feel */
     
     /* Shadows */
@@ -158,6 +166,58 @@ body {
   animation: fadeInUp 0.5s ease-out;
 }
 
+/* Promotional Banner Animations */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-down {
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes bounceSlow {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(10deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+}
+
+.animate-bounce-slow {
+  animation: bounceSlow 2s ease-in-out infinite;
+  animation-delay: 3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out 0.2s both;
+}
+
+.animate-fade-in-delay {
+  animation: fadeIn 0.5s ease-out 0.3s both;
+}
+
 /* Grid pattern background */
 .bg-grid-pattern {
   background-image: 
@@ -230,3 +290,27 @@ body {
 .bg-pos-100 {
   background-position: 100% 50%;
 }
+
+/* Z-Index Scale System - Global Standard */
+:root {
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal-backdrop: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  --z-toast: 80;
+  --z-max: 100;
+}
+
+.z-dropdown { z-index: var(--z-dropdown); }
+.z-sticky { z-index: var(--z-sticky); }
+.z-fixed { z-index: var(--z-fixed); }
+.z-modal-backdrop { z-index: var(--z-modal-backdrop); }
+.z-modal { z-index: var(--z-modal); }
+.z-popover { z-index: var(--z-popover); }
+.z-tooltip { z-index: var(--z-tooltip); }
+.z-toast { z-index: var(--z-toast); }
+.z-max { z-index: var(--z-max); }

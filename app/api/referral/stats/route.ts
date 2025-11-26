@@ -8,7 +8,7 @@ import { getUserId } from '@/lib/auth/session'
  */
 export async function GET(request: NextRequest) {
   try {
-    const userId = await getUserId()
+    const userId = await getUserId(request)
     if (!userId) {
       return NextResponse.json(
         { error: 'Kullanıcı girişi gerekli' },

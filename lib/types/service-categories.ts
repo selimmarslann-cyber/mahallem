@@ -1,5 +1,5 @@
 /**
- * Mahallem - Hizmet Kategorileri Tip Tanımları
+ * Hizmetgo - Hizmet Kategorileri Tip Tanımları
  * 
  * Bu dosya, platformdaki tüm hizmet kategorileri, alt hizmetler
  * ve anahtar kelimeler için TypeScript tip tanımlarını içerir.

@@ -3,33 +3,31 @@
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Phone, ArrowLeft, CheckCircle2 } from 'lucide-react'
+import { Phone, ArrowLeft, CheckCircle2, ArrowRight } from 'lucide-react'
+import { useToast } from '@/lib/hooks/useToast'
 
 export default function PhoneLoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { success, error } = useToast()
   const [step, setStep] = useState<'phone' | 'code'>('phone')
   const [phoneNumber, setPhoneNumber] = useState('')
-  const [verificationCode, setVerificationCode] = useState('')
+  const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', ''])
   const [isSending, setIsSending] = useState(false)
   const [isVerifying, setIsVerifying] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [countdown, setCountdown] = useState(0)
 
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setSuccess('')
     
-    // Telefon numarası validasyonu
     const cleanedPhone = phoneNumber.replace(/\D/g, '')
     if (cleanedPhone.length < 10) {
-      setError('Lütfen geçerli bir telefon numarası girin')
+      error('Lütfen geçerli bir telefon numarası girin')
       return
     }
 
@@ -44,15 +42,14 @@ export default function PhoneLoginPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error || 'Kod gönderilemedi')
+        error(data.error || 'Kod gönderilemedi')
         return
       }
 
-      setSuccess('Kod gönderildi! SMS\'inizi kontrol edin.')
+      success('Kod gönderildi! SMS\'inizi kontrol edin.')
       setStep('code')
-      setCountdown(60) // 60 saniye geri sayım
+      setCountdown(60)
       
-      // Geri sayım
       const interval = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -63,18 +60,39 @@ export default function PhoneLoginPage() {
         })
       }, 1000)
     } catch (err) {
-      setError('Bir hata oluştu')
+      error('Bir hata oluştu')
     } finally {
       setIsSending(false)
     }
   }
 
+  const handleCodeChange = (index: number, value: string) => {
+    if (value.length > 1) return
+    
+    const newCode = [...verificationCode]
+    newCode[index] = value
+    setVerificationCode(newCode)
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`code-${index + 1}`)
+      nextInput?.focus()
+    }
+  }
+
+  const handleCodeKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !verificationCode[index] && index > 0) {
+      const prevInput = document.getElementById(`code-${index - 1}`)
+      prevInput?.focus()
+    }
+  }
+
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
     
-    if (verificationCode.length !== 6) {
-      setError('Lütfen 6 haneli kodu girin')
+    const code = verificationCode.join('')
+    if (code.length !== 6) {
+      error('Lütfen 6 haneli kodu girin')
       return
     }
 
@@ -86,7 +104,7 @@ export default function PhoneLoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           phone: cleanedPhone, 
-          code: verificationCode 
+          code: code 
         }),
         credentials: 'include',
       })
@@ -94,178 +112,167 @@ export default function PhoneLoginPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error || 'Kod doğrulanamadı')
+        error(data.error || 'Kod doğrulanamadı')
         return
       }
 
-      // Başarılı - yönlendir
+      success('Giriş başarılı!')
       const redirect = searchParams.get('redirect') || '/account'
       router.push(redirect)
       router.refresh()
     } catch (err) {
-      setError('Bir hata oluştu')
+      error('Bir hata oluştu')
     } finally {
       setIsVerifying(false)
     }
   }
 
-  const handleResendCode = async () => {
-    if (countdown > 0) return
-    
-    setError('')
-    setSuccess('')
-    const cleanedPhone = phoneNumber.replace(/\D/g, '')
-    
-    setIsSending(true)
-    try {
-      const res = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: cleanedPhone }),
-      })
-
-      if (res.ok) {
-        setSuccess('Kod tekrar gönderildi!')
-        setCountdown(60)
-        const interval = setInterval(() => {
-          setCountdown((prev) => {
-            if (prev <= 1) {
-              clearInterval(interval)
-              return 0
-            }
-            return prev - 1
-          })
-        }, 1000)
-      } else {
-        const data = await res.json()
-        setError(data.error || 'Kod gönderilemedi')
-      }
-    } catch (err) {
-      setError('Bir hata oluştu')
-    } finally {
-      setIsSending(false)
-    }
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <div className="flex items-center gap-3 mb-2">
-            <Link href="/auth/login">
-              <Button variant="ghost" size="sm" className="p-0 h-auto">
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            </Link>
-            <CardTitle className="flex-1">Telefon ile Giriş</CardTitle>
-          </div>
-          <CardDescription>
-            {step === 'phone' 
-              ? 'Telefon numaranızı girin, size tek kullanımlık giriş kodu gönderelim.'
-              : 'SMS ile gönderilen 6 haneli kodu girin.'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {step === 'phone' ? (
-            <form onSubmit={handleSendCode} className="space-y-4">
-              {error && (
-                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
-                  {error}
-                </div>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="phone">Telefon Numarası</Label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+90 5XX XXX XX XX"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="pl-10"
-                    required
-                  />
-                </div>
-                <p className="text-xs text-gray-500">
-                  Numaranıza tek kullanımlık giriş kodu göndereceğiz.
-                </p>
-              </div>
-              <Button type="submit" className="w-full" disabled={isSending}>
-                {isSending ? 'Kod gönderiliyor...' : 'Kod Gönder'}
-              </Button>
-              <div className="text-center text-sm text-gray-600">
-                <Link href="/auth/login" className="text-primary hover:underline">
-                  E-posta ile giriş yap
-                </Link>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleVerifyCode} className="space-y-4">
-              {error && (
-                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-md">
-                  {error}
-                </div>
-              )}
-              {success && (
-                <div className="p-3 text-sm text-green-600 bg-green-50 rounded-md flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" />
-                  {success}
-                </div>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="code">Doğrulama Kodu</Label>
-                <Input
-                  id="code"
-                  type="text"
-                  placeholder="000000"
-                  value={verificationCode}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '').slice(0, 6)
-                    setVerificationCode(value)
-                  }}
-                  className="text-center text-2xl font-mono tracking-widest"
-                  maxLength={6}
-                  required
-                />
-                <p className="text-xs text-gray-500 text-center">
-                  {phoneNumber} numarasına gönderilen kodu girin
-                </p>
-              </div>
-              <Button type="submit" className="w-full" disabled={isVerifying}>
-                {isVerifying ? 'Doğrulanıyor...' : 'Kodu Doğrula ve Giriş Yap'}
-              </Button>
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={handleResendCode}
-                  disabled={countdown > 0}
-                  className="text-sm text-primary hover:underline disabled:text-gray-400 disabled:cursor-not-allowed"
+    <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center px-4 py-12">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
+      >
+        <Card className="border-2 border-slate-200 shadow-xl">
+          <CardHeader className="text-center pb-4">
+            <div className="w-16 h-16 rounded-2xl bg-[#FF6000] flex items-center justify-center mx-auto mb-4">
+              <Phone className="w-8 h-8 text-white" />
+            </div>
+            <CardTitle className="text-2xl font-bold text-slate-900">
+              {step === 'phone' ? 'Telefon ile Giriş' : 'Doğrulama Kodu'}
+            </CardTitle>
+            <CardDescription>
+              {step === 'phone' 
+                ? 'Telefon numaranızı girin, size SMS ile kod gönderelim.'
+                : `${phoneNumber} numarasına gönderilen kodu girin.`
+              }
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AnimatePresence mode="wait">
+              {step === 'phone' ? (
+                <motion.form
+                  key="phone"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  onSubmit={handleSendCode}
+                  className="space-y-4"
                 >
-                  {countdown > 0 
-                    ? `Kodu tekrar gönder (${countdown}s)`
-                    : 'Kodu tekrar gönder'}
-                </button>
-              </div>
-              <div className="text-center text-sm text-gray-600">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStep('phone')
-                    setVerificationCode('')
-                    setError('')
-                    setSuccess('')
-                  }}
-                  className="text-primary hover:underline"
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-slate-900 font-semibold">
+                      Telefon Numarası
+                    </Label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="+90 5XX XXX XX XX"
+                        value={phoneNumber}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '')
+                          if (value.length <= 11) {
+                            setPhoneNumber(value)
+                          }
+                        }}
+                        required
+                        className="pl-10 h-12 border-2 border-slate-200 focus:border-[#FF6000]"
+                      />
+                    </div>
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full h-12 bg-[#FF6000] hover:bg-[#FF5500] text-white font-semibold" 
+                    disabled={isSending}
+                  >
+                    {isSending ? 'Kod gönderiliyor...' : (
+                      <>
+                        Kod Gönder
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </motion.form>
+              ) : (
+                <motion.form
+                  key="code"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  onSubmit={handleVerifyCode}
+                  className="space-y-6"
                 >
-                  Telefon numarasını değiştir
-                </button>
-              </div>
-            </form>
-          )}
-        </CardContent>
-      </Card>
+                  <div className="space-y-3">
+                    <Label className="text-slate-900 font-semibold text-center block">
+                      6 Haneli Doğrulama Kodu
+                    </Label>
+                    <div className="flex gap-2 justify-center">
+                      {verificationCode.map((digit, index) => (
+                        <Input
+                          key={index}
+                          id={`code-${index}`}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={1}
+                          value={digit}
+                          onChange={(e) => handleCodeChange(index, e.target.value)}
+                          onKeyDown={(e) => handleCodeKeyDown(index, e)}
+                          className="w-12 h-14 text-center text-2xl font-bold border-2 border-slate-200 focus:border-[#FF6000] focus:ring-2 focus:ring-[#FF6000]/20"
+                        />
+                      ))}
+                    </div>
+                    {countdown > 0 && (
+                      <p className="text-center text-sm text-slate-500">
+                        Kod tekrar gönderilebilir: {countdown} saniye
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setStep('phone')
+                        setVerificationCode(['', '', '', '', '', ''])
+                        setCountdown(0)
+                      }}
+                      className="flex-1 h-12"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Geri
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      className="flex-1 h-12 bg-[#FF6000] hover:bg-[#FF5500] text-white font-semibold" 
+                      disabled={isVerifying || verificationCode.some(d => !d)}
+                    >
+                      {isVerifying ? 'Doğrulanıyor...' : (
+                        <>
+                          Doğrula
+                          <CheckCircle2 className="w-4 h-4 ml-2" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </motion.form>
+              )}
+            </AnimatePresence>
+
+            <div className="mt-6 text-center">
+              <Link
+                href="/auth/login"
+                className="text-sm text-[#FF6000] hover:underline font-semibold"
+              >
+                E-posta ile giriş yap
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   )
 }
-

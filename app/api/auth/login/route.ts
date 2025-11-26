@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyUser } from '@/lib/auth/auth'
 import { signToken } from '@/lib/auth/jwt'
+import { createMobileToken } from '@/lib/auth/mobileTokens'
 import { z } from 'zod'
+import { withRateLimit } from '@/lib/middleware/rateLimit'
 
 const loginSchema = z.object({
   email: z.string().email('Geçerli bir e-posta adresi girin'),
   password: z.string().min(1, 'Şifre gerekli'),
 })
 
-export async function POST(request: NextRequest) {
+async function loginHandler(request: NextRequest) {
   try {
     // Request body'yi parse et
     let body
@@ -27,10 +29,15 @@ export async function POST(request: NextRequest) {
     let user
     try {
       user = await verifyUser(validated.email, validated.password)
-    } catch (dbError) {
+    } catch (dbError: any) {
       console.error('Database error during login:', dbError)
+      // Daha detaylı hata mesajı
+      const errorMessage = dbError?.message || 'Veritabanı bağlantı hatası'
       return NextResponse.json(
-        { error: 'Veritabanı bağlantı hatası. Lütfen tekrar deneyin.' },
+        { 
+          error: 'Giriş yapılamadı. Lütfen bilgilerinizi kontrol edin veya kayıt olun.',
+          details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+        },
         { status: 500 }
       )
     }
@@ -50,7 +57,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // JWT token oluştur
+    // JWT token oluştur (web cookie için)
     let token
     try {
       token = signToken({
@@ -65,16 +72,41 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // HTTP-only cookie olarak set et
-    const response = NextResponse.json({
+    // Mobile token oluştur (Bearer token için)
+    let mobileToken: string | undefined
+    try {
+      mobileToken = createMobileToken(user.id, user.email)
+    } catch (mobileTokenError) {
+      console.error('Mobile token creation error:', mobileTokenError)
+      // Mobile token hatası kritik değil, web cookie ile devam edebilir
+    }
+
+    // Response oluştur
+    const responseData: {
+      user: {
+        id: string
+        email: string
+        name: string
+        avatarUrl: string | null
+      }
+      sessionToken?: string
+    } = {
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
         avatarUrl: user.avatarUrl,
       },
-    })
+    }
 
+    // Mobile token varsa response'a ekle
+    if (mobileToken) {
+      responseData.sessionToken = mobileToken
+    }
+
+    const response = NextResponse.json(responseData)
+
+    // HTTP-only cookie olarak set et (web için)
     response.cookies.set('auth-token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -84,7 +116,9 @@ export async function POST(request: NextRequest) {
     })
 
     return response
-  } catch (error) {
+  } catch (error: any) {
+    console.error('Login error:', error)
+    
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: error.errors[0].message },
@@ -92,17 +126,33 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.error('Login error:', error)
+    // Daha kullanıcı dostu hata mesajı
+    const errorMessage = error?.message || 'Giriş işlemi başarısız'
     
-    // Daha detaylı hata mesajı
-    const errorMessage = error instanceof Error 
-      ? `Giriş işlemi başarısız: ${error.message}`
-      : 'Giriş işlemi başarısız. Lütfen tekrar deneyin.'
+    // Eğer Prisma hatası ise
+    if (error?.code === 'P2002' || error?.code?.startsWith('P')) {
+      return NextResponse.json(
+        { 
+          error: 'Veritabanı hatası. Lütfen daha sonra tekrar deneyin.',
+          details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+        },
+        { status: 500 }
+      )
+    }
     
     return NextResponse.json(
-      { error: errorMessage },
+      { 
+        error: 'Giriş yapılamadı. E-posta ve şifrenizi kontrol edin veya kayıt olun.',
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      },
       { status: 500 }
     )
   }
 }
+
+// Export with rate limiting (10 requests per 15 minutes for login)
+export const POST = withRateLimit(loginHandler, {
+  maxRequests: 10,
+  windowMs: 15 * 60 * 1000,
+})
 

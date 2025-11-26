@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       stats: {
-        totalDistributed: totalDistributed.toNumber(),
+        totalDistributed: typeof totalDistributed === 'number' ? totalDistributed : totalDistributed.toNumber(),
         totalReferrers: totalReferrers.length,
         totalReferrals,
       },

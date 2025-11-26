@@ -1,76 +1,77 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Card, CardContent } from '@/components/ui/card'
 import Link from 'next/link'
+import Image from 'next/image'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { LucideIcon } from 'lucide-react'
+import { cn } from '@/lib/utils/cn'
 
 interface CategoryCardProps {
   id: string
   name: string
-  icon: LucideIcon
-  color: string
+  description: string
+  icon?: LucideIcon
+  color?: string
+  href?: string
   image?: string
-  description?: string
-  href: string
-  index: number
 }
 
 export default function CategoryCard({
+  id,
   name,
-  icon: Icon,
-  color,
-  image,
   description,
-  href,
-  index,
+  icon: Icon,
+  color = 'bg-orange-100 text-orange-700',
+  href = `/request?q=${encodeURIComponent(name.toLowerCase())}`,
+  image,
 }: CategoryCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.1 + index * 0.02 }}
-      whileHover={{ scale: 1.05, y: -4 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      <Link href={href}>
-        <Card className="hover:shadow-xl transition-all cursor-pointer border-2 border-slate-200 hover:border-orange-400 group h-full overflow-hidden">
-          {/* Category Image/Visual */}
-          <div className="relative h-32 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
+    <Link href={href}>
+      <motion.div
+        whileHover={{ y: -4, scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+      >
+        <Card className="h-full cursor-pointer border-2 border-gray-200 hover:border-[#FF6000]/30 hover:shadow-lg transition-all duration-200 bg-white overflow-hidden">
+          <CardContent className="p-0">
+            {/* Image */}
             {image ? (
-              <div
-                className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-300"
-                style={{ backgroundImage: `url(${image})` }}
-              />
+              <div className="relative w-full h-32 md:h-40 overflow-hidden">
+                <Image
+                  src={image}
+                  alt={name}
+                  fill
+                  className="object-cover transition-transform duration-300 hover:scale-110"
+                  sizes="(max-width: 768px) 50vw, 20vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                {/* Name Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <h3 className="font-black text-sm md:text-base text-white leading-tight drop-shadow-lg">
+                    {name}
+                  </h3>
+                </div>
+              </div>
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className={`w-20 h-20 rounded-2xl ${color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-                  <Icon className="w-10 h-10" />
+              <div className="p-4 md:p-5">
+                <div className="flex flex-col items-center text-center space-y-2">
+                  {/* Name */}
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-sm md:text-base text-gray-900 leading-tight">
+                      {name}
+                    </h3>
+                    <p className="text-xs md:text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                      {description}
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
-          
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`w-10 h-10 rounded-lg ${color} flex items-center justify-center flex-shrink-0`}>
-                <Icon className="w-5 h-5" />
-              </div>
-              <h3 className="text-sm font-bold text-slate-900 line-clamp-1 group-hover:text-orange-600 transition-colors">
-                {name}
-              </h3>
-            </div>
-            {description && (
-              <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                {description}
-              </p>
-            )}
           </CardContent>
         </Card>
-      </Link>
-    </motion.div>
+      </motion.div>
+    </Link>
   )
 }
-

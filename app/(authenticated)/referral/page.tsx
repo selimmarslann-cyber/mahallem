@@ -15,11 +15,16 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import Link from 'next/link'
+import {
+  getReferralOverview,
+  getReferralRewards,
+} from '@/lib/api/referral'
+import type { ReferralOverview, ReferralReward, ReferralRewardsResponse } from '@/lib/types/domain'
 
 export default function ReferralPage() {
-  const [overview, setOverview] = useState<any>(null)
-  const [rewards, setRewards] = useState<any[]>([])
-  const [pagination, setPagination] = useState<any>(null)
+  const [overview, setOverview] = useState<ReferralOverview | null>(null)
+  const [rewards, setRewards] = useState<ReferralReward[]>([])
+  const [pagination, setPagination] = useState<ReferralRewardsResponse['pagination'] | null>(null)
   const [loading, setLoading] = useState(true)
   const [copied, setCopied] = useState(false)
   
@@ -39,11 +44,8 @@ export default function ReferralPage() {
 
   const loadData = async () => {
     try {
-      const overviewRes = await fetch('/api/referral/overview', { credentials: 'include' })
-      if (overviewRes.ok) {
-        const data = await overviewRes.json()
-        setOverview(data)
-      }
+      const data = await getReferralOverview()
+      setOverview(data)
     } catch (err) {
       console.error('Referral data yüklenemedi:', err)
     } finally {
@@ -53,27 +55,15 @@ export default function ReferralPage() {
 
   const loadRewards = async () => {
     try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        pageSize: '20',
+      const data = await getReferralRewards({
+        page,
+        pageSize: 20,
+        level: levelFilter !== 'all' ? parseInt(levelFilter) : undefined,
+        dateFrom: dateFrom ? new Date(dateFrom) : undefined,
+        dateTo: dateTo ? new Date(dateTo) : undefined,
       })
-      
-      if (levelFilter !== 'all') {
-        params.append('level', levelFilter)
-      }
-      if (dateFrom) {
-        params.append('dateFrom', dateFrom)
-      }
-      if (dateTo) {
-        params.append('dateTo', dateTo)
-      }
-
-      const rewardsRes = await fetch(`/api/referral/rewards?${params}`, { credentials: 'include' })
-      if (rewardsRes.ok) {
-        const data = await rewardsRes.json()
-        setRewards(data.rewards)
-        setPagination(data.pagination)
-      }
+      setRewards(data.rewards)
+      setPagination(data.pagination)
     } catch (err) {
       console.error('Rewards yüklenemedi:', err)
     }
@@ -95,7 +85,7 @@ export default function ReferralPage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Mahallem\'e katıl, kazan!',
+          title: 'Hizmetgo\'e katıl, kazan!',
           text: 'Bu link ile kayıt ol ve sipariş ver, ben de kazanayım!',
           url: overview.referralLink,
         })
@@ -110,13 +100,13 @@ export default function ReferralPage() {
 
   const shareWhatsApp = () => {
     if (!overview) return
-    const text = encodeURIComponent('Mahallem\'e katıl, kazan! Bu link ile kayıt ol: ' + overview.referralLink)
+    const text = encodeURIComponent('Hizmetgo\'e katıl, kazan! Bu link ile kayıt ol: ' + overview.referralLink)
     window.open(`https://wa.me/?text=${text}`, '_blank')
   }
 
   const shareTwitter = () => {
     if (!overview) return
-    const text = encodeURIComponent('Mahallem\'e katıl, kazan! ' + overview.referralLink)
+    const text = encodeURIComponent('Hizmetgo\'e katıl, kazan! ' + overview.referralLink)
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank')
   }
 

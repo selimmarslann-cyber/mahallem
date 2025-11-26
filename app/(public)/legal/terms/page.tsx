@@ -20,7 +20,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">1. Genel Hükümler</h2>
                 <p className="text-sm leading-relaxed">
-                  Bu Kullanıcı Sözleşmesi ("Sözleşme"), Mahallem platformunu ("Platform") kullanarak 
+                  Bu Kullanıcı Sözleşmesi ("Sözleşme"), Hizmetgo platformunu ("Platform") kullanarak 
                   hizmet alan veya veren tüm kullanıcılar için geçerlidir. Platform'u kullanarak, 
                   bu Sözleşme'nin tüm hükümlerini kabul etmiş sayılırsınız.
                 </p>
@@ -29,7 +29,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">2. Hizmet Tanımı</h2>
                 <p className="text-sm leading-relaxed">
-                  Mahallem, mahalle esnafı ve hizmet sağlayıcıları ile müşterileri buluşturan bir 
+                  Hizmetgo, mahalle esnafı ve hizmet sağlayıcıları ile müşterileri buluşturan bir 
                   dijital platformdur. Platform, kullanıcıların hizmet talep etmesine, esnafların 
                   hizmet sunmasına ve bu süreçlerin yönetilmesine olanak sağlar.
                 </p>
@@ -59,7 +59,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">5. Sorumluluk Sınırlaması</h2>
                 <p className="text-sm leading-relaxed">
-                  Mahallem, platform üzerinden sunulan hizmetlerin kalitesi veya sonuçlarından 
+                  Hizmetgo, platform üzerinden sunulan hizmetlerin kalitesi veya sonuçlarından 
                   sorumlu değildir. Hizmet sağlayıcıları ile müşteriler arasındaki ilişkilerden 
                   doğan sorumluluklar ilgili taraflara aittir.
                 </p>
@@ -68,7 +68,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">6. Fikri Mülkiyet</h2>
                 <p className="text-sm leading-relaxed">
-                  Platform'un tüm içeriği, tasarımı ve yazılımı Mahallem'e aittir ve telif hakları 
+                  Platform'un tüm içeriği, tasarımı ve yazılımı Hizmetgo'e aittir ve telif hakları 
                   ile korunmaktadır. İzinsiz kullanım, kopyalama veya dağıtım yasaktır.
                 </p>
               </section>
@@ -76,7 +76,7 @@ export default function TermsPage() {
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">7. Değişiklikler</h2>
                 <p className="text-sm leading-relaxed">
-                  Mahallem, bu Sözleşme'yi herhangi bir zamanda değiştirme hakkını saklı tutar. 
+                  Hizmetgo, bu Sözleşme'yi herhangi bir zamanda değiştirme hakkını saklı tutar. 
                   Değişiklikler platform üzerinden duyurulur ve yürürlüğe girdiği tarihten itibaren 
                   geçerlidir.
                 </p>
@@ -87,7 +87,7 @@ export default function TermsPage() {
                 <p className="text-sm leading-relaxed">
                   Bu Sözleşme ile ilgili sorularınız için bizimle iletişime geçebilirsiniz:
                   <br />
-                  E-posta: destek@mahallem.app
+                  E-posta: destek@hizmetgo.app
                   <br />
                   Telefon: +90 (555) 123 45 67
                 </p>

@@ -34,6 +34,9 @@ export default function LiveJobsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Anlık İşler</Text>
+        <Text style={styles.headerSubtitle}>
+          Mahallendeki anlık işleri ve müsait ustaları gör
+        </Text>
       </View>
 
       {/* Search Bar */}
@@ -163,6 +166,18 @@ export default function LiveJobsScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Haritadan Bak Butonu */}
+      <View style={styles.mapButtonContainer}>
+        <TouchableOpacity
+          style={styles.mapButton}
+          onPress={() => {
+            navigation.navigate('MapScreen' as never)
+          }}
+        >
+          <Text style={styles.mapButtonText}>Haritada gör</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
@@ -179,8 +194,13 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     ...typography.h1,
-    fontSize: 28,
+    fontSize: 24,
     color: colors.textDark,
+    marginBottom: spacing.xs,
+  },
+  headerSubtitle: {
+    fontSize: 13,
+    color: colors.textMuted,
   },
   filterSection: {
     backgroundColor: colors.cardBg,
@@ -192,8 +212,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   filterChip: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
     borderRadius: 20,
     backgroundColor: colors.background,
     marginRight: spacing.sm,
@@ -205,7 +225,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
   },
   filterText: {
-    fontSize: 14,
+    fontSize: 13,
     color: colors.textMuted,
     fontWeight: '500',
   },
@@ -221,7 +241,7 @@ const styles = StyleSheet.create({
   },
   regionChip: {
     flex: 1,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.xs,
     borderRadius: 12,
     backgroundColor: colors.cardBg,
     borderWidth: 1,
@@ -233,7 +253,7 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
   },
   regionText: {
-    fontSize: 14,
+    fontSize: 13,
     color: colors.textMuted,
     fontWeight: '500',
   },
@@ -254,5 +274,21 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: colors.textMuted,
+  },
+  mapButtonContainer: {
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.md,
+  },
+  mapButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    alignItems: 'center',
+  },
+  mapButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.cardBg,
   },
 })

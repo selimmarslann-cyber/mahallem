@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db/prisma'
 import { BusinessCategory, OnlineStatus } from '@prisma/client'
 import { isWorkingHoursEnded } from '@/lib/utils/working-hours'
+import { findBestMatch, searchServiceCategories } from '../services/serviceSearchService'
 
 /**
  * İşletme oluşturma
@@ -185,10 +186,42 @@ export async function getBusinessesForMap(params: {
   }
 
   if (search) {
-    where.OR = [
-      { name: { contains: search, mode: 'insensitive' } },
-      { description: { contains: search, mode: 'insensitive' } },
+    const searchLower = search.toLowerCase().trim()
+    
+    // Anahtar kelime eşleşmesi için kategori ID'lerini bul
+    const bestMatch = findBestMatch(search)
+    
+    // Eşleşen kategori ID'lerini topla
+    const matchedCategoryIds: string[] = []
+    if (bestMatch) {
+      matchedCategoryIds.push(bestMatch.category.id)
+    }
+    
+    // Ayrıca tüm kategorilerde arama yap ve eşleşenleri bul
+    const searchResults = searchServiceCategories(search, 10)
+    searchResults.forEach(result => {
+      if (!matchedCategoryIds.includes(result.category.id)) {
+        matchedCategoryIds.push(result.category.id)
+      }
+    })
+
+    // Arama koşulları: hem text araması hem de kategori ID eşleşmesi
+    const searchConditions: any[] = [
+      { name: { contains: searchLower, mode: 'insensitive' } },
+      { description: { contains: searchLower, mode: 'insensitive' } },
+      { category: { contains: searchLower, mode: 'insensitive' } },
     ]
+
+    // Eğer kategori eşleşmesi varsa, mainCategories array'inde ara
+    if (matchedCategoryIds.length > 0) {
+      searchConditions.push({
+        mainCategories: {
+          hasSome: matchedCategoryIds,
+        },
+      })
+    }
+
+    where.OR = searchConditions
   }
 
   const businesses = await prisma.business.findMany({

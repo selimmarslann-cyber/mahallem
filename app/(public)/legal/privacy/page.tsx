@@ -20,7 +20,7 @@ export default function PrivacyPage() {
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">1. Giriş</h2>
                 <p className="text-sm leading-relaxed">
-                  Mahallem olarak, kullanıcılarımızın kişisel verilerinin korunmasına büyük önem veriyoruz. 
+                  Hizmetgo olarak, kullanıcılarımızın kişisel verilerinin korunmasına büyük önem veriyoruz. 
                   Bu politika, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında, 
                   kişisel verilerinizin nasıl toplandığını, kullanıldığını, saklandığını ve korunduğunu açıklar.
                 </p>
@@ -29,10 +29,10 @@ export default function PrivacyPage() {
               <section>
                 <h2 className="text-lg font-semibold text-gray-900 mb-3">2. Veri Sorumlusu</h2>
                 <p className="text-sm leading-relaxed">
-                  Kişisel verilerinizin işlenmesinden sorumlu olan veri sorumlusu Mahallem'dir. 
+                  Kişisel verilerinizin işlenmesinden sorumlu olan veri sorumlusu Hizmetgo'dir. 
                   İletişim bilgilerimiz:
                   <br />
-                  E-posta: destek@mahallem.app
+                  E-posta: destek@hizmetgo.app
                   <br />
                   Telefon: +90 (555) 123 45 67
                 </p>
@@ -124,7 +124,7 @@ export default function PrivacyPage() {
                   Kişisel verilerinizle ilgili sorularınız veya haklarınızı kullanmak istediğinizde 
                   bizimle iletişime geçebilirsiniz:
                   <br />
-                  E-posta: destek@mahallem.app
+                  E-posta: destek@hizmetgo.app
                   <br />
                   Telefon: +90 (555) 123 45 67
                 </p>

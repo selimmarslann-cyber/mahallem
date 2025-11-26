@@ -10,6 +10,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/lib/hooks/useToast'
+import { useConfirmDialog } from '@/lib/hooks/useConfirmDialog'
 import {
   Select,
   SelectContent,
@@ -45,6 +47,8 @@ type Product = {
   active: boolean
   isService: boolean
   deliveryType: string
+  stock?: number | null
+  sortOrder?: number
 }
 
 const COMMON_PRODUCT_IMAGES: Record<string, string> = {
@@ -75,6 +79,8 @@ const BUSINESS_TYPE_OPTIONS = [
 
 export default function BusinessStorePage() {
   const router = useRouter()
+  const { success, error, info } = useToast()
+  const { confirm: confirmDialog, ConfirmDialog } = useConfirmDialog()
   const [business, setBusiness] = useState<any>(null)
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -95,6 +101,8 @@ export default function BusinessStorePage() {
   const [formIsService, setFormIsService] = useState(false)
   const [formDeliveryType, setFormDeliveryType] = useState('PICKUP')
   const [formActive, setFormActive] = useState(true)
+  const [formStock, setFormStock] = useState<string>('')
+  const [formStockEnabled, setFormStockEnabled] = useState(false)
 
   useEffect(() => {
     loadBusinessData()
@@ -172,6 +180,8 @@ export default function BusinessStorePage() {
     setFormIsService(false)
     setFormDeliveryType('PICKUP')
     setFormActive(true)
+    setFormStock('')
+    setFormStockEnabled(false)
   }
 
   const handleEdit = (product: Product) => {
@@ -184,17 +194,19 @@ export default function BusinessStorePage() {
     setFormIsService(product.isService)
     setFormDeliveryType(product.deliveryType)
     setFormActive(product.active)
+    setFormStock(product.stock?.toString() || '')
+    setFormStockEnabled(product.stock !== null && product.stock !== undefined)
   }
 
   const handleSubmit = async () => {
     if (!business || !formName || !formPrice) {
-      alert('Lütfen ürün adı ve fiyat girin')
+      error('Lütfen ürün adı ve fiyat girin')
       return
     }
 
     const priceNumber = parseFloat(formPrice.replace(',', '.'))
     if (isNaN(priceNumber) || priceNumber <= 0) {
-      alert('Geçerli bir fiyat girin')
+      error('Geçerli bir fiyat girin')
       return
     }
 
@@ -208,6 +220,9 @@ export default function BusinessStorePage() {
         isService: formIsService,
         deliveryType: formDeliveryType as 'ON_SITE' | 'PICKUP' | 'DELIVERY',
         active: formActive,
+        stock: formStockEnabled && !formIsService
+          ? (formStock ? parseInt(formStock) : null)
+          : null,
       }
 
       if (editingProductId) {
@@ -223,8 +238,8 @@ export default function BusinessStorePage() {
         )
 
         if (!res.ok) {
-          const error = await res.json()
-          alert(error.error || 'Ürün güncellenemedi')
+          const errorData = await res.json()
+          error(errorData.error || 'Ürün güncellenemedi')
           return
         }
 
@@ -232,6 +247,7 @@ export default function BusinessStorePage() {
         setProducts((prev) =>
           prev.map((p) => (p.id === editingProductId ? updatedProduct : p))
         )
+        success('Ürün başarıyla güncellendi')
       } else {
         // Yeni ürün ekle
         const res = await fetch(`/api/businesses/${business.id}/products`, {
@@ -242,26 +258,33 @@ export default function BusinessStorePage() {
         })
 
         if (!res.ok) {
-          const error = await res.json()
-          alert(error.error || 'Ürün eklenemedi')
+          const errorData = await res.json()
+          error(errorData.error || 'Ürün eklenemedi')
           return
         }
 
         const newProduct = await res.json()
         setProducts((prev) => [newProduct, ...prev])
+        success('Ürün başarıyla eklendi')
       }
 
       resetForm()
     } catch (err) {
       console.error('Ürün kaydetme hatası:', err)
-      alert('Bir hata oluştu')
+      error('Bir hata oluştu')
     } finally {
       setSaving(false)
     }
   }
 
   const handleDelete = async (productId: string) => {
-    if (!confirm('Bu ürünü silmek istediğinize emin misiniz?')) {
+    const confirmed = await confirmDialog({
+      description: 'Bu ürünü silmek istediğinize emin misiniz?',
+      variant: 'destructive',
+      confirmText: 'Sil',
+      cancelText: 'İptal',
+    })
+    if (!confirmed) {
       return
     }
 
@@ -274,8 +297,8 @@ export default function BusinessStorePage() {
       })
 
       if (!res.ok) {
-        const error = await res.json()
-        alert(error.error || 'Ürün silinemedi')
+        const errorData = await res.json()
+        error(errorData.error || 'Ürün silinemedi')
         return
       }
 
@@ -283,9 +306,10 @@ export default function BusinessStorePage() {
       if (editingProductId === productId) {
         resetForm()
       }
+      success('Ürün başarıyla silindi')
     } catch (err) {
       console.error('Ürün silme hatası:', err)
-      alert('Bir hata oluştu')
+      error('Bir hata oluştu')
     }
   }
 
@@ -331,8 +355,8 @@ export default function BusinessStorePage() {
       })
 
       if (!statusRes.ok) {
-        const error = await statusRes.json()
-        alert(error.error || 'Durum güncellenemedi')
+        const errorData = await statusRes.json()
+        error(errorData.error || 'Durum güncellenemedi')
         return
       }
 
@@ -346,18 +370,18 @@ export default function BusinessStorePage() {
         })
 
         if (!nameRes.ok) {
-          const error = await nameRes.json()
-          alert(error.error || 'İsim güncellenemedi')
+          const errorData = await nameRes.json()
+          error(errorData.error || 'İsim güncellenemedi')
           return
         }
       }
 
       const updatedBusiness = await statusRes.json()
       setBusiness({ ...business, ...updatedBusiness, name: businessName })
-      alert('Mağaza bilgileri kaydedildi')
+      success('Mağaza bilgileri kaydedildi')
     } catch (err) {
       console.error('Mağaza kaydetme hatası:', err)
-      alert('Bir hata oluştu')
+      error('Bir hata oluştu')
     } finally {
       setSaving(false)
     }
@@ -425,21 +449,19 @@ export default function BusinessStorePage() {
   const isOnline = business.onlineStatus === 'ONLINE'
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-gray-50 pt-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Ürün Yönetimi</h1>
-              <p className="text-sm text-slate-600 mt-1">Mağazanızı yönetin ve ürünlerinizi ekleyin</p>
+              <h1 className="text-3xl font-bold text-gray-900">Mağazam</h1>
+              <p className="text-gray-600 mt-1">Menü ve ürünlerinizi yönetin</p>
             </div>
             {getStatusBadge(business.onlineStatus)}
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Ban Uyarısı */}
         {isBanned && (
           <Alert variant="destructive" className="mb-6">
@@ -576,6 +598,14 @@ export default function BusinessStorePage() {
                               <span className="text-lg font-bold text-slate-900">
                                 {parseFloat(product.price.toString()).toFixed(2)} ₺
                               </span>
+                              {!product.isService && product.stock !== null && product.stock !== undefined && (
+                                <Badge
+                                  variant={product.stock === 0 ? 'destructive' : product.stock < 10 ? 'outline' : 'secondary'}
+                                  className="text-xs"
+                                >
+                                  Stok: {product.stock}
+                                </Badge>
+                              )}
                             </div>
 
                             {/* Actions */}
@@ -717,7 +747,31 @@ export default function BusinessStorePage() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => alert('Görsel yükleme özelliği yakında eklenecek.')}
+                    onClick={() => {
+                      const input = document.createElement('input')
+                      input.type = 'file'
+                      input.accept = 'image/*'
+                      input.onchange = async (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0]
+                        if (!file) return
+
+                        // File size check (max 5MB)
+                        if (file.size > 5 * 1024 * 1024) {
+                          error('Görsel boyutu 5MB\'dan küçük olmalıdır')
+                          return
+                        }
+
+                        // Convert to base64 (temporary - production'da S3/Cloudinary kullanılmalı)
+                        const reader = new FileReader()
+                        reader.onload = (event) => {
+                          const base64 = event.target?.result as string
+                          setFormImageUrl(base64)
+                          success('Görsel yüklendi')
+                        }
+                        reader.readAsDataURL(file)
+                      }
+                      input.click()
+                    }}
                     className="flex-1"
                   >
                     <Upload className="w-4 h-4 mr-2" />
@@ -804,6 +858,7 @@ export default function BusinessStorePage() {
           </Card>
         </div>
       </div>
+      {ConfirmDialog}
     </div>
   )
 }

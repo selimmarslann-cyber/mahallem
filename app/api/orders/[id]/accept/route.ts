@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { acceptOrder } from '@/lib/services/orderService'
 import { getUserId } from '@/lib/auth/session'
+import { requireVendor } from '@/lib/auth/roleCheck'
 import { prisma } from '@/lib/db/prisma'
 
 export async function POST(
@@ -8,13 +9,16 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const userId = await getUserId()
+    const userId = await getUserId(request)
     if (!userId) {
       return NextResponse.json(
         { error: 'Kullanıcı girişi gerekli' },
         { status: 401 }
       )
     }
+
+    // FAZ 3: Sadece vendor sipariş kabul edebilir
+    await requireVendor(userId)
 
     // Order'dan businessId al ve kullanıcının işletmesi olduğunu kontrol et
     const order = await prisma.order.findUnique({

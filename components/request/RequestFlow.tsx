@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import { SERVICE_CATEGORIES } from '@/lib/data/service-categories'
 import { ServiceCategory, SubService } from '@/lib/types/service-categories'
+import { useToast } from '@/lib/hooks/useToast'
 
 type UrgencyType = 'acil' | 'simdi' | 'bugun' | 'yarin' | 'hafta' | 'tarih'
 
@@ -44,6 +45,7 @@ const URGENCY_OPTIONS = [
 export default function RequestFlow() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { error } = useToast()
   const [step, setStep] = useState<Step>(1)
   const [loading, setLoading] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | null>(null)
@@ -160,8 +162,8 @@ export default function RequestFlow() {
       })
 
       if (!res.ok) {
-        const error = await res.json()
-        alert(error.error || 'İş kaydı oluşturulamadı')
+        const errorData = await res.json()
+        error(errorData.error || 'İş kaydı oluşturulamadı')
         return
       }
 
@@ -169,7 +171,7 @@ export default function RequestFlow() {
       router.push('/request/success')
     } catch (err) {
       console.error('İş kaydı hatası:', err)
-      alert('Bir hata oluştu. Lütfen tekrar deneyin.')
+      error('Bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setLoading(false)
     }

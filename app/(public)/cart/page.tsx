@@ -8,9 +8,11 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { X } from 'lucide-react'
+import { useToast } from '@/lib/hooks/useToast'
 
 export default function CartPage() {
   const router = useRouter()
+  const { error } = useToast()
   const [cart, setCart] = useState<any[]>([])
   const [address, setAddress] = useState('')
   const [scheduledAt, setScheduledAt] = useState('')
@@ -74,7 +76,7 @@ export default function CartPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        alert(data.error || 'Sipariş oluşturulamadı')
+        error(data.error || 'Sipariş oluşturulamadı')
         return
       }
 
@@ -82,7 +84,7 @@ export default function CartPage() {
       localStorage.removeItem('cart')
       router.push(`/orders/${data.order.id}`)
     } catch (err) {
-      alert('Bir hata oluştu')
+      error('Bir hata oluştu')
     } finally {
       setLoading(false)
     }
