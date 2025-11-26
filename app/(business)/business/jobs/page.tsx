@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Clock, MapPin, User, ChevronRight, AlertTriangle, Phone, MessageSquare, CheckCircle2, XCircle, Bell, Building2 } from 'lucide-react'
 import { useToast } from '@/lib/hooks/useToast'
 import { useConfirmDialog } from '@/lib/hooks/useConfirmDialog'
+import { useNotificationStream } from '@/lib/hooks/useNotificationStream'
 import {
   Dialog,
   DialogContent,
