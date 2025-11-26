@@ -375,7 +375,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
             {POPULAR_CATEGORIES.map((category) => {
               // SERVICE_CATEGORIES ID'sine çevir
-              let serviceCategoryId = CATEGORY_ID_MAPPING[category.id]
+              let serviceCategoryId: string | undefined = CATEGORY_ID_MAPPING[category.id]
               
               // Mapping yoksa, kategori adından eşleştirme yap
               if (!serviceCategoryId) {

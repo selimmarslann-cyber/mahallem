@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     // Direkt davet edilen kullanıcılar (L1) - ReferralRelation üzerinden
     const referralRelations = await prisma.referralRelation.findMany({
       where: {
-        referrerId: userId,
+        referrerUserId: userId,
         level: 1,
       },
       include: {

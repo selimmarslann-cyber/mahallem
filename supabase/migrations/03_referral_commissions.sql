@@ -24,7 +24,7 @@ BEGIN
     AND table_name = 'users' 
     AND column_name = 'referrer_id'
   ) THEN
-    ALTER TABLE public.users ADD COLUMN referrer_id UUID;
+    ALTER TABLE public.users ADD COLUMN referrer_id TEXT;
   END IF;
 
   -- referral_rank kolonu
@@ -67,8 +67,8 @@ CREATE INDEX IF NOT EXISTS idx_users_referral_rank ON public.users(referral_rank
 -- 2. BÖLGE YÖNETİCİLERİ TABLOSU
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.region_managers (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  user_id TEXT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   region_type TEXT NOT NULL CHECK (region_type IN ('mahalle','ilce','il','ulke')),
   region_code TEXT NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT true,
@@ -121,7 +121,7 @@ WHERE platform_fee_amount = 0 AND commission_fee > 0;
 -- 4. CÜZDAN TABLOSU
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.wallets (
-  user_id UUID PRIMARY KEY REFERENCES public.users(id) ON DELETE CASCADE,
+  user_id TEXT PRIMARY KEY REFERENCES public.users(id) ON DELETE CASCADE,
   balance NUMERIC(18,2) NOT NULL DEFAULT 0,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -138,9 +138,9 @@ SET balance = wallets.balance + EXCLUDED.balance;
 -- 5. CÜZDAN İŞLEMLERİ TABLOSU
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.wallet_transactions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-  order_id UUID REFERENCES public.orders(id) ON DELETE SET NULL,
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  user_id TEXT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  order_id TEXT REFERENCES public.orders(id) ON DELETE SET NULL,
   source_type TEXT NOT NULL CHECK (source_type IN ('deposit','withdraw','spend','referral','region','adjustment')),
   level INT CHECK (level >= 1 AND level <= 5), -- referral level 1..5 için
   region_type TEXT CHECK (region_type IN ('mahalle','ilce','il','ulke')), -- bölge yöneticisi için
@@ -157,9 +157,9 @@ CREATE INDEX IF NOT EXISTS idx_wallet_tx_created ON public.wallet_transactions(c
 -- 6. REFERRAL PAYOUT KAYITLARI
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.referral_payouts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  order_id UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
-  beneficiary_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  order_id TEXT NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
+  beneficiary_id TEXT NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   payout_type TEXT NOT NULL CHECK (payout_type IN ('referral','region')),
   level INT CHECK (level >= 1 AND level <= 5), -- referral level için
   region_type TEXT CHECK (region_type IN ('mahalle','ilce','il','ulke')), -- bölge yöneticisi için
@@ -215,16 +215,16 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 -- 9. FONKSİYON: REFERRAL ZİNCİRİNİ BUL (L1-L5)
 -- ============================================
 CREATE OR REPLACE FUNCTION public.get_referral_chain(
-  start_user_id UUID,
+  start_user_id TEXT,
   max_levels INT DEFAULT 5
 ) RETURNS TABLE (
-  user_id UUID,
+  user_id TEXT,
   level INT,
   referral_rank INT,
   network_gmv NUMERIC
 ) AS $$
 DECLARE
-  current_user_id UUID;
+  current_user_id TEXT;
   current_level INT := 1;
   found_user RECORD;
 BEGIN
@@ -270,11 +270,11 @@ $$ LANGUAGE plpgsql;
 -- 10. FONKSİYON: ORDER REFERRAL IMPACT UYGULA
 -- ============================================
 CREATE OR REPLACE FUNCTION public.apply_order_referral_impact(
-  p_order_id UUID
+  p_order_id TEXT
 ) RETURNS VOID AS $$
 DECLARE
   v_order RECORD;
-  v_user_id UUID;
+  v_user_id TEXT;
   v_total_amount NUMERIC;
   v_chain_user RECORD;
 BEGIN
@@ -313,7 +313,7 @@ $$ LANGUAGE plpgsql;
 -- 11. FONKSİYON: KOMİSYON DAĞITIMI
 -- ============================================
 CREATE OR REPLACE FUNCTION public.distribute_order_commissions(
-  p_order_id UUID
+  p_order_id TEXT
 ) RETURNS VOID AS $$
 DECLARE
   v_order RECORD;
@@ -620,7 +620,7 @@ CREATE TRIGGER trigger_order_completed
 
 -- Kullanıcının toplam referral kazancını getir
 CREATE OR REPLACE FUNCTION public.get_user_referral_earnings(
-  p_user_id UUID
+  p_user_id TEXT
 ) RETURNS NUMERIC AS $$
 DECLARE
   v_total NUMERIC;
@@ -637,7 +637,7 @@ $$ LANGUAGE plpgsql;
 
 -- Kullanıcının toplam bölge kazancını getir
 CREATE OR REPLACE FUNCTION public.get_user_region_earnings(
-  p_user_id UUID
+  p_user_id TEXT
 ) RETURNS NUMERIC AS $$
 DECLARE
   v_total NUMERIC;
