@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -38,11 +38,7 @@ export default function BusinessDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [toggling, setToggling] = useState(false)
 
-  useEffect(() => {
-    loadData()
-  }, [])
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const userRes = await fetch('/api/auth/me', { credentials: 'include' })
       if (!userRes.ok) {
@@ -83,7 +79,11 @@ export default function BusinessDashboardPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
 
   const calculateStats = (orders: any[], business: any) => {
     const today = new Date()

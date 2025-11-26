@@ -6,7 +6,7 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -53,11 +53,7 @@ export default function WorkingHoursPage() {
     sun: { open: '09:00', close: '18:00', closed: true },
   })
 
-  useEffect(() => {
-    loadBusiness()
-  }, [])
-
-  const loadBusiness = async () => {
+  const loadBusiness = useCallback(async () => {
     try {
       const userRes = await fetch('/api/auth/me', { credentials: 'include' })
       if (!userRes.ok) {
@@ -83,7 +79,11 @@ export default function WorkingHoursPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    loadBusiness()
+  }, [loadBusiness])
 
   const handleSave = async () => {
     if (!business) return

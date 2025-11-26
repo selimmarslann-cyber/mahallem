@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -104,11 +104,7 @@ export default function BusinessStorePage() {
   const [formStock, setFormStock] = useState<string>('')
   const [formStockEnabled, setFormStockEnabled] = useState(false)
 
-  useEffect(() => {
-    loadBusinessData()
-  }, [])
-
-  const loadBusinessData = async () => {
+  const loadBusinessData = useCallback(async () => {
     try {
       const userRes = await fetch('/api/auth/me', { credentials: 'include' })
       if (!userRes.ok) {
@@ -153,7 +149,11 @@ export default function BusinessStorePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    loadBusinessData()
+  }, [loadBusinessData])
 
   const handleNameChange = (value: string) => {
     setFormName(value)

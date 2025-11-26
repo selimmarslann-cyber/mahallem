@@ -8,7 +8,7 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -74,11 +74,7 @@ export default function AvailableJobsPage() {
   const [offerMessage, setOfferMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  useEffect(() => {
-    loadAvailableJobs()
-  }, [])
-
-  const loadAvailableJobs = async () => {
+  const loadAvailableJobs = useCallback(async () => {
     try {
       const res = await fetch('/api/jobs/available', {
         credentials: 'include',
@@ -97,7 +93,11 @@ export default function AvailableJobsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router, error])
+
+  useEffect(() => {
+    loadAvailableJobs()
+  }, [loadAvailableJobs])
 
   const handleOpenOfferDialog = (job: Job) => {
     setSelectedJob(job)

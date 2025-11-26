@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -72,24 +72,7 @@ export default function AccountWalletPage() {
   const [iban, setIban] = useState('')
   const [withdrawing, setWithdrawing] = useState(false)
 
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
-    try {
-      const res = await fetch('/api/auth/me', { credentials: 'include' })
-      if (!res.ok) {
-        router.push(`/auth/required?page=Kazancım&redirect=${encodeURIComponent('/account/wallet')}`)
-        return
-      }
-      loadWalletData()
-    } catch (err) {
-      router.push(`/auth/required?page=Kazancım&redirect=${encodeURIComponent('/account/wallet')}`)
-    }
-  }
-
-  const loadWalletData = async () => {
+  const loadWalletData = useCallback(async () => {
     try {
       const userRes = await fetch('/api/auth/me', { credentials: 'include' })
       if (userRes.ok) {
@@ -143,7 +126,24 @@ export default function AccountWalletPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  const checkAuth = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth/me', { credentials: 'include' })
+      if (!res.ok) {
+        router.push(`/auth/required?page=Kazancım&redirect=${encodeURIComponent('/account/wallet')}`)
+        return
+      }
+      loadWalletData()
+    } catch (err) {
+      router.push(`/auth/required?page=Kazancım&redirect=${encodeURIComponent('/account/wallet')}`)
+    }
+  }, [router, loadWalletData])
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   const handleDeposit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -33,11 +33,7 @@ export default function BusinessJobsPage() {
   const [acceptDialogOpen, setAcceptDialogOpen] = useState(false)
   const [selectedOrder, setSelectedOrder] = useState<any>(null)
 
-  useEffect(() => {
-    loadOrders()
-  }, [])
-
-  const loadOrders = async () => {
+  const loadOrders = useCallback(async () => {
     try {
       const userRes = await fetch('/api/auth/me', { credentials: 'include' })
       if (!userRes.ok) {
@@ -67,7 +63,11 @@ export default function BusinessJobsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    loadOrders()
+  }, [loadOrders])
 
   const handleAccept = async () => {
     if (!selectedOrder) return

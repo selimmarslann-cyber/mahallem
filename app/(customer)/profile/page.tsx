@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -23,11 +23,21 @@ export default function CustomerProfilePage() {
   const [hasBusiness, setHasBusiness] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadUserData()
+  const checkBusiness = useCallback(async (userId: string) => {
+    try {
+      const res = await fetch(`/api/businesses/owner/${userId}`, {
+        credentials: 'include',
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setHasBusiness(!!data)
+      }
+    } catch (err) {
+      // İşletme yok
+    }
   }, [])
 
-  const loadUserData = async () => {
+  const loadUserData = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' })
       if (res.ok) {
@@ -40,21 +50,11 @@ export default function CustomerProfilePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [checkBusiness])
 
-  const checkBusiness = async (userId: string) => {
-    try {
-      const res = await fetch(`/api/businesses/owner/${userId}`, {
-        credentials: 'include',
-      })
-      if (res.ok) {
-        const data = await res.json()
-        setHasBusiness(!!data)
-      }
-    } catch (err) {
-      // İşletme yok
-    }
-  }
+  useEffect(() => {
+    loadUserData()
+  }, [loadUserData])
 
   const handleLogout = async () => {
     try {

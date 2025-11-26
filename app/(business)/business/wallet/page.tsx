@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,56 +15,7 @@ export default function BusinessWalletPage() {
   const [business, setBusiness] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadData()
-  }, [])
-
-  const loadData = async () => {
-    try {
-      const userRes = await fetch('/api/auth/me', { credentials: 'include' })
-      if (!userRes.ok) {
-        router.push('/auth/login')
-        return
-      }
-      const userData = await userRes.json()
-
-      const businessRes = await fetch(`/api/businesses/owner/${userData.user.id}`, {
-        credentials: 'include',
-      })
-      if (businessRes.ok) {
-        const businessData = await businessRes.json()
-        setBusiness(businessData)
-      }
-
-      const overviewRes = await fetch('/api/referral/overview', { credentials: 'include' })
-      if (overviewRes.ok) {
-        const data = await overviewRes.json()
-        setOverview(data)
-      }
-    } catch (err) {
-      console.error('Cüzdan verisi yüklenemedi:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      success('Kopyalandı!')
-    } catch (err) {
-      console.error('Kopyalama hatası:', err)
-    }
-  }
-
-  const shareWhatsApp = () => {
-    if (!overview) return
-    const text = encodeURIComponent('Hizmetgo\'e katıl, kazan! Bu link ile kayıt ol: ' + overview.referralLink)
-    window.open(`https://wa.me/?text=${text}`, '_blank')
-  }
-
-  // İşletme kazancını hesapla (tamamlanan siparişlerden)
-  const calculateBusinessEarnings = async () => {
+  const calculateBusinessEarnings = useCallback(async () => {
     if (!business) return { total: 0, monthly: 0, pending: 0 }
 
     try {
@@ -95,15 +46,63 @@ export default function BusinessWalletPage() {
       console.error('Kazanç hesaplanamadı:', err)
     }
     return { total: 0, monthly: 0, pending: 0 }
-  }
+  }, [business])
+
+  const loadData = useCallback(async () => {
+    try {
+      const userRes = await fetch('/api/auth/me', { credentials: 'include' })
+      if (!userRes.ok) {
+        router.push('/auth/login')
+        return
+      }
+      const userData = await userRes.json()
+
+      const businessRes = await fetch(`/api/businesses/owner/${userData.user.id}`, {
+        credentials: 'include',
+      })
+      if (businessRes.ok) {
+        const businessData = await businessRes.json()
+        setBusiness(businessData)
+      }
+
+      const overviewRes = await fetch('/api/referral/overview', { credentials: 'include' })
+      if (overviewRes.ok) {
+        const data = await overviewRes.json()
+        setOverview(data)
+      }
+    } catch (err) {
+      console.error('Cüzdan verisi yüklenemedi:', err)
+    } finally {
+      setLoading(false)
+    }
+  }, [router])
 
   const [businessEarnings, setBusinessEarnings] = useState({ total: 0, monthly: 0, pending: 0 })
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
 
   useEffect(() => {
     if (business) {
       calculateBusinessEarnings().then(setBusinessEarnings)
     }
-  }, [business])
+  }, [business, calculateBusinessEarnings])
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      success('Kopyalandı!')
+    } catch (err) {
+      console.error('Kopyalama hatası:', err)
+    }
+  }
+
+  const shareWhatsApp = () => {
+    if (!overview) return
+    const text = encodeURIComponent('Hizmetgo\'e katıl, kazan! Bu link ile kayıt ol: ' + overview.referralLink)
+    window.open(`https://wa.me/?text=${text}`, '_blank')
+  }
 
   if (loading) {
     return (

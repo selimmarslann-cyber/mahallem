@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -34,26 +34,7 @@ export default function ReferralPage() {
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
 
-  useEffect(() => {
-    loadData()
-  }, [])
-
-  useEffect(() => {
-    loadRewards()
-  }, [page, levelFilter, dateFrom, dateTo])
-
-  const loadData = async () => {
-    try {
-      const data = await getReferralOverview()
-      setOverview(data)
-    } catch (err) {
-      console.error('Referral data yüklenemedi:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const loadRewards = async () => {
+  const loadRewards = useCallback(async () => {
     try {
       const data = await getReferralRewards({
         page,
@@ -67,7 +48,26 @@ export default function ReferralPage() {
     } catch (err) {
       console.error('Rewards yüklenemedi:', err)
     }
-  }
+  }, [page, levelFilter, dateFrom, dateTo])
+
+  const loadData = useCallback(async () => {
+    try {
+      const data = await getReferralOverview()
+      setOverview(data)
+    } catch (err) {
+      console.error('Referral data yüklenemedi:', err)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
+
+  useEffect(() => {
+    loadRewards()
+  }, [loadRewards])
 
   const copyToClipboard = async (text: string) => {
     try {

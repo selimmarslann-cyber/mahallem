@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -15,26 +15,19 @@ export default function BusinessDashboardPage() {
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadUserAndBusiness()
+  const loadOrders = useCallback(async (businessId: string) => {
+    try {
+      const res = await fetch(`/api/orders/business/${businessId}`)
+      if (res.ok) {
+        const data = await res.json()
+        setOrders(data)
+      }
+    } catch (err) {
+      console.error('Siparişler yüklenemedi:', err)
+    }
   }, [])
 
-  const loadUserAndBusiness = async () => {
-    try {
-      const res = await fetch('/api/auth/me', { credentials: 'include' })
-      if (!res.ok) {
-        router.push('/auth/login')
-        return
-      }
-      const data = await res.json()
-      setUser(data.user)
-      loadBusiness(data.user.id)
-    } catch (err) {
-      router.push('/auth/login')
-    }
-  }
-
-  const loadBusiness = async (userId: string) => {
+  const loadBusiness = useCallback(async (userId: string) => {
     try {
       const res = await fetch(`/api/businesses/owner/${userId}`)
       if (res.ok) {
@@ -49,19 +42,26 @@ export default function BusinessDashboardPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [loadOrders])
 
-  const loadOrders = async (businessId: string) => {
+  const loadUserAndBusiness = useCallback(async () => {
     try {
-      const res = await fetch(`/api/orders/business/${businessId}`)
-      if (res.ok) {
-        const data = await res.json()
-        setOrders(data)
+      const res = await fetch('/api/auth/me', { credentials: 'include' })
+      if (!res.ok) {
+        router.push('/auth/login')
+        return
       }
+      const data = await res.json()
+      setUser(data.user)
+      loadBusiness(data.user.id)
     } catch (err) {
-      console.error('Siparişler yüklenemedi:', err)
+      router.push('/auth/login')
     }
-  }
+  }, [router, loadBusiness])
+
+  useEffect(() => {
+    loadUserAndBusiness()
+  }, [loadUserAndBusiness])
 
   const toggleOnlineStatus = async () => {
     if (!business) return

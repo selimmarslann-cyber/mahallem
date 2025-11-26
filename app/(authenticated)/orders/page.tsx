@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
@@ -12,25 +12,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadUserAndOrders()
-  }, [])
-
-  const loadUserAndOrders = async () => {
-    try {
-      const res = await fetch('/api/auth/me', { credentials: 'include' })
-      if (!res.ok) {
-        router.push('/auth/login')
-        return
-      }
-      const data = await res.json()
-      loadOrders(data.user.id)
-    } catch (err) {
-      router.push('/auth/login')
-    }
-  }
-
-  const loadOrders = async (userId: string) => {
+  const loadOrders = useCallback(async (userId: string) => {
     try {
       const res = await fetch(`/api/orders/customer/${userId}`, {
         credentials: 'include',
@@ -44,7 +26,25 @@ export default function OrdersPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
+
+  const loadUserAndOrders = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth/me', { credentials: 'include' })
+      if (!res.ok) {
+        router.push('/auth/login')
+        return
+      }
+      const data = await res.json()
+      loadOrders(data.user.id)
+    } catch (err) {
+      router.push('/auth/login')
+    }
+  }, [router, loadOrders])
+
+  useEffect(() => {
+    loadUserAndOrders()
+  }, [loadUserAndOrders])
 
   if (loading) {
     return (
