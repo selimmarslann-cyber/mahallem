@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -25,11 +25,7 @@ export default function AuthRequiredPage() {
   const pageName = searchParams.get('page') || 'Bu sayfa'
   const redirectTo = searchParams.get('redirect') || '/account'
 
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' })
       if (res.ok) {
@@ -44,7 +40,11 @@ export default function AuthRequiredPage() {
     } finally {
       setChecking(false)
     }
-  }
+  }, [router, redirectTo])
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   const getPageInfo = () => {
     const pageMap: Record<string, { title: string; description: string; icon: any }> = {

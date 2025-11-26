@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { Card, CardContent } from '@/components/ui/card'
@@ -33,57 +33,7 @@ export default function BusinessMap({ businesses, onBusinessClick, onMapMove }: 
   const markersRef = useRef<maplibregl.Marker[]>([])
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null)
 
-  useEffect(() => {
-    if (!mapContainer.current) return
-
-    // MapLibre GL harita başlat
-    // OpenStreetMap style kullan (ücretsiz)
-    const mapStyle = process.env.NEXT_PUBLIC_MAPLIBRE_STYLE_URL || 
-      'https://demotiles.maplibre.org/style.json'
-
-    map.current = new maplibregl.Map({
-      container: mapContainer.current,
-      style: mapStyle,
-      center: [29.0, 41.0], // İstanbul merkez
-      zoom: 11,
-    })
-
-    map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
-
-    // Harita yüklendiğinde marker'ları ekle
-    map.current.on('load', () => {
-      updateMarkers()
-    })
-
-    // Viewport değiştiğinde marker'ları güncelle ve parent'a bildir
-    map.current.on('moveend', () => {
-      updateMarkers()
-      if (onMapMove && map.current) {
-        const bounds = map.current.getBounds()
-        onMapMove({
-          ne: [bounds.getNorthEast().lng, bounds.getNorthEast().lat],
-          sw: [bounds.getSouthWest().lng, bounds.getSouthWest().lat],
-        })
-      }
-    })
-
-    return () => {
-      // Cleanup
-      markersRef.current.forEach((marker) => marker.remove())
-      if (map.current) {
-        map.current.remove()
-      }
-    }
-  }, [])
-
-  // İşletmeler değiştiğinde marker'ları güncelle
-  useEffect(() => {
-    if (map.current?.loaded()) {
-      updateMarkers()
-    }
-  }, [businesses])
-
-  const updateMarkers = () => {
+  const updateMarkers = useCallback(() => {
     if (!map.current) return
 
     // Eski marker'ları temizle
@@ -145,7 +95,59 @@ export default function BusinessMap({ businesses, onBusinessClick, onMapMove }: 
 
       markersRef.current.push(marker)
     })
-  }
+  }, [businesses, onBusinessClick])
+
+  useEffect(() => {
+    if (!mapContainer.current) return
+
+    // MapLibre GL harita başlat
+    // OpenStreetMap style kullan (ücretsiz)
+    const mapStyle = process.env.NEXT_PUBLIC_MAPLIBRE_STYLE_URL || 
+      'https://demotiles.maplibre.org/style.json'
+
+    map.current = new maplibregl.Map({
+      container: mapContainer.current,
+      style: mapStyle,
+      center: [29.0, 41.0], // İstanbul merkez
+      zoom: 11,
+    })
+
+    map.current.addControl(new maplibregl.NavigationControl(), 'top-right')
+
+    // Harita yüklendiğinde marker'ları ekle
+    map.current.on('load', () => {
+      updateMarkers()
+    })
+
+    // Viewport değiştiğinde marker'ları güncelle ve parent'a bildir
+    const handleMoveEnd = () => {
+      updateMarkers()
+      if (onMapMove && map.current) {
+        const bounds = map.current.getBounds()
+        onMapMove({
+          ne: [bounds.getNorthEast().lng, bounds.getNorthEast().lat],
+          sw: [bounds.getSouthWest().lng, bounds.getSouthWest().lat],
+        })
+      }
+    }
+    map.current.on('moveend', handleMoveEnd)
+
+    return () => {
+      // Cleanup
+      markersRef.current.forEach((marker) => marker.remove())
+      if (map.current) {
+        map.current.off('moveend', handleMoveEnd)
+        map.current.remove()
+      }
+    }
+  }, [onMapMove, updateMarkers])
+
+  // İşletmeler değiştiğinde marker'ları güncelle
+  useEffect(() => {
+    if (map.current?.loaded()) {
+      updateMarkers()
+    }
+  }, [updateMarkers])
 
   return (
     <div className="relative w-full h-full">

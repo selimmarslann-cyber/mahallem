@@ -383,7 +383,9 @@ export default function HomePage() {
                   cat.name.toLowerCase().includes(category.name.toLowerCase()) ||
                   category.name.toLowerCase().includes(cat.name.toLowerCase())
                 )
-                serviceCategoryId = matchedCategory?.id
+                if (matchedCategory?.id) {
+                  serviceCategoryId = matchedCategory.id
+                }
               }
               
               const href = serviceCategoryId 

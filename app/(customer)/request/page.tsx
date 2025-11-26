@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
@@ -43,35 +43,7 @@ export default function ServicesPage() {
     getUserLocation()
   }, [])
 
-  useEffect(() => {
-    // URL'den query parametresini al
-    const queryParam = searchParams.get('q')
-    if (queryParam && queryParam !== searchQuery) {
-      setSearchQuery(queryParam)
-      // Hemen arama yap (konum beklemeden, default konum kullanılacak)
-      performSearch(queryParam)
-    }
-  }, [searchParams])
-
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          })
-        },
-        () => {
-          setUserLocation({ lat: 41.0082, lng: 28.9784 }) // Default Istanbul
-        }
-      )
-    } else {
-      setUserLocation({ lat: 41.0082, lng: 28.9784 })
-    }
-  }
-
-  const performSearch = async (query: string) => {
+  const performSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
       return
     }
@@ -96,7 +68,34 @@ export default function ServicesPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [userLocation, error])
+
+  useEffect(() => {
+    const queryParam = searchParams.get('q')
+    if (queryParam && queryParam !== searchQuery) {
+      setSearchQuery(queryParam)
+      // Hemen arama yap (konum beklemeden, default konum kullanılacak)
+      performSearch(queryParam)
+    }
+  }, [searchParams, searchQuery, performSearch])
+
+  const getUserLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          })
+        },
+        () => {
+          setUserLocation({ lat: 41.0082, lng: 28.9784 }) // Default Istanbul
+        }
+      )
+    } else {
+      setUserLocation({ lat: 41.0082, lng: 28.9784 })
+    }
+  }, [])
 
   const handleSearch = async (e?: React.FormEvent) => {
     e?.preventDefault()

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
@@ -14,12 +14,7 @@ export default function BusinessReviewsPage() {
   const [reviews, setReviews] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadBusiness()
-    loadReviews()
-  }, [params.id])
-
-  const loadBusiness = async () => {
+  const loadBusiness = useCallback(async () => {
     try {
       const res = await fetch(`/api/businesses/${params.id}`)
       if (res.ok) {
@@ -29,9 +24,9 @@ export default function BusinessReviewsPage() {
     } catch (err) {
       console.error('İşletme yüklenemedi:', err)
     }
-  }
+  }, [params.id])
 
-  const loadReviews = async () => {
+  const loadReviews = useCallback(async () => {
     try {
       const res = await fetch(`/api/businesses/${params.id}/reviews`)
       if (res.ok) {
@@ -43,7 +38,12 @@ export default function BusinessReviewsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id])
+
+  useEffect(() => {
+    loadBusiness()
+    loadReviews()
+  }, [loadBusiness, loadReviews])
 
   if (loading) {
     return (

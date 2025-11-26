@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -30,16 +30,7 @@ export default function CustomerJobsPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [dateFilter, setDateFilter] = useState<string>('all')
 
-  useEffect(() => {
-    const tabParam = searchParams.get('tab')
-    if (tabParam === 'instant') {
-      setActiveTab('nearby')
-    }
-    loadUser()
-    getUserLocation()
-  }, [searchParams])
-
-  const getUserLocation = () => {
+  const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -56,9 +47,9 @@ export default function CustomerJobsPage() {
     } else {
       setUserLocation({ lat: 41.0082, lng: 28.9784 })
     }
-  }
+  }, [])
 
-  const loadUser = async () => {
+  const loadUser = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' })
       if (!res.ok) {
@@ -85,7 +76,16 @@ export default function CustomerJobsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [router, currentUser])
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab')
+    if (tabParam === 'instant') {
+      setActiveTab('nearby')
+    }
+    loadUser()
+    getUserLocation()
+  }, [searchParams, loadUser, getUserLocation])
 
   const isVendor = currentUser?.role === 'vendor' || user?.role === 'vendor'
   const isCustomer = currentUser?.role === 'customer' || !isVendor

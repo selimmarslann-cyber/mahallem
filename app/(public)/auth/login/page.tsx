@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -25,11 +25,7 @@ export default function LoginPage() {
   const type = searchParams.get('type')
   const isBusiness = type === 'business'
 
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       await getMe()
       const redirect = searchParams.get('redirect') || (isBusiness ? '/business/jobs' : '/account')
@@ -37,7 +33,11 @@ export default function LoginPage() {
     } catch (err) {
       // Giriş yapılmamış, sayfada kal
     }
-  }
+  }, [router, searchParams, isBusiness])
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

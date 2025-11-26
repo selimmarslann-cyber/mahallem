@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -25,11 +25,7 @@ export default function JobDetailPage() {
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState('')
 
-  useEffect(() => {
-    loadOrder()
-  }, [params.id])
-
-  const loadOrder = async () => {
+  const loadOrder = useCallback(async () => {
     try {
       const res = await fetch(`/api/orders/${params.id}`, {
         credentials: 'include',
@@ -43,7 +39,11 @@ export default function JobDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id])
+
+  useEffect(() => {
+    loadOrder()
+  }, [loadOrder])
 
   const handleReviewSubmit = async () => {
     if (!rating) {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -12,11 +12,7 @@ export default function BusinessNotRegisteredPage() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
 
-  useEffect(() => {
-    loadUser()
-  }, [])
-
-  const loadUser = async () => {
+  const loadUser = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' })
       if (res.ok) {
@@ -28,7 +24,11 @@ export default function BusinessNotRegisteredPage() {
     } catch (err) {
       router.push('/auth/business-login')
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    loadUser()
+  }, [loadUser])
 
   return (
     <div className="min-h-screen relative overflow-hidden">

@@ -9,7 +9,7 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -71,12 +71,21 @@ export default function JobDetailPage() {
   const [acceptDialogOpen, setAcceptDialogOpen] = useState(false)
   const [selectedOffer, setSelectedOffer] = useState<JobOffer | null>(null)
 
-  useEffect(() => {
-    loadJob()
-    loadOffers()
+  const loadOffers = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/jobs/${params.id}/offers`, {
+        credentials: 'include',
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setOffers(data.offers || [])
+      }
+    } catch (err) {
+      console.error('Teklifler yüklenemedi:', err)
+    }
   }, [params.id])
 
-  const loadJob = async () => {
+  const loadJob = useCallback(async () => {
     try {
       const res = await fetch(`/api/jobs/${params.id}`, {
         credentials: 'include',
@@ -93,21 +102,12 @@ export default function JobDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id, error])
 
-  const loadOffers = async () => {
-    try {
-      const res = await fetch(`/api/jobs/${params.id}/offers`, {
-        credentials: 'include',
-      })
-      if (res.ok) {
-        const data = await res.json()
-        setOffers(data.offers || [])
-      }
-    } catch (err) {
-      console.error('Teklifler yüklenemedi:', err)
-    }
-  }
+  useEffect(() => {
+    loadJob()
+    loadOffers()
+  }, [loadJob, loadOffers])
 
   const handleAcceptOffer = async () => {
     if (!selectedOffer) return

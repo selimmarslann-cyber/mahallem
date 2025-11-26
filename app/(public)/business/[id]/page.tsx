@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -41,15 +41,19 @@ export default function BusinessDetailPage() {
   const [cart, setCart] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadBusiness()
-    const storedCart = localStorage.getItem('cart')
-    if (storedCart) {
-      setCart(JSON.parse(storedCart))
+  const loadReviews = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/businesses/${params.id}/reviews?limit=3`)
+      if (res.ok) {
+        const data = await res.json()
+        setReviews(data)
+      }
+    } catch (err) {
+      console.error('Yorumlar yüklenemedi:', err)
     }
   }, [params.id])
 
-  const loadBusiness = async () => {
+  const loadBusiness = useCallback(async () => {
     try {
       const res = await fetch(`/api/businesses/${params.id}`)
       if (res.ok) {
@@ -63,19 +67,7 @@ export default function BusinessDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const loadReviews = async () => {
-    try {
-      const res = await fetch(`/api/businesses/${params.id}/reviews?limit=3`)
-      if (res.ok) {
-        const data = await res.json()
-        setReviews(data)
-      }
-    } catch (err) {
-      console.error('Yorumlar yüklenemedi:', err)
-    }
-  }
+  }, [params.id, loadReviews])
 
   const addToCart = (product: Product) => {
     const existingItem = cart.find((item) => item.id === product.id)

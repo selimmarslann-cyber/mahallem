@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -99,31 +99,7 @@ export default function MapPage() {
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map')
   const [showFilters, setShowFilters] = useState(false)
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const loc: [number, number] = [
-            position.coords.latitude,
-            position.coords.longitude,
-          ]
-          setUserLocation(loc)
-          loadBusinesses(loc[0], loc[1])
-        },
-        () => {
-          loadBusinesses(userLocation[0], userLocation[1])
-        }
-      )
-    } else {
-      loadBusinesses(userLocation[0], userLocation[1])
-    }
-  }, [])
-
-  useEffect(() => {
-    applyFilters()
-  }, [businesses, selectedCategories, maxDistance, sortBy, searchQuery])
-
-  const loadBusinesses = async (lat: number, lng: number) => {
+  const loadBusinesses = useCallback(async (lat: number, lng: number) => {
     try {
       setLoading(true)
       const res = await fetch(`/api/businesses/map?lat=${lat}&lng=${lng}&limit=50`)
@@ -136,9 +112,9 @@ export default function MapPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...businesses]
 
     // Search filter
@@ -173,7 +149,31 @@ export default function MapPage() {
     })
 
     setFilteredBusinesses(filtered)
-  }
+  }, [businesses, selectedCategories, maxDistance, sortBy, searchQuery])
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const loc: [number, number] = [
+            position.coords.latitude,
+            position.coords.longitude,
+          ]
+          setUserLocation(loc)
+          loadBusinesses(loc[0], loc[1])
+        },
+        () => {
+          loadBusinesses(userLocation[0], userLocation[1])
+        }
+      )
+    } else {
+      loadBusinesses(userLocation[0], userLocation[1])
+    }
+  }, [userLocation, loadBusinesses])
+
+  useEffect(() => {
+    applyFilters()
+  }, [applyFilters])
 
   const handleBusinessClick = (business: Business) => {
     setSelectedBusiness(business)

@@ -10,7 +10,7 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -37,11 +37,7 @@ export default function BusinessOrderDetailPage() {
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
 
-  useEffect(() => {
-    loadOrder()
-  }, [params.id])
-
-  const loadOrder = async () => {
+  const loadOrder = useCallback(async () => {
     try {
       const res = await fetch(`/api/orders/${params.id}`, {
         credentials: 'include',
@@ -58,7 +54,11 @@ export default function BusinessOrderDetailPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [params.id, error])
+
+  useEffect(() => {
+    loadOrder()
+  }, [loadOrder])
 
   const handleCompleteOrder = async () => {
     if (!confirm('Bu siparişi tamamlandı olarak işaretlemek istediğinize emin misiniz?')) {

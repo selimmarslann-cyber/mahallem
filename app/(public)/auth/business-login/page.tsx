@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -16,12 +16,7 @@ export default function BusinessLoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    // Eğer zaten giriş yapılmışsa kontrol et
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' })
       if (res.ok) {
@@ -44,7 +39,12 @@ export default function BusinessLoginPage() {
     } catch (err) {
       // Giriş yapılmamış, sayfada kal
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    // Eğer zaten giriş yapılmışsa kontrol et
+    checkAuth()
+  }, [checkAuth])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
