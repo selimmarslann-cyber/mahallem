@@ -8,6 +8,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUserId } from '@/lib/auth/session'
 import { updatePayoutRequestStatus } from '@/lib/services/walletService'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 import { prisma } from '@/lib/db/prisma'
 import { z } from 'zod'
 

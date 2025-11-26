@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { extractUserIdFromRequest } from '@/lib/auth/session'
 import { prisma } from '@/lib/db/prisma'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET(request: NextRequest) {
   try {
     // Support both cookie (web) and Bearer token (mobile)

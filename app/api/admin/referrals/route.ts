@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
 import { getUserId } from '@/lib/auth/session'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 /**
  * Admin referral istatistikleri
  * TODO: Admin yetki kontrolü ekle

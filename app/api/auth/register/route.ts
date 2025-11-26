@@ -6,6 +6,9 @@ import { buildReferralChainOnRegister } from '@/lib/services/referralService'
 import { prisma } from '@/lib/db/prisma'
 import { z } from 'zod'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const registerSchema = z.object({
   email: z.string().email('Geçerli bir e-posta adresi girin'),
   password: z.string().min(6, 'Şifre en az 6 karakter olmalı'),

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // Basit admin kontrolü (ileride gerçek auth eklenebilir)
 const ADMIN_USER_IDS = process.env.ADMIN_USER_IDS?.split(',') || []
 

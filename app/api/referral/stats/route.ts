@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getReferralOverview } from '@/lib/services/referralService'
 import { getUserId } from '@/lib/auth/session'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 /**
  * Referral istatistikleri endpoint
  * Şimdilik overview ile benzer, ileride daha detaylı istatistikler eklenebilir
