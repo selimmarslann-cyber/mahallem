@@ -18,7 +18,7 @@ import {
 export default function JobDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { success, error } = useToast()
+  const { success, error, info } = useToast()
   const [order, setOrder] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false)

@@ -91,7 +91,7 @@ export default function CustomerJobsPage() {
   const isCustomer = currentUser?.role === 'customer' || !isVendor
 
   // Customer jobs
-  const customerJobs = jobs.filter(j => j.customerId === (currentUser?.id || user?.id))
+  const customerJobs: (Job & { distanceKm?: number })[] = jobs.filter(j => j.customerId === (currentUser?.id || user?.id))
   
   // Nearby jobs (10 km radius with skill matching)
   const userSkills = currentUser?.skills || user?.skills || []
@@ -125,20 +125,22 @@ export default function CustomerJobsPage() {
         return {
           ...job,
           distanceKm: haversineDistanceKm(userLocation, job.location),
-        }
+        } as Job & { distanceKm: number }
       }
-      return job
+      return job as Job & { distanceKm?: number }
     })
     .sort((a, b) => {
       // Sort by distance if available
-      if (a.distanceKm && b.distanceKm) {
-        return a.distanceKm - b.distanceKm
+      const aDist = (a as any).distanceKm
+      const bDist = (b as any).distanceKm
+      if (aDist && bDist) {
+        return aDist - bDist
       }
       return 0
-    })
+    }) as (Job & { distanceKm?: number })[]
 
   // Apply filters
-  const getFilteredJobs = (jobList: Job[]) => {
+  const getFilteredJobs = (jobList: (Job & { distanceKm?: number })[]) => {
     let filtered = [...jobList]
     
     if (statusFilter !== 'all') {
@@ -422,8 +424,8 @@ export default function CustomerJobsPage() {
                                 <div className="flex items-center gap-1">
                                   <MapPin className="w-3.5 h-3.5" />
                                   <span>
-                                    {job.distanceKm 
-                                      ? `${job.distanceKm.toFixed(1)} km` 
+                                    {(job as any).distanceKm
+                                      ? `${(job as any).distanceKm.toFixed(1)} km`
                                       : job.city || 'Belirtilmemiş'}
                                   </span>
                                 </div>
