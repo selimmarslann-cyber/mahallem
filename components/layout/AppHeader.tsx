@@ -134,9 +134,7 @@ export default function AppHeader({
                   color: '#FF6000',
                   fontStyle: 'normal',
                   WebkitTextStroke: '2px white',
-                  textStroke: '2px white',
-                  paintOrder: 'stroke fill'
-                }}
+                } as React.CSSProperties}
                 whileHover={{ opacity: 0.9 }}
                 transition={{ duration: 0.2 }}
               >

@@ -67,7 +67,7 @@ export function rateLimit(options: RateLimitOptions): {
  */
 export function cleanupRateLimitStore() {
   const now = Date.now()
-  for (const [key, entry] of rateLimitStore.entries()) {
+  for (const [key, entry] of Array.from(rateLimitStore.entries())) {
     if (now > entry.resetTime) {
       rateLimitStore.delete(key)
     }

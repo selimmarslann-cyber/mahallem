@@ -151,8 +151,7 @@ export default function HomePage() {
                                 fontWeight: 700,
                                 color: '#FF6000',
                                 WebkitTextStroke: '2px white',
-                                paintOrder: 'stroke fill'
-                              }}
+                              } as React.CSSProperties}
                             >
                               go
                             </span>

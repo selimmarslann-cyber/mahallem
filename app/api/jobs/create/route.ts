@@ -29,6 +29,11 @@ export async function POST(request: NextRequest) {
       description,
       urgency,
       desiredDate,
+      locationLat,
+      locationLng,
+      addressText,
+      city,
+      district,
     } = body
 
     // Validasyon
@@ -70,10 +75,9 @@ export async function POST(request: NextRequest) {
       scheduledAt.setHours(14, 0, 0, 0)
     }
 
-    // Şehir ve ilçe bilgisi - şimdilik default
-    // TODO: Kullanıcı profilinden veya konumdan alınabilir
-    const city = 'İstanbul'
-    const district = 'Kadıköy'
+    // Şehir ve ilçe bilgisi - body'den veya default
+    const jobCity = city || 'İstanbul'
+    const jobDistrict = district || 'Kadıköy'
 
     // Job oluştur
     const job = await prisma.job.create({
@@ -83,8 +87,11 @@ export async function POST(request: NextRequest) {
         subServiceId: subServiceId || null,
         isOther: isOther || false,
         description: description.trim(),
-        city,
-        district,
+        city: jobCity,
+        district: jobDistrict,
+        locationLat: locationLat || null,
+        locationLng: locationLng || null,
+        addressText: addressText || null,
         scheduledAt,
         status: 'PENDING',
       },
@@ -170,7 +177,7 @@ export async function POST(request: NextRequest) {
       jobLocation: job.locationLat && job.locationLng
         ? { lat: job.locationLat, lng: job.locationLng }
         : { lat: 0, lng: 0 }, // Fallback
-      jobCity: city,
+      jobCity: jobCity,
       maxDistance: 10, // 10km radius
     }
 
@@ -186,7 +193,7 @@ export async function POST(request: NextRequest) {
         type: 'JOB_CREATED',
         title: 'Yeni İş Talebi',
         body: `${job.customer.name} size uygun bir iş talebi oluşturdu. Teklif vermek için tıklayın.`,
-        data: { jobId: job.id, mainCategoryId, city, matchScore: vendorScore.score },
+                data: { jobId: job.id, mainCategoryId, city: jobCity, matchScore: vendorScore.score },
       })
     })
 
@@ -266,7 +273,7 @@ export async function POST(request: NextRequest) {
                   jobId: job.id,
                   distanceKm,
                   category: categoryName,
-                  neighborhood: district,
+                  neighborhood: jobDistrict,
                   jobLink,
                 })
 

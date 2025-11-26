@@ -28,9 +28,7 @@ export default function Logo({ className = 'w-10 h-10' }: { className?: string }
             fontWeight: 700,
             color: '#FF6000',
             WebkitTextStroke: '2px white',
-            textStroke: '2px white',
-            paintOrder: 'stroke fill'
-          }}
+          } as React.CSSProperties}
         >
           go
         </span>
