@@ -605,6 +605,8 @@ model Notification {
 enum NotificationType {
   JOB_CREATED // İş talebi oluşturuldu
   OFFER_RECEIVED // Teklif alındı
+  OFFER_ACCEPTED // Teklif kabul edildi
+  OFFER_REJECTED // Teklif reddedildi
   ORDER_ACCEPTED // Sipariş kabul edildi
   ORDER_COMPLETED // Sipariş tamamlandı
   ORDER_CANCELLED // Sipariş iptal edildi
@@ -635,4 +637,22 @@ model PushToken {
   @@index([userId])
   @@index([expoPushToken])
   @@map("push_tokens")
+}
+
+// ============================================
+// 18. OTP (Email Verification Codes)
+// ============================================
+model Otp {
+  id        String   @id @default(uuid())
+  email     String   // Email address
+  code      String   // 6-digit OTP code
+  used      Boolean  @default(false) // Has this OTP been used?
+  expiresAt DateTime @map("expires_at") // Expiration timestamp
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([email])
+  @@index([code])
+  @@index([expiresAt])
+  @@index([used])
+  @@map("otps")
 }

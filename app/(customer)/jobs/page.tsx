@@ -298,11 +298,8 @@ export default function CustomerJobsPage() {
                 icon={<Briefcase className="w-12 h-12" />}
                 title="Henüz işin yok"
                 description="Hemen bir hizmet talebi oluştur."
-                action={
-                  <Button onClick={() => router.push('/request')}>
-                    İş Talebi Oluştur
-                  </Button>
-                }
+                ctaText="İş Talebi Oluştur"
+                ctaAction={() => router.push('/request')}
               />
             ) : (
               filteredMyJobs.map((job) => {
@@ -347,10 +344,10 @@ export default function CustomerJobsPage() {
                                   <MapPin className="w-3.5 h-3.5" />
                                   <span>{job.city || 'Belirtilmemiş'}</span>
                                 </div>
-                                {job.budget && (
+                                {job.priceOffered && (
                                   <div className="flex items-center gap-1">
                                     <span className="font-bold text-[#FF6000]">
-                                      {job.budget} ₺
+                                      {job.priceOffered} ₺
                                     </span>
                                   </div>
                                 )}
@@ -429,10 +426,10 @@ export default function CustomerJobsPage() {
                                       : job.city || 'Belirtilmemiş'}
                                   </span>
                                 </div>
-                                {job.budget && (
+                                {job.priceOffered && (
                                   <div className="flex items-center gap-1">
                                     <span className="font-bold text-[#FF6000]">
-                                      {job.budget} ₺
+                                      {job.priceOffered} ₺
                                     </span>
                                   </div>
                                 )}

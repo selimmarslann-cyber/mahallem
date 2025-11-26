@@ -80,3 +80,6 @@ export function HizmetgoLogoLoader({
     </div>
   );
 }
+
+// Alias export for MahallemLogoLoader
+export const MahallemLogoLoader = HizmetgoLogoLoader;

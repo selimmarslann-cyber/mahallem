@@ -20,9 +20,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Sadece VENDOR görebilir
-    const roleCheck = await requireRole(userId, ['VENDOR'])
-    if (roleCheck.status === 403) {
-      return NextResponse.json({ error: roleCheck.error }, { status: 403 })
+    try {
+      await requireRole(userId, ['VENDOR'])
+    } catch (error: any) {
+      return NextResponse.json(
+        { error: error.message || 'Bu işlem için yetkiniz yok' },
+        { status: 403 }
+      )
     }
 
     // Kullanıcının işletmesini bul

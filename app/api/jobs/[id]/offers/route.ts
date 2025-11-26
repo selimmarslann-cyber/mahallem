@@ -102,9 +102,13 @@ export async function POST(
     }
 
     // Sadece VENDOR teklif verebilir
-    const roleCheck = await requireRole(userId, ['VENDOR'])
-    if (roleCheck.status === 403) {
-      return NextResponse.json({ error: roleCheck.error }, { status: 403 })
+    try {
+      await requireRole(userId, ['VENDOR'])
+    } catch (error: any) {
+      return NextResponse.json(
+        { error: error.message || 'Bu işlem için yetkiniz yok' },
+        { status: 403 }
+      )
     }
 
     const body = await request.json()
@@ -190,13 +194,13 @@ export async function POST(
     })
 
     // Müşteriye bildirim gönder
-    await createNotification(
-      job.customerId,
-      'OFFER_RECEIVED',
-      'Yeni Teklif',
-      `${business.name} işinize ${validated.amount} ₺ teklif verdi`,
-      { jobId: job.id, offerId: offer.id, businessId: business.id }
-    )
+    await createNotification({
+      userId: job.customerId,
+      type: 'OFFER_RECEIVED',
+      title: 'Yeni Teklif',
+      body: `${business.name} işinize ${validated.amount} ₺ teklif verdi`,
+      data: { jobId: job.id, offerId: offer.id, businessId: business.id },
+    })
 
     return NextResponse.json({ offer }, { status: 201 })
   } catch (error: any) {

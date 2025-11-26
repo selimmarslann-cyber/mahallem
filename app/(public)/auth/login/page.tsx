@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { login, getMe } from '@/lib/api/auth'
 import { ApiError } from '@/lib/api/client'
 import { useToast } from '@/lib/hooks/useToast'
-import { Mail, Phone, ArrowRight, UserPlus } from 'lucide-react'
+import { Mail, Phone, ArrowRight, UserPlus, Key } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -195,6 +195,12 @@ export default function LoginPage() {
               </div>
             </div>
 
+            <Link href="/auth/email-login">
+              <Button type="button" variant="outline" className="w-full h-12 border-2 mb-3">
+                <Mail className="w-4 h-4 mr-2" />
+                E-posta ile Giriş (Kod)
+              </Button>
+            </Link>
             <Link href="/auth/phone-login">
               <Button type="button" variant="outline" className="w-full h-12 border-2">
                 <Phone className="w-4 h-4 mr-2" />

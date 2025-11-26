@@ -178,13 +178,13 @@ export async function POST(request: NextRequest) {
       const business = allMatchingBusinesses.find((b) => b.ownerUserId === vendorScore.vendorId)
       if (!business) return null
 
-      return createNotification(
-        business.ownerUserId,
-        'JOB_CREATED',
-        'Yeni İş Talebi',
-        `${job.customer.name} size uygun bir iş talebi oluşturdu. Teklif vermek için tıklayın.`,
-        { jobId: job.id, mainCategoryId, city, matchScore: vendorScore.score }
-      )
+      return createNotification({
+        userId: business.ownerUserId,
+        type: 'JOB_CREATED',
+        title: 'Yeni İş Talebi',
+        body: `${job.customer.name} size uygun bir iş talebi oluşturdu. Teklif vermek için tıklayın.`,
+        data: { jobId: job.id, mainCategoryId, city, matchScore: vendorScore.score },
+      })
     })
 
     await Promise.all(notificationPromises.filter(Boolean))
@@ -192,7 +192,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         job,
-        notificationCount: matchingBusinesses.length,
+        notificationCount: allMatchingBusinesses.length,
       },
       { status: 201 }
     )

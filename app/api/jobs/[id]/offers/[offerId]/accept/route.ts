@@ -25,9 +25,13 @@ export async function POST(
     }
 
     // Sadece CUSTOMER teklif kabul edebilir
-    const roleCheck = await requireRole(userId, ['CUSTOMER'])
-    if (roleCheck.status === 403) {
-      return NextResponse.json({ error: roleCheck.error }, { status: 403 })
+    try {
+      await requireRole(userId, ['CUSTOMER'])
+    } catch (error: any) {
+      return NextResponse.json(
+        { error: error.message || 'Bu işlem için yetkiniz yok' },
+        { status: 403 }
+      )
     }
 
     const job = await prisma.job.findUnique({
@@ -117,13 +121,13 @@ export async function POST(
     })
 
     // İşletme sahibine bildirim gönder
-    await createNotification(
-      offer.business.ownerUserId,
-      'OFFER_ACCEPTED',
-      'Teklifiniz Kabul Edildi!',
-      `${job.customer.name} işinizi kabul etti. İşe başlayabilirsiniz.`,
-      { jobId: job.id, offerId: offer.id }
-    )
+    await createNotification({
+      userId: offer.business.ownerUserId,
+      type: 'OFFER_ACCEPTED',
+      title: 'Teklifiniz Kabul Edildi!',
+      body: `${job.customer.name} işinizi kabul etti. İşe başlayabilirsiniz.`,
+      data: { jobId: job.id, offerId: offer.id },
+    })
 
     // Diğer teklif verenlere bildirim gönder
     const rejectedOffers = await prisma.jobOffer.findMany({
@@ -138,13 +142,13 @@ export async function POST(
     })
 
     for (const rejectedOffer of rejectedOffers) {
-      await createNotification(
-        rejectedOffer.business.ownerUserId,
-        'OFFER_REJECTED',
-        'Teklifiniz Reddedildi',
-        `${job.customer.name} başka bir teklifi seçti.`,
-        { jobId: job.id, offerId: rejectedOffer.id }
-      )
+      await createNotification({
+        userId: rejectedOffer.business.ownerUserId,
+        type: 'OFFER_REJECTED',
+        title: 'Teklifiniz Reddedildi',
+        body: `${job.customer.name} başka bir teklifi seçti.`,
+        data: { jobId: job.id, offerId: rejectedOffer.id },
+      })
     }
 
     return NextResponse.json({ job: result })
