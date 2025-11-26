@@ -91,13 +91,14 @@ model Business {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  owner      User          @relation("BusinessOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
-  products   Product[]
-  orders     Order[]
-  reviews    Review[]
-  bans       BusinessBan[]
-  jobs       Job[]         @relation("JobBusiness") // Ustanın alabileceği işler
-  jobOffers  JobOffer[]    @relation("JobOfferBusiness") // FAZ 4: Verdiği teklifler
+  owner            User              @relation("BusinessOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  products         Product[]
+  orders           Order[]
+  reviews          Review[]
+  bans             BusinessBan[]
+  jobs             Job[]             @relation("JobBusiness") // Ustanın alabileceği işler
+  jobOffers        JobOffer[]        @relation("JobOfferBusiness") // FAZ 4: Verdiği teklifler
+  jobNotifications JobNotification[] @relation("JobNotificationBusiness") // İş bildirimleri
 
   @@index([ownerUserId])
   @@index([lat, lng])
@@ -174,10 +175,11 @@ model Order {
   addressText   String        @map("address_text")
   locationLat   Float?        @map("location_lat")
   locationLng   Float?        @map("location_lng")
-  scheduledAt   DateTime?     @map("scheduled_at")
-  completedAt   DateTime?     @map("completed_at") // FAZ 3: İş tamamlanma zamanı
-  createdAt     DateTime      @default(now()) @map("created_at")
-  updatedAt     DateTime      @updatedAt @map("updated_at")
+  scheduledAt        DateTime?     @map("scheduled_at")
+  expectedDeliveryAt DateTime?     @map("expected_delivery_at") // Teslim tahmini zamanı
+  completedAt        DateTime?     @map("completed_at") // FAZ 3: İş tamamlanma zamanı
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
 
   // Relations
   customer        User             @relation(fields: [customerId], references: [id], onDelete: Cascade)
@@ -187,6 +189,7 @@ model Order {
   review          Review?
   messages        Message[]
   referralRewards ReferralReward[]
+  deliveryReminder DeliveryReminder? // Teslime 5 dakika kala hatırlatma
 
   @@index([customerId])
   @@index([businessId])
@@ -412,9 +415,10 @@ model Job {
   updatedAt            DateTime  @updatedAt @map("updated_at")
 
   // Relations
-  customer   User      @relation("JobCustomer", fields: [customerId], references: [id], onDelete: Cascade)
-  acceptedBy Business? @relation("JobBusiness", fields: [acceptedByBusinessId], references: [id], onDelete: SetNull)
-  offers     JobOffer[] // FAZ 4: Teklifler
+  customer        User              @relation("JobCustomer", fields: [customerId], references: [id], onDelete: Cascade)
+  acceptedBy      Business?         @relation("JobBusiness", fields: [acceptedByBusinessId], references: [id], onDelete: SetNull)
+  offers          JobOffer[]        // FAZ 4: Teklifler
+  jobNotifications JobNotification[] @relation("JobNotificationJob") // İş bildirimleri
 
   @@index([customerId])
   @@index([mainCategoryId])
@@ -655,4 +659,43 @@ model Otp {
   @@index([expiresAt])
   @@index([used])
   @@map("otps")
+}
+
+// ============================================
+// 19. DELIVERY_REMINDER (Teslime 5 dakika kala hatırlatma)
+// ============================================
+model DeliveryReminder {
+  id        String   @id @default(uuid())
+  orderId   String   @unique @map("order_id")
+  remindAt  DateTime @map("remind_at") // expected_delivery_at - 5 dakika
+  processed Boolean  @default(false) // Mail gönderildi mi?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([remindAt])
+  @@index([processed])
+  @@index([orderId])
+  @@map("delivery_reminders")
+}
+
+// ============================================
+// 20. JOB_NOTIFICATION (İş bildirimleri - aynı job'a birden fazla mail gönderilmesini engellemek için)
+// ============================================
+model JobNotification {
+  id         String   @id @default(uuid())
+  jobId      String   @map("job_id")
+  businessId String   @map("business_id") // Provider / Business
+  sentAt     DateTime @default(now()) @map("sent_at")
+
+  // Relations
+  job      Job      @relation("JobNotificationJob", fields: [jobId], references: [id], onDelete: Cascade)
+  business Business @relation("JobNotificationBusiness", fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, businessId]) // Bir business'a aynı job için sadece bir kez mail gönder
+  @@index([jobId])
+  @@index([businessId])
+  @@index([sentAt])
+  @@map("job_notifications")
 }

@@ -4,6 +4,9 @@ import { requireCustomer } from '@/lib/auth/roleCheck'
 import { prisma } from '@/lib/db/prisma'
 import { createNotification } from '@/lib/notifications/createNotification'
 import { getBestMatchingVendors } from '@/lib/services/smartMatchingService'
+import { haversineDistanceKm } from '@/lib/utils/matching'
+import { sendMail } from '@/lib/mail'
+import { buildNearbyJobEmail } from '@/lib/mailTemplates'
 
 export async function POST(request: NextRequest) {
   try {
@@ -188,6 +191,110 @@ export async function POST(request: NextRequest) {
     })
 
     await Promise.all(notificationPromises.filter(Boolean))
+
+    // Yakın provider'lara email gönder (10 km içindeki)
+    if (job.locationLat && job.locationLng) {
+      const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://mahallem.app'
+      const jobLocation = { lat: job.locationLat, lng: job.locationLng }
+      
+      // Kategori adını almak için basit mapping (gerçek uygulamada serviceSearchService kullanılabilir)
+      const categoryNames: Record<string, string> = {
+        electricity: 'Elektrik',
+        plumbing: 'Tesisat',
+        cleaning: 'Temizlik',
+        painting: 'Boya',
+        carpentry: 'Marangoz',
+        other: 'Diğer',
+      }
+      const categoryName = categoryNames[mainCategoryId] || mainCategoryId
+
+      // 10 km içindeki provider'ları bul ve mail gönder
+      const emailPromises: Promise<void>[] = []
+
+      for (const business of allMatchingBusinesses) {
+        if (!business.lat || !business.lng) continue
+        if (!business.owner) continue
+
+        // Mesafe hesapla
+        const distanceKm = haversineDistanceKm(jobLocation, {
+          lat: business.lat,
+          lng: business.lng,
+        })
+
+        // 10 km içindeyse
+        if (distanceKm <= 10) {
+          // Aynı provider'a aynı job için daha önce mail gönderilmiş mi kontrol et
+          const existingNotification = await prisma.jobNotification.findUnique({
+            where: {
+              jobId_businessId: {
+                jobId: job.id,
+                businessId: business.id,
+              },
+            },
+          })
+
+          if (existingNotification) {
+            // Zaten mail gönderilmiş, atla
+            continue
+          }
+
+          // Provider'ın email adresini al (owner user'dan)
+          const ownerUser = await prisma.user.findUnique({
+            where: { id: business.owner.id },
+            select: { email: true },
+          })
+
+          if (!ownerUser?.email) {
+            continue
+          }
+
+          // JobNotification kaydı oluştur (mail göndermeden önce - duplicate mail'i önlemek için)
+          await prisma.jobNotification.create({
+            data: {
+              jobId: job.id,
+              businessId: business.id,
+            },
+          })
+
+          // Mail gönder (async - hata olsa bile job oluşturma akışını etkilemesin)
+          emailPromises.push(
+            (async () => {
+              try {
+                const jobLink = `${APP_URL}/jobs/${job.id}`
+                const { subject, html } = buildNearbyJobEmail({
+                  providerName: business.owner.name,
+                  jobId: job.id,
+                  distanceKm,
+                  category: categoryName,
+                  neighborhood: district,
+                  jobLink,
+                })
+
+                await sendMail(ownerUser.email, subject, html)
+                console.log('Yakın iş fırsatı maili gönderildi', {
+                  jobId: job.id,
+                  businessId: business.id,
+                  email: ownerUser.email,
+                  distanceKm,
+                })
+              } catch (mailError: any) {
+                // Mail hatası job oluşturma akışını etkilemesin, sadece log'a yaz
+                console.error('Yakın iş fırsatı maili gönderme hatası', {
+                  jobId: job.id,
+                  businessId: business.id,
+                  error: mailError.message,
+                })
+              }
+            })()
+          )
+        }
+      }
+
+      // Tüm mailleri paralel gönder (await yapmıyoruz - job oluşturma hızını etkilemesin)
+      Promise.all(emailPromises).catch((error) => {
+        console.error('Yakın provider mail gönderme genel hatası', error)
+      })
+    }
 
     return NextResponse.json(
       {

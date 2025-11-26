@@ -355,6 +355,40 @@ export async function updateOrderStatus(
     throw new Error('Sadece ACCEPTED veya IN_PROGRESS siparişler tamamlanabilir')
   }
 
+  // IN_PROGRESS durumunda: expected_delivery_at set et ve DeliveryReminder oluştur
+  if (status === 'IN_PROGRESS' && order.status !== 'IN_PROGRESS') {
+    const now = new Date()
+    const expectedDeliveryAt = new Date(now.getTime() + 20 * 60 * 1000) // 20 dakika sonra (varsayılan, gerçek hesaplama lojistik mantığına göre yapılabilir)
+    const remindAt = new Date(expectedDeliveryAt.getTime() - 5 * 60 * 1000) // 5 dakika önce
+
+    return prisma.$transaction(async (tx) => {
+      // Order'ı IN_PROGRESS yap ve expected_delivery_at set et
+      const updatedOrder = await tx.order.update({
+        where: { id: orderId },
+        data: {
+          status: 'IN_PROGRESS',
+          expectedDeliveryAt,
+        },
+      })
+
+      // DeliveryReminder oluştur (zaten varsa güncelle)
+      await tx.deliveryReminder.upsert({
+        where: { orderId },
+        create: {
+          orderId,
+          remindAt,
+          processed: false,
+        },
+        update: {
+          remindAt,
+          processed: false, // Yeni bir reminder varsa tekrar işlenebilir
+        },
+      })
+
+      return updatedOrder
+    })
+  }
+
   // COMPLETED durumunda: completedAt set, payment capture, wallet update, notification
   if (status === 'COMPLETED') {
     // Business owner'ı bul (vendorId için)
