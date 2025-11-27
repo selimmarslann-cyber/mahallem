@@ -18,7 +18,7 @@ interface SectionProps {
   contentClassName?: string
 }
 
-function Section({
+export default function Section({
   title,
   subtitle,
   children,
@@ -85,7 +85,3 @@ function Section({
     </section>
   )
 }
-
-export default Section
-export { Section }
-
