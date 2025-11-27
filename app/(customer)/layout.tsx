@@ -26,6 +26,7 @@ export default function CustomerLayout({
         <>
           <PartnerIntroDialog />
           <PromotionalBanner />
+          <AppHeader isPublic={true} />
           <TopNavigationBar />
           <CategoryBar />
         </>
