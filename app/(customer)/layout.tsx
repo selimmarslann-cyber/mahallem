@@ -7,6 +7,7 @@ import AppFooter from '@/components/layout/AppFooter'
 import PromotionalBanner from '@/components/layout/PromotionalBanner'
 import CategoryBar from '@/components/layout/CategoryBar'
 import PartnerIntroDialog from '@/components/partner/PartnerIntroDialog'
+import CustomerBottomNav from '@/components/layout/CustomerBottomNav'
 
 export default function CustomerLayout({
   children,
@@ -28,10 +29,11 @@ export default function CustomerLayout({
           <CategoryBar />
         </>
       )}
-      <main className={`flex-1 ${!isAccountPage ? 'pt-[170px]' : ''}`}>
+      <main className={`flex-1 ${!isAccountPage ? 'pt-[170px] pb-16 md:pb-0' : ''}`}>
         {children}
       </main>
       {!isAccountPage && <AppFooter />}
+      {!isAccountPage && <CustomerBottomNav />}
     </div>
   )
 }

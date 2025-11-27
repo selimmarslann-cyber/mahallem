@@ -19,10 +19,30 @@ const config = {
     },
     extend: {
       colors: {
+        // MAHALLEM Premium Brand Colors
+        brand: {
+          50: "#FFF7F2",
+          100: "#FFE5D4",
+          200: "#FFCAAA",
+          300: "#FFAC7A",
+          400: "#FF8E4D",
+          500: "#FF6A00", // Ana turuncu
+          600: "#E05900",
+          700: "#B84700",
+          800: "#8F3800",
+          900: "#612400",
+        },
+        // Neutral & Background Colors
+        background: "#F5F5F7",
+        surface: "#FFFFFF",
+        surfaceMuted: "#F9FAFB",
+        borderSoft: "#E5E7EB",
+        textPrimary: "#111827",
+        textSecondary: "#6B7280",
+        // Legacy shadcn colors (backward compatibility)
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",

@@ -98,83 +98,59 @@ export default function AppHeader({
   const hasWhiteBackground = whiteBackgroundPages.some(page => pathname.startsWith(page)) && pathname !== '/partner'
   
   return (
-    <header className={`fixed top-[50px] left-0 right-0 z-fixed w-full transition-all ${
+    <header className={`sticky top-0 z-50 w-full transition-all ${
       isPartnerPage 
         ? 'bg-slate-400/90 backdrop-blur-md shadow-md' 
-        : 'bg-[#FF6000] shadow-lg'
+        : 'bg-white/80 backdrop-blur-xl border-b border-slate-200/60'
     }`}>
       <div className="max-w-[90rem] mx-auto px-6 sm:px-8 lg:px-12">
         <div className="flex items-center justify-between gap-4 py-4">
-          {/* Logo + Brand - Trendyol Tarzı: hizmetgo (hizmet siyah, go turuncu) */}
-          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
-            <motion.div 
-              className="flex items-center gap-1"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <motion.span 
-                className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none text-black lowercase"
+          {/* Logo + Brand */}
+          <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+            <div className="flex items-center gap-1">
+              <span 
+                className="text-xl md:text-2xl font-bold leading-none text-slate-900 lowercase"
                 style={{ 
-                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
+                  fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                   letterSpacing: '-0.02em',
                   fontWeight: 700,
-                  fontStyle: 'normal'
                 }}
-                whileHover={{ opacity: 0.9 }}
-                transition={{ duration: 0.2 }}
               >
                 hizmet
-              </motion.span>
-              <motion.span 
-                className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none lowercase relative"
+              </span>
+              <span 
+                className="text-xl md:text-2xl font-bold leading-none lowercase"
                 style={{ 
-                  fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
+                  fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                   letterSpacing: '-0.02em',
                   fontWeight: 700,
-                  color: '#FF6000',
-                  fontStyle: 'normal',
-                  WebkitTextStroke: '2px white',
+                  color: '#FF6A00',
                 } as React.CSSProperties}
-                whileHover={{ opacity: 0.9 }}
-                transition={{ duration: 0.2 }}
               >
                 go
-              </motion.span>
-            </motion.div>
+              </span>
+            </div>
           </Link>
 
           {/* Center Nav - Three Main CTAs */}
           <nav className="hidden md:flex items-center gap-3 flex-1 justify-center" aria-label="Main navigation">
             {[
-              { label: 'Hizmetgo Go', href: '/map', icon: Bike, key: 'map', position: 'bottom-right' },
-              { label: 'Hizmetgo Ek Gelir', href: '/jobs?tab=instant', icon: Gauge, key: 'instant', position: 'bottom-right' },
-              { label: 'Hizmetgo Hizmet', href: '/request', icon: Wrench, key: 'service', position: 'bottom-right' },
+              { label: 'Hizmetleri Keşfedin', href: '/request', icon: Wrench, key: 'service' },
+              { label: 'Ek Gelir Kazan', href: '/earn', icon: Gauge, key: 'instant' },
             ].map((item) => {
               const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
               const Icon = item.icon
               
               return (
                 <Link key={item.key} href={item.href} aria-label={item.label}>
-                  <motion.div
-                    whileHover={{ y: -2 }}
-                    whileTap={{ y: 0 }}
-                    className="relative"
+                  <Button
+                    variant={isActive ? "default" : "ghost"}
+                    size="sm"
+                    className="flex items-center gap-2"
                   >
-                    <Button
-                      variant={isActive ? "default" : "outline"}
-                      size="sm"
-                      className={cn(
-                        "relative px-5 py-2.5 text-sm font-bold transition-all duration-200 bg-[#FF6000] text-black hover:bg-[#FF7000] border-0",
-                        isActive && "shadow-lg"
-                      )}
-                    >
-                      <span className="relative z-10">{item.label}</span>
-                      <Icon className={cn(
-                        "absolute w-5 h-5 text-black/60",
-                        item.position === 'bottom-right' && "bottom-1 right-1"
-                      )} />
-                    </Button>
-                  </motion.div>
+                    <Icon className="w-4 h-4" />
+                    <span>{item.label}</span>
+                  </Button>
                 </Link>
               )
             })}
@@ -206,43 +182,23 @@ export default function AppHeader({
                 </Link>
               </div>
             ) : (
-              /* Desktop CTAs - Beyaz Yazı */
+              /* Desktop CTAs */
               isPublic && (
                 <div className="hidden lg:flex items-center gap-2">
-                  {[
-                    { label: 'Giriş Yap', href: '/auth/login?redirect=/account' },
-                    { label: 'Esnaf Girişi', href: '/auth/business-login' },
-                    { label: 'Kayıt Ol', href: '/auth/register' },
-                    { label: 'Ortak Ol', href: '/partner', highlight: true },
-                  ].map((item) => (
-                    <motion.div
-                      key={item.label}
-                      whileHover={{ y: -2 }}
-                      whileTap={{ y: 0 }}
-                      className="relative"
-                    >
-                      {item.highlight ? (
-                        <Button
-                          onClick={() => router.push(item.href)}
-                          size="sm"
-                          className="bg-white text-[#FF6000] hover:bg-gray-50 font-bold shadow-lg"
-                        >
-                          {item.label}
-                        </Button>
-                      ) : (
-                        <span
-                          onClick={() => router.push(item.href)}
-                          className="relative px-4 py-2 text-sm font-bold text-black cursor-pointer transition-all duration-300 hover:text-gray-700"
-                          style={{
-                            fontFamily: "'Poppins', 'Inter', sans-serif",
-                            letterSpacing: '-0.2px',
-                          }}
-                        >
-                          {item.label}
-                        </span>
-                      )}
-                    </motion.div>
-                  ))}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => router.push('/auth/login?redirect=/account')}
+                  >
+                    Giriş Yap
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => router.push('/auth/register')}
+                  >
+                    Üye Ol
+                  </Button>
                 </div>
               )
             )}

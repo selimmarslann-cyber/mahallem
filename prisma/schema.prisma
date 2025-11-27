@@ -460,6 +460,9 @@ model InstantJob {
   locationLng      Float            @map("location_lng")
   city             String
   district         String?
+  requiresSkills   Boolean          @default(false) @map("requires_skills") // Vasıf gerektirir mi?
+  estimatedBudget  Decimal?         @map("estimated_budget") @db.Decimal(10, 2) // Tahmini bütçe (opsiyonel)
+  scheduledAt      DateTime?        @map("scheduled_at") // Ne zaman yapılacak?
   status           InstantJobStatus @default(OPEN) // OPEN, ACCEPTED, COMPLETED, CANCELLED
   acceptedByUserId String?          @map("accepted_by_user_id") // Hangi kullanıcı kabul etti
   offerCount       Int              @default(0) @map("offer_count") // Kaç teklif geldi (fiyat belirleme için)
@@ -518,7 +521,7 @@ model JobOffer {
   id          String         @id @default(uuid())
   jobId       String         @map("job_id")
   businessId  String         @map("business_id") // Teklif veren işletme
-  amount      Decimal        @db.Decimal(10, 2) // Teklif edilen fiyat
+  amount      Decimal?       @db.Decimal(10, 2) // Teklif edilen fiyat (opsiyonel)
   message     String? // İsteğe bağlı mesaj
   status      JobOfferStatus @default(PENDING) // PENDING, ACCEPTED, REJECTED
   createdAt   DateTime       @default(now()) @map("created_at")

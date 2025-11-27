@@ -14,6 +14,7 @@ import { useHizmetgoStore } from '@/lib/store/useHizmetgoStore'
 import { getMatchingVendors, haversineDistanceKm } from '@/lib/utils/matching'
 import type { Job } from '@/lib/types/mahallem'
 import EmptyState from '@/components/ui/empty-state'
+import ListSkeleton from '@/components/ui/ListSkeleton'
 import { useToast } from '@/lib/hooks/useToast'
 
 export default function CustomerJobsPage() {
@@ -218,10 +219,9 @@ export default function CustomerJobsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF6000]"></div>
-          <p className="mt-4 text-slate-500">Yükleniyor...</p>
+      <div className="min-h-screen bg-[#F5F5F7] pt-24 pb-24 md:pb-0">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <ListSkeleton count={5} />
         </div>
       </div>
     )

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
+import { getUserId } from '@/lib/auth/session'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -9,11 +10,20 @@ const ADMIN_USER_IDS = process.env.ADMIN_USER_IDS?.split(',') || []
 
 export async function GET(request: NextRequest) {
   try {
-    // TODO: Gerçek admin kontrolü ekle
-    // const userId = await getUserId()
-    // if (!userId || !ADMIN_USER_IDS.includes(userId)) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    // }
+    // Admin kontrolü
+    const userId = await getUserId(request)
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    })
+    
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
     // En çok kazanan 20 kullanıcı
     const topEarners = await prisma.$queryRaw<Array<{

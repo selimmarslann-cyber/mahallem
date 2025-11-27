@@ -11,7 +11,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const userId = await getUserId()
+    const userId = await getUserId(request)
     if (!userId) {
       return NextResponse.json(
         { error: 'Kullanıcı girişi gerekli' },
@@ -19,11 +19,18 @@ export async function GET(
       )
     }
 
-    // TODO: Admin kontrolü
-    // const user = await prisma.user.findUnique({ where: { id: userId } })
-    // if (!user || user.role !== 'ADMIN') {
-    //   return NextResponse.json({ error: 'Yetkisiz' }, { status: 403 })
-    // }
+    // Admin kontrolü
+    const adminUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    })
+    
+    if (!adminUser || adminUser.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Yetkisiz - Admin yetkisi gerekli' },
+        { status: 403 }
+      )
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: params.id },

@@ -15,17 +15,20 @@ import {
   Phone,
   Lock
 } from 'lucide-react'
+import { useToast } from '@/lib/hooks/useToast'
 
 export default function AccountSettingsPage() {
+  const { success: showSuccessToast, error: showErrorToast } = useToast()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [success, setSuccess] = useState(false)
 
   // Notification settings
   const [notifications, setNotifications] = useState({
+    instantJob: false,
     sms: false,
-    email: true,
-    push: true,
+    whatsapp: false,
+    email: false,
   })
 
   // Security settings
@@ -52,14 +55,21 @@ export default function AccountSettingsPage() {
       const res = await fetch('/api/auth/me', { credentials: 'include' })
       if (res.ok) {
         const data = await res.json()
-        setSecurity(prev => ({
-          ...prev,
-          phone: data.user.phone || '',
-        }))
+        const user = data.user
+        
+        // Notification settings
+        setNotifications({
+          instantJob: user.instantJobNotifications || false,
+          sms: user.smsNotifications || false,
+          whatsapp: user.whatsappNotifications || false,
+          email: user.emailMarketing || false,
+        })
+        
+        // Location settings
         setLocation({
-          city: data.user.city || '',
-          district: data.user.district || '',
-          neighborhood: data.user.neighborhood || '',
+          city: user.city || '',
+          district: '', // User modelinde yok, şimdilik boş
+          neighborhood: '', // User modelinde yok, şimdilik boş
         })
       }
     } catch (err) {
@@ -72,12 +82,29 @@ export default function AccountSettingsPage() {
   const handleSaveNotifications = async () => {
     setSaving(true)
     try {
-      // TODO: Backend'e kaydet
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const res = await fetch('/api/user/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          instantJobNotifications: notifications.instantJob,
+          smsNotifications: notifications.sms,
+          whatsappNotifications: notifications.whatsapp,
+          emailMarketing: notifications.email,
+        }),
+        credentials: 'include',
+      })
+
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Bildirim ayarları kaydedilemedi')
+      }
+
       setSuccess(true)
+      showSuccessToast('Bildirim ayarları başarıyla kaydedildi')
       setTimeout(() => setSuccess(false), 3000)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Kaydetme hatası:', err)
+      showErrorToast(err.message || 'Bildirim ayarları kaydedilemedi')
     } finally {
       setSaving(false)
     }
@@ -111,12 +138,52 @@ export default function AccountSettingsPage() {
   const handleSaveLocation = async () => {
     setSaving(true)
     try {
-      // TODO: Backend'e kaydet
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Get user location if available (async)
+      const getLocation = (): Promise<{ lat: number | null; lng: number | null }> => {
+        return new Promise((resolve) => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                resolve({
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude,
+                })
+              },
+              () => {
+                // Geolocation denied or failed, continue without it
+                resolve({ lat: null, lng: null })
+              }
+            )
+          } else {
+            resolve({ lat: null, lng: null })
+          }
+        })
+      }
+
+      const coords = await getLocation()
+
+      const res = await fetch('/api/user/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          city: location.city || null,
+          locationLat: coords.lat,
+          locationLng: coords.lng,
+        }),
+        credentials: 'include',
+      })
+
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Konum ayarları kaydedilemedi')
+      }
+
       setSuccess(true)
+      showSuccessToast('Konum ayarları başarıyla kaydedildi')
       setTimeout(() => setSuccess(false), 3000)
-    } catch (err) {
+    } catch (err: any) {
       console.error('Kaydetme hatası:', err)
+      showErrorToast(err.message || 'Konum ayarları kaydedilemedi')
     } finally {
       setSaving(false)
     }
@@ -137,13 +204,12 @@ export default function AccountSettingsPage() {
         <p className="text-gray-600 mt-2">Hesap ayarlarınızı yönetin</p>
       </div>
 
-      {/* Info Banner */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
-        <p>
-          <strong>Not:</strong> Bu sayfadaki ayarlar henüz backend'e bağlanmamış olabilir. 
-          UI temelini oluşturuyor.
-        </p>
-      </div>
+      {/* Success Banner */}
+      {success && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-sm text-green-800">
+          <p>✓ Ayarlar başarıyla kaydedildi</p>
+        </div>
+      )}
 
       {/* Notification Settings */}
       <motion.div
@@ -161,6 +227,21 @@ export default function AccountSettingsPage() {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
+                <Label htmlFor="instantJob">Anlık İş Bildirimleri</Label>
+                <p className="text-xs text-gray-500">
+                  Yakınındaki anlık işler için bildirim al
+                </p>
+              </div>
+              <Switch
+                id="instantJob"
+                checked={notifications.instantJob}
+                onCheckedChange={(checked) =>
+                  setNotifications(prev => ({ ...prev, instantJob: checked }))
+                }
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
                 <Label htmlFor="sms">SMS ile bilgilendirme</Label>
                 <p className="text-xs text-gray-500">
                   Önemli işlemler için SMS alın
@@ -176,9 +257,24 @@ export default function AccountSettingsPage() {
             </div>
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label htmlFor="email">E-posta ile bilgilendirme</Label>
+                <Label htmlFor="whatsapp">WhatsApp bildirimleri</Label>
                 <p className="text-xs text-gray-500">
-                  Güncellemeler ve bildirimler için e-posta alın
+                  WhatsApp üzerinden bildirim al
+                </p>
+              </div>
+              <Switch
+                id="whatsapp"
+                checked={notifications.whatsapp}
+                onCheckedChange={(checked) =>
+                  setNotifications(prev => ({ ...prev, whatsapp: checked }))
+                }
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor="email">E-posta pazarlama</Label>
+                <p className="text-xs text-gray-500">
+                  Kampanya ve fırsatlar için e-posta alın
                 </p>
               </div>
               <Switch
@@ -186,21 +282,6 @@ export default function AccountSettingsPage() {
                 checked={notifications.email}
                 onCheckedChange={(checked) =>
                   setNotifications(prev => ({ ...prev, email: checked }))
-                }
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="push">Uygulama içi bildirim</Label>
-                <p className="text-xs text-gray-500">
-                  Push bildirimleri alın
-                </p>
-              </div>
-              <Switch
-                id="push"
-                checked={notifications.push}
-                onCheckedChange={(checked) =>
-                  setNotifications(prev => ({ ...prev, push: checked }))
                 }
               />
             </div>

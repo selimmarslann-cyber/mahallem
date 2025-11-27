@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Star } from 'lucide-react'
+import { Star, MessageCircle, FileText, ArrowRight } from 'lucide-react'
 import { useToast } from '@/lib/hooks/useToast'
 
 export default function OrderDetailPage() {
@@ -145,6 +145,30 @@ export default function OrderDetailPage() {
                   </div>
                 </div>
               )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Action Buttons */}
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                variant="outline"
+                onClick={() => router.push(`/orders/${params.id}`)}
+                className="flex-1"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Sipariş Detayına Git
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+              <Button
+                onClick={() => router.push(`/orders/${params.id}/chat`)}
+                className="flex-1"
+              >
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Esnaf ile Yazış
+              </Button>
             </div>
           </CardContent>
         </Card>

@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { Star, MapPin, Clock } from 'lucide-react'
+import { Star, MapPin, Clock, Store, ShoppingCart } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils/cn'
 
 interface BusinessCardProps {
@@ -19,6 +20,9 @@ interface BusinessCardProps {
   image?: string
   isOnline?: boolean
   href?: string
+  avgResponseTime?: number | null // Saat cinsinden ortalama yanıt süresi
+  onOrderClick?: (businessId: string) => void // "Sipariş ver" butonu için
+  showActions?: boolean // "Mağazaya git" ve "Sipariş ver" butonlarını göster
 }
 
 export default function BusinessCard({
@@ -32,6 +36,9 @@ export default function BusinessCard({
   image,
   isOnline = false,
   href = `/business/${id}`,
+  avgResponseTime,
+  onOrderClick,
+  showActions = false,
 }: BusinessCardProps) {
   return (
     <Link href={href}>
@@ -89,6 +96,14 @@ export default function BusinessCard({
                 </span>
               </div>
 
+              {/* Response Time */}
+              {avgResponseTime !== undefined && avgResponseTime !== null && (
+                <div className="flex items-center gap-1 text-xs text-gray-600">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>Ort. yanıt: {avgResponseTime.toFixed(1)} saat</span>
+                </div>
+              )}
+
               {/* Distance & Price */}
               <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                 {distance !== undefined && (
@@ -103,6 +118,32 @@ export default function BusinessCard({
                   </Badge>
                 )}
               </div>
+
+              {/* Action Buttons */}
+              {showActions && (
+                <div className="flex gap-2 pt-2 border-t border-gray-100">
+                  <Link href={href} className="flex-1" onClick={(e) => e.stopPropagation()}>
+                    <Button variant="outline" size="sm" className="w-full text-xs">
+                      <Store className="w-3 h-3 mr-1" />
+                      Mağazaya Git
+                    </Button>
+                  </Link>
+                  {onOrderClick && (
+                    <Button
+                      size="sm"
+                      className="flex-1 text-xs"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        onOrderClick(id)
+                      }}
+                    >
+                      <ShoppingCart className="w-3 h-3 mr-1" />
+                      Sipariş Ver
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

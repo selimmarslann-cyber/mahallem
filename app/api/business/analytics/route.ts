@@ -174,6 +174,47 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 10)
 
+    // Get reviews for rating trend calculation
+    const reviews = await prisma.review.findMany({
+      where: {
+        businessId: business.id,
+      },
+      select: {
+        rating: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    })
+
+    // Calculate rating trend function
+    const calculateRatingTrend = (reviews: Array<{ rating: number; createdAt: Date }>): number => {
+      if (reviews.length < 2) return 0
+      
+      const now = new Date()
+      const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      const previous30Days = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000)
+      
+      const recentReviews = reviews.filter(
+        (r) => new Date(r.createdAt) >= last30Days
+      )
+      const previousReviews = reviews.filter(
+        (r) => new Date(r.createdAt) >= previous30Days && new Date(r.createdAt) < last30Days
+      )
+      
+      if (recentReviews.length === 0 || previousReviews.length === 0) {
+        return 0
+      }
+      
+      const recentAvg = recentReviews.reduce((sum, r) => sum + r.rating, 0) / recentReviews.length
+      const previousAvg = previousReviews.reduce((sum, r) => sum + r.rating, 0) / previousReviews.length
+      
+      if (previousAvg === 0) return 0
+      
+      return ((recentAvg - previousAvg) / previousAvg) * 100
+    }
+
     // Weekly data (last 7 days)
     const weeklyData = []
     for (let i = 6; i >= 0; i--) {
@@ -209,7 +250,7 @@ export async function GET(request: NextRequest) {
       ratings: {
         average: business.avgRating,
         count: business.reviewCount,
-        trend: 0, // TODO: Calculate rating trend
+        trend: calculateRatingTrend(reviews), // Rating trend hesapla
       },
       weeklyData,
     })

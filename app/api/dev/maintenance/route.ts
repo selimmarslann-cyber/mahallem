@@ -34,9 +34,27 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * GET endpoint - durum kontrolü için
+ * GET endpoint - durum kontrolü için (sadece admin veya CRON_SECRET ile)
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // CRON_SECRET kontrolü
+  const cronSecret = request.headers.get('x-cron-secret') || request.headers.get('authorization')?.replace('Bearer ', '')
+  const expectedSecret = process.env.CRON_SECRET
+  
+  if (!expectedSecret) {
+    return NextResponse.json(
+      { error: 'Server configuration error' },
+      { status: 500 }
+    )
+  }
+  
+  if (cronSecret !== expectedSecret) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+  
   return NextResponse.json({
     message: 'Maintenance endpoint aktif',
     note: 'POST isteği göndererek AUTO_OFFLINE kontrollerini çalıştırabilirsiniz',

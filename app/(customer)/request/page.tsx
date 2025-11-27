@@ -12,6 +12,7 @@ import { useToast } from '@/lib/hooks/useToast'
 import BusinessCard from '@/components/home/BusinessCard'
 import EmptyState from '@/components/ui/empty-state'
 import { getKeywordSuggestions } from '@/lib/utils/keywords'
+import RequestFlow from '@/components/request/RequestFlow'
 
 interface Business {
   id: string
@@ -38,6 +39,10 @@ export default function ServicesPage() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [suggestions, setSuggestions] = useState<string[]>([])
+
+  // Eğer categoryId varsa RequestFlow göster
+  const categoryId = searchParams.get('categoryId')
+  const showRequestFlow = !!categoryId
 
   useEffect(() => {
     getUserLocation()
@@ -137,6 +142,11 @@ export default function ServicesPage() {
       `Merhaba, "${searchQuery}" hizmeti hakkında bilgi almak istiyorum.`
     )
     window.open(`https://wa.me/${phone.replace(/\D/g, '')}?text=${message}`, '_blank')
+  }
+
+  // RequestFlow gösterilmesi gerekiyorsa onu göster
+  if (showRequestFlow) {
+    return <RequestFlow />
   }
 
   return (

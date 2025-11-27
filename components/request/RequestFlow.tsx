@@ -16,6 +16,9 @@ import {
   ChevronRight,
   Zap,
   Sparkles,
+  Loader2,
+  DollarSign,
+  Info,
 } from 'lucide-react'
 import { SERVICE_CATEGORIES } from '@/lib/data/service-categories'
 import { ServiceCategory, SubService } from '@/lib/types/service-categories'
@@ -50,6 +53,8 @@ export default function RequestFlow() {
   const [loading, setLoading] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | null>(null)
   const [selectedSubService, setSelectedSubService] = useState<SubService | null>(null)
+  const [priceGuide, setPriceGuide] = useState<{ min: number; max: number; average: number; count: number } | null>(null)
+  const [loadingPriceGuide, setLoadingPriceGuide] = useState(false)
   const [formData, setFormData] = useState<RequestFormData>({
     categoryId: null,
     subServiceId: null,
@@ -57,6 +62,32 @@ export default function RequestFlow() {
     desiredDate: null,
     description: '',
   })
+
+  // Fiyat rehberi yükle (alt kategori seçildiğinde)
+  useEffect(() => {
+    if (selectedCategory && selectedSubService && !selectedSubService.isOther) {
+      setLoadingPriceGuide(true)
+      fetch(
+        `/api/price-guide?categoryId=${selectedCategory.id}&subServiceId=${selectedSubService.id}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.priceGuide) {
+            setPriceGuide(data.priceGuide)
+          } else {
+            setPriceGuide(null)
+          }
+        })
+        .catch(() => {
+          setPriceGuide(null)
+        })
+        .finally(() => {
+          setLoadingPriceGuide(false)
+        })
+    } else {
+      setPriceGuide(null)
+    }
+  }, [selectedCategory, selectedSubService])
 
   // URL'den kategori bilgisini al ve step'i belirle
   useEffect(() => {
@@ -241,35 +272,34 @@ export default function RequestFlow() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-md mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-background">
+      {/* Premium Header with Step Indicator */}
+      <div className="bg-surface border-b border-borderSoft/70 sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6">
+          <div className="flex items-center justify-between mb-4">
             <Button variant="ghost" size="sm" onClick={handleBack}>
               ← Geri
             </Button>
-            <h1 className="font-semibold">İş İsteği Oluştur</h1>
+            <h1 className="text-xl md:text-2xl font-semibold text-textPrimary">Ne tür bir hizmete ihtiyacın var?</h1>
             <div className="w-12" />
           </div>
 
-          {/* Step Indicator */}
-          <div className="flex items-center gap-2 mt-4">
+          {/* Premium Step Indicator */}
+          <div className="flex items-center gap-2">
             {[0, 1, 2, 3].map((s) => {
-              // Adım numaralarını daha anlamlı göster
               const stepLabels = ['Kategori', 'Alt Hizmet', 'Tarih', 'Açıklama']
               return (
                 <div key={s} className="flex-1">
-                  <div
-                    className={`h-1.5 rounded-full transition-colors ${
-                      s <= step ? 'bg-primary' : 'bg-gray-200'
-                    }`}
-                  />
-                  {s === step && (
-                    <p className="text-xs text-primary font-medium mt-1 text-center">
-                      {stepLabels[s]}
-                    </p>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <div className={`h-2 flex-1 rounded-full transition-colors ${
+                      s <= step ? 'bg-brand-500' : 'bg-borderSoft'
+                    }`} />
+                  </div>
+                  <p className={`text-xs md:text-sm font-medium mt-2 text-center ${
+                    s <= step ? 'text-brand-600' : 'text-textSecondary'
+                  }`}>
+                    {stepLabels[s]}
+                  </p>
                 </div>
               )
             })}
@@ -277,16 +307,16 @@ export default function RequestFlow() {
         </div>
       </div>
 
-      <div className="max-w-md mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-8">
         {/* Step 0: Kategori Seçimi */}
         {step === 0 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Hangi hizmete ihtiyacınız var?
+              <h2 className="text-2xl md:text-3xl font-semibold text-textPrimary mb-2">
+                Hangi hizmete ihtiyacın var?
               </h2>
-              <p className="text-slate-600">
-                Kategori seçin veya arama yaparak bulun.
+              <p className="text-textSecondary">
+                Kategori seç, birkaç soruyu cevapla, mahalle ustalarından teklif al.
               </p>
             </div>
 
@@ -296,10 +326,10 @@ export default function RequestFlow() {
                 <button
                   key={category.id}
                   onClick={() => handleCategorySelect(category)}
-                  className="w-full p-4 rounded-xl border-2 border-gray-200 hover:border-primary hover:bg-primary/5 transition-all text-left"
+                  className="w-full p-4 rounded-xl border-2 border-borderSoft hover:border-brand-400 hover:bg-brand-50 transition-all text-left"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-900">{category.name}</span>
+                    <span className="font-medium text-textPrimary">{category.name}</span>
                     <ChevronRight className="w-5 h-5 text-gray-400" />
                   </div>
                 </button>
@@ -312,20 +342,20 @@ export default function RequestFlow() {
         {step === 1 && selectedCategory && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Hangi alt hizmete ihtiyacınız var?
+              <h2 className="text-2xl md:text-3xl font-semibold text-textPrimary mb-2">
+                Hangi alt hizmete ihtiyacın var?
               </h2>
-              <p className="text-slate-600">
+              <p className="text-textSecondary">
                 {selectedCategory.name} kategorisi için alt hizmet seçin.
               </p>
             </div>
 
             {/* Seçili Kategori Göstergesi */}
-            <Card className="bg-blue-50 border-blue-200">
+            <Card className="bg-brand-50 border-brand-200">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-blue-600" />
-                  <p className="text-sm font-semibold text-blue-900">
+                  <CheckCircle2 className="w-5 h-5 text-brand-600" />
+                  <p className="text-sm font-semibold text-brand-900">
                     {selectedCategory.name}
                   </p>
                 </div>
@@ -340,20 +370,20 @@ export default function RequestFlow() {
                   onClick={() => handleSubServiceSelect(subService)}
                   className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
                     selectedSubService?.id === subService.id
-                      ? 'border-primary bg-primary/5 shadow-md'
-                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                      ? 'border-brand-500 bg-brand-50 shadow-md'
+                      : 'border-borderSoft hover:border-brand-300 bg-surface'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <span className={`font-medium ${
-                      selectedSubService?.id === subService.id ? 'text-primary' : 'text-gray-900'
+                      selectedSubService?.id === subService.id ? 'text-brand-700' : 'text-textPrimary'
                     }`}>
                       {subService.name}
                     </span>
                     {selectedSubService?.id === subService.id ? (
-                      <CheckCircle2 className="w-5 h-5 text-primary" />
+                      <CheckCircle2 className="w-5 h-5 text-brand-600" />
                     ) : (
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                      <ChevronRight className="w-5 h-5 text-textSecondary" />
                     )}
                   </div>
                 </button>
@@ -362,35 +392,37 @@ export default function RequestFlow() {
           </div>
         )}
 
-        {/* Step 2: Tarih & Aciliyet */}
+        {/* Step 2: Tarih & Aciliyet - Premium Desktop Layout */}
         {step === 2 && (
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Hizmete ne zaman ihtiyacınız var?
-              </h2>
-              <p className="text-slate-600">
-                Esnaflarınız, seçtiğiniz tarihe göre teklif verecek.
-              </p>
-            </div>
+          <div className="grid md:grid-cols-5 gap-6 md:gap-8">
+            {/* Left: Form Area (3/5) */}
+            <div className="md:col-span-3 space-y-6">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-semibold text-textPrimary mb-2">
+                  Hizmete ne zaman ihtiyacın var?
+                </h2>
+                <p className="text-textSecondary">
+                  Esnafların, seçtiğin tarihe göre teklif verecek.
+                </p>
+              </div>
 
-            {selectedCategory && (
-              <Card className="bg-blue-50 border-blue-200">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-blue-600" />
-                    <div>
-                      <p className="text-sm font-semibold text-blue-900">
-                        {selectedCategory.name}
-                        {selectedSubService && ` - ${selectedSubService.name}`}
-                      </p>
+              {selectedCategory && (
+                <Card className="bg-brand-50 border-brand-200">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-brand-600" />
+                      <div>
+                        <p className="text-sm font-semibold text-brand-900">
+                          {selectedCategory.name}
+                          {selectedSubService && ` - ${selectedSubService.name}`}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                  </CardContent>
+                </Card>
+              )}
 
-            <div className="space-y-3">
+              <div className="space-y-3">
               {URGENCY_OPTIONS.map((option) => {
                 const Icon = option.icon
                 const isSelected = formData.urgency === option.id
@@ -400,15 +432,15 @@ export default function RequestFlow() {
                     onClick={() => handleUrgencySelect(option.id)}
                     className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
                       isSelected
-                        ? 'border-primary bg-primary/5 shadow-md'
-                        : 'border-gray-200 hover:border-gray-300 bg-white'
+                        ? 'border-brand-500 bg-brand-50 shadow-md'
+                        : 'border-borderSoft hover:border-brand-300 bg-surface'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-lg ${option.color} flex items-center justify-center flex-shrink-0`}>
                         <Icon className="w-5 h-5 text-white" />
                       </div>
-                      <span className={`font-medium ${isSelected ? 'text-primary' : 'text-gray-700'}`}>
+                      <span className={`font-medium ${isSelected ? 'text-brand-700' : 'text-textPrimary'}`}>
                         {option.label}
                       </span>
                     </div>
@@ -428,17 +460,86 @@ export default function RequestFlow() {
                   value={formData.desiredDate || ''}
                   onChange={(e) => handleDateChange(e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-primary focus:outline-none"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-borderSoft focus:border-brand-400 focus:ring-2 focus:ring-brand-200 focus:outline-none"
                 />
               </div>
             )}
 
-            <Alert className="mt-6">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription className="text-xs">
-                Acil işler için esnaflar daha hızlı yanıt verebilir. Normal işler için daha fazla teklif alabilirsiniz.
-              </AlertDescription>
-            </Alert>
+              <Alert className="mt-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription className="text-xs">
+                  Acil işler için esnaflar daha hızlı yanıt verebilir. Normal işler için daha fazla teklif alabilirsiniz.
+                </AlertDescription>
+              </Alert>
+            </div>
+
+            {/* Right: Price Guide & Featured Vendors (2/5) */}
+            <div className="md:col-span-2 space-y-6">
+              {/* Price Guide Card - Premium */}
+              {loadingPriceGuide ? (
+                <Card className="bg-surfaceMuted border-borderSoft/70">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-5 h-5 animate-spin text-textSecondary" />
+                      <p className="text-sm text-textSecondary">Fiyat rehberi yükleniyor...</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : priceGuide ? (
+                <Card className="bg-brand-50 border-brand-100">
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <DollarSign className="w-5 h-5 text-brand-600" />
+                      <p className="text-sm font-semibold text-brand-900">
+                        Benzer işlerin fiyat aralığı
+                      </p>
+                    </div>
+                    <p className="text-2xl font-bold text-brand-800 mb-1">
+                      {priceGuide.min.toFixed(0)} ₺ – {priceGuide.max.toFixed(0)} ₺
+                    </p>
+                    <p className="text-xs text-brand-700">
+                      Ortalama: {priceGuide.average.toFixed(0)} ₺ ({priceGuide.count} iş baz alınarak)
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : selectedSubService && !selectedSubService.isOther ? (
+                <Card className="bg-surfaceMuted border-borderSoft/70">
+                  <CardContent className="p-5">
+                    <p className="text-sm text-textSecondary">
+                      Bu hizmet için yeterli fiyat rehberi verisi bulunamadı.
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : null}
+
+              {/* Featured Vendors Card - Premium */}
+              <Card className="bg-surface border-borderSoft/70">
+                <CardContent className="p-5">
+                  <h3 className="text-base font-semibold text-textPrimary mb-4">Öne Çıkan Ustalar</h3>
+                  <div className="space-y-3">
+                    {/* Dummy vendor cards - will be replaced with real data later */}
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-surfaceMuted">
+                        <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0">
+                          <span className="text-brand-600 font-semibold text-sm">U{i}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-textPrimary truncate">Usta İsmi {i}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-xs text-textSecondary">⭐ 4.{8 - i}</span>
+                            <span className="text-xs text-textSecondary">•</span>
+                            <span className="text-xs text-textSecondary">Son 30 günde {10 + i * 2} iş</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Button variant="ghost" size="sm" className="w-full mt-4 text-brand-600">
+                    Tüm ustaları gör
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
 
@@ -463,7 +564,7 @@ export default function RequestFlow() {
                 placeholder="Örn: Banyonun tavanında su kaçağı var, alt kata su iniyor. Acil bakılması gerekiyor. Lütfen en az 10 kelime ile işinizi açıklayın - ne yapılmasını istediğinizi, sorunun ne olduğunu, özel bir durum varsa belirtin. Esnaflar bu bilgilere göre size en uygun teklifi verecek."
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className="min-h-[200px] text-base"
+                className="min-h-[200px] text-base rounded-xl border-2 border-borderSoft focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
               />
               <div className="mt-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">

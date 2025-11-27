@@ -25,8 +25,12 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import MapFilters from '@/components/map/MapFilters'
 import BusinessCard from '@/components/home/BusinessCard'
+import { useCartStore } from '@/lib/store/useCartStore'
+import { haversineDistanceKm } from '@/lib/utils/matching'
+import EmptyState from '@/components/ui/empty-state'
 
 const LeafletMap = dynamic(
   () => import('@/components/map/LeafletMapBusinesses'),
@@ -59,13 +63,7 @@ interface Product {
   active: boolean
 }
 
-interface CartItem {
-  productId: string
-  productName: string
-  price: number
-  quantity: number
-  imageUrl?: string
-}
+// CartItem interface removed - using useCartStore instead
 
 const CATEGORIES = [
   'Temizlik',
@@ -83,8 +81,10 @@ export default function MapPage() {
   const [businesses, setBusinesses] = useState<Business[]>([])
   const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([])
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null)
-  const [cart, setCart] = useState<CartItem[]>([])
   const [userLocation, setUserLocation] = useState<[number, number]>([41.0082, 28.9784])
+  
+  // Global cart store
+  const { items: cartItems, addItem, removeItem, updateQuantity, getTotal, getItemCount } = useCartStore()
   const [loading, setLoading] = useState(true)
   
   // Search
@@ -93,7 +93,9 @@ export default function MapPage() {
   // Filters
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [maxDistance, setMaxDistance] = useState(10)
-  const [sortBy, setSortBy] = useState<'distance' | 'rating' | 'price'>('distance')
+  const [sortBy, setSortBy] = useState<'distance' | 'rating' | 'responseTime'>('distance')
+  const [openNow, setOpenNow] = useState(false)
+  const [highRated, setHighRated] = useState(false)
   
   // Mobile view toggle
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map')
@@ -115,7 +117,14 @@ export default function MapPage() {
   }, [])
 
   const applyFilters = useCallback(() => {
-    let filtered = [...businesses]
+    let filtered = businesses.map((b) => {
+      // Mesafe hesapla
+      const distance = haversineDistanceKm(
+        { lat: userLocation[0], lng: userLocation[1] },
+        { lat: b.lat, lng: b.lng }
+      )
+      return { ...b, distance }
+    })
 
     // Search filter
     if (searchQuery.trim()) {
@@ -132,24 +141,42 @@ export default function MapPage() {
       filtered = filtered.filter((b) => selectedCategories.includes(b.category))
     }
 
-    // Distance filter (mock - would need actual distance calculation)
-    // For now, we'll just use the businesses as-is
+    // Distance filter
+    filtered = filtered.filter((b) => (b.distance || 999) <= maxDistance)
+
+    // Open now filter
+    if (openNow) {
+      filtered = filtered.filter((b) => b.onlineStatus === 'ONLINE')
+    }
+
+    // High rated filter
+    if (highRated) {
+      filtered = filtered.filter((b) => b.avgRating >= 4.0)
+    }
 
     // Sort
     filtered.sort((a, b) => {
       if (sortBy === 'rating') {
+        // Önce rating, sonra review count
+        const ratingDiff = b.avgRating - a.avgRating
+        if (Math.abs(ratingDiff) < 0.1) {
+          return b.reviewCount - a.reviewCount
+        }
+        return ratingDiff
+      } else if (sortBy === 'responseTime') {
+        // Response time yoksa en alta (varsayılan olarak rating'e göre)
+        // Şimdilik rating'e göre sırala
         return b.avgRating - a.avgRating
-      } else if (sortBy === 'price') {
-        // Mock price comparison
-        return 0
       } else {
-        // Distance (mock)
-        return 0
+        // Distance (default)
+        const distA = a.distance || 999
+        const distB = b.distance || 999
+        return distA - distB
       }
     })
 
     setFilteredBusinesses(filtered)
-  }, [businesses, selectedCategories, maxDistance, sortBy, searchQuery])
+  }, [businesses, selectedCategories, maxDistance, sortBy, searchQuery, openNow, highRated, userLocation])
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -202,62 +229,47 @@ export default function MapPage() {
   }
 
   const addToCart = (product: Product) => {
-    const existingItem = cart.find((item) => item.productId === product.id)
+    if (!selectedBusiness) return
     
-    if (existingItem) {
-      setCart(
-        cart.map((item) =>
-          item.productId === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      )
-    } else {
-      setCart([
-        ...cart,
-        {
-          productId: product.id,
-          productName: product.name,
-          price: product.price,
-          quantity: 1,
-          imageUrl: product.imageUrl,
-        },
-      ])
-    }
+    addItem({
+      productId: product.id,
+      businessId: selectedBusiness.id,
+      businessName: selectedBusiness.name,
+      productName: product.name,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      quantity: 1,
+    })
   }
 
   const removeFromCart = (productId: string) => {
-    const item = cart.find((i) => i.productId === productId)
-    if (item && item.quantity > 1) {
-      setCart(
-        cart.map((i) =>
-          i.productId === productId ? { ...i, quantity: i.quantity - 1 } : i
-        )
-      )
+    if (!selectedBusiness) return
+    
+    const itemId = `${selectedBusiness.id}_${productId}`
+    const existingItem = cartItems.find((i) => i.id === itemId)
+    
+    if (existingItem && existingItem.quantity > 1) {
+      updateQuantity(itemId, existingItem.quantity - 1)
     } else {
-      setCart(cart.filter((i) => i.productId !== productId))
+      removeItem(itemId)
     }
-  }
-
-  const getCartTotal = () => {
-    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  }
-
-  const getCartItemCount = () => {
-    return cart.reduce((sum, item) => sum + item.quantity, 0)
   }
 
   const resetFilters = () => {
     setSelectedCategories([])
     setMaxDistance(10)
     setSortBy('distance')
+    setOpenNow(false)
+    setHighRated(false)
+    setSearchQuery('')
   }
 
   return (
     <div className="min-h-screen bg-[#F5F5F7]">
-      {/* Search Bar - Sol Üst */}
+      {/* Search Bar & Toolbar */}
       <div className="sticky top-16 z-30 bg-white border-b shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="max-w-7xl mx-auto px-4 py-3 space-y-3">
+          {/* Search */}
           <div className="flex items-center gap-3">
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -291,6 +303,51 @@ export default function MapPage() {
               </Button>
             </div>
           </div>
+
+          {/* Fixed Filter & Sort Toolbar */}
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 pt-2 border-t">
+            {/* Quick Filters */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant={openNow ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setOpenNow(!openNow)}
+                className="h-8 text-xs"
+              >
+                <Zap className="w-3 h-3 mr-1" />
+                Açık Şimdi
+              </Button>
+              <Button
+                variant={highRated ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setHighRated(!highRated)}
+                className="h-8 text-xs"
+              >
+                <Star className="w-3 h-3 mr-1" />
+                Yüksek Puanlı
+              </Button>
+            </div>
+
+            {/* Sort */}
+            <div className="flex items-center gap-2 ml-auto">
+              <span className="text-xs text-textSecondary hidden sm:inline">Sırala:</span>
+              <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'distance' | 'rating' | 'responseTime')}>
+                <SelectTrigger className="w-32 h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="distance">En Yakın</SelectItem>
+                  <SelectItem value="rating">En Yüksek Puan</SelectItem>
+                  <SelectItem value="responseTime">En Hızlı Yanıt</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Result Count */}
+            <div className="text-xs text-textSecondary hidden md:inline">
+              {filteredBusinesses.length} esnaf bulundu
+            </div>
+          </div>
         </div>
       </div>
 
@@ -311,8 +368,39 @@ export default function MapPage() {
       )}
 
       <div className="flex flex-col md:flex-row h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)]">
-        {/* Desktop: Left Filters Panel */}
-        <div className="hidden md:block w-80 border-r bg-white overflow-y-auto">
+        {/* Desktop: Left Business List (40%) */}
+        <div className="hidden md:block w-full md:w-[40%] border-r border-borderSoft/70 bg-surfaceMuted overflow-y-auto">
+          <div className="p-4 md:p-6">
+            <h2 className="text-lg font-semibold text-textPrimary mb-4">Çevrendeki Esnaflar</h2>
+            <div className="space-y-4">
+              {filteredBusinesses.length > 0 ? (
+                filteredBusinesses.map((business) => (
+                  <BusinessCard
+                    key={business.id}
+                    id={business.id}
+                    name={business.name}
+                    category={business.category}
+                    rating={business.avgRating}
+                    reviewCount={business.reviewCount}
+                    distance={business.distance}
+                    priceRange={business.priceRange}
+                    isOnline={business.onlineStatus === 'ONLINE'}
+                    href={`/business/${business.id}`}
+                  />
+                ))
+              ) : (
+                <EmptyState
+                  icon={<Store className="w-12 h-12" />}
+                  title="Esnaf bulunamadı"
+                  description="Seçtiğin filtreleme kriterlerine uygun esnaf bulunamadı."
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: Map View (60%) */}
+        <div className="flex-1 relative">
           <MapFilters
             categories={CATEGORIES}
             selectedCategories={selectedCategories}
@@ -345,10 +433,11 @@ export default function MapPage() {
                   />
                 ))
               ) : (
-                <div className="text-center py-12 text-slate-500">
-                  <Store className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                  <p>Esnaf bulunamadı</p>
-                </div>
+                <EmptyState
+                  icon={<Store className="w-12 h-12" />}
+                  title="Esnaf bulunamadı"
+                  description="Seçtiğiniz filtrelere uygun esnaf bulunamadı. Filtreleri değiştirmeyi deneyin."
+                />
               )}
             </div>
           </div>
@@ -427,7 +516,8 @@ export default function MapPage() {
                     selectedBusiness.products
                       .filter((p) => p.active)
                       .map((product) => {
-                        const cartItem = cart.find((item) => item.productId === product.id)
+                        const itemId = `${selectedBusiness.id}_${product.id}`
+                        const cartItem = cartItems.find((item) => item.id === itemId)
                         const quantity = cartItem?.quantity || 0
 
                         return (
@@ -496,12 +586,12 @@ export default function MapPage() {
               </div>
 
               {/* Cart Summary */}
-              {cart.length > 0 && (
+              {cartItems.length > 0 && (
                 <div className="border-t bg-white p-4 space-y-3">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-slate-600">Sepet Toplamı:</span>
                     <span className="text-lg font-bold text-[#FF6000]">
-                      {getCartTotal().toFixed(2)} ₺
+                      {getTotal().toFixed(2)} ₺
                     </span>
                   </div>
                   <Button
@@ -509,7 +599,7 @@ export default function MapPage() {
                     onClick={() => router.push('/cart')}
                   >
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    Sipariş Ver ({getCartItemCount()})
+                    Sipariş Ver ({getItemCount()})
                   </Button>
                 </div>
               )}

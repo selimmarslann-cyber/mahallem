@@ -5,27 +5,27 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils/cn"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6000] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative overflow-hidden group",
+  "inline-flex items-center justify-center whitespace-nowrap font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 relative overflow-hidden group rounded-full",
   {
     variants: {
       variant: {
-        default: "bg-[#FF6000] text-white hover:bg-[#FF5500] shadow-md hover:shadow-lg active:scale-[0.98] font-bold",
+        default: "bg-brand-500 text-white hover:bg-brand-600 shadow-[0_10px_30px_rgba(255,106,0,0.40)] hover:shadow-[0_12px_35px_rgba(255,106,0,0.50)] active:scale-[0.98] rounded-full px-4 md:px-5 py-2.5",
         destructive:
-          "bg-red-600 text-white hover:bg-red-700 shadow-md hover:shadow-lg active:scale-[0.98]",
+          "bg-danger text-white hover:bg-red-700 shadow-md hover:shadow-lg active:scale-[0.98]",
         outline:
-          "border-2 border-gray-300 bg-white hover:border-[#FF6000] hover:bg-[#FFF4E6] text-gray-700 hover:text-[#FF6000] shadow-sm hover:shadow-md active:scale-[0.98]",
+          "border border-brand-200 text-brand-700 bg-white hover:bg-brand-50 active:scale-[0.98] rounded-full",
         secondary:
           "bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-sm hover:shadow-md active:scale-[0.98]",
-        ghost: "hover:bg-gray-100 hover:text-gray-900 active:scale-[0.98]",
-        link: "text-[#FF6000] underline-offset-4 hover:underline hover:text-[#FF5500] font-semibold",
-        premium: "bg-[#FF6000] text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] font-bold",
+        ghost: "text-brand-600 hover:bg-brand-50 active:scale-[0.98] rounded-full",
+        link: "text-brand-500 underline-offset-4 hover:underline hover:text-brand-600 font-semibold",
+        premium: "bg-brand-500 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]",
       },
       size: {
-        default: "h-12 px-6 py-3 rounded-lg text-base",
-        sm: "h-10 rounded-lg px-4 text-sm",
-        lg: "h-14 rounded-lg px-8 text-lg",
-        xl: "h-16 rounded-lg px-10 text-xl",
-        icon: "h-12 w-12 rounded-lg",
+        default: "h-12 px-6 py-3 text-base",
+        sm: "h-9 px-3 text-xs md:text-sm rounded-full",
+        lg: "h-11 px-6 text-sm md:text-base rounded-full",
+        xl: "h-16 px-10 text-xl",
+        icon: "h-12 w-12",
       },
     },
     defaultVariants: {

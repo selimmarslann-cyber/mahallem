@@ -19,11 +19,15 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // TODO: Admin kontrolü
-    // const user = await prisma.user.findUnique({ where: { id: userId } })
-    // if (!user || user.role !== 'ADMIN') {
-    //   return NextResponse.json({ error: 'Yetkisiz' }, { status: 403 })
-    // }
+    // Admin kontrolü
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    })
+    
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Yetkisiz' }, { status: 403 })
+    }
 
     // Toplam dağıtılan referral kazancı
     const totalDistributedResult = await prisma.referralReward.aggregate({

@@ -137,6 +137,7 @@ export async function POST(request: NextRequest) {
             id: true,
             status: true,
             createdAt: true,
+            updatedAt: true,
             completedAt: true,
           },
         },
@@ -155,9 +156,32 @@ export async function POST(request: NextRequest) {
       const totalOrders = business.orders.length
       const completionRate = totalOrders > 0 ? (completedOrders / totalOrders) * 100 : null
 
-      // Calculate avg response time (simplified: time from order creation to acceptance)
-      // TODO: Implement proper response time calculation
-      const avgResponseTime = null
+      // Calculate avg response time (time from order creation to acceptance in hours)
+      let avgResponseTime: number | null = null
+      const acceptedOrders = business.orders.filter((o) => 
+        o.status === 'ACCEPTED' || o.status === 'IN_PROGRESS' || o.status === 'COMPLETED'
+      )
+      
+      if (acceptedOrders.length > 0) {
+        const responseTimes: number[] = []
+        for (const order of acceptedOrders) {
+          // Order created -> status changed to ACCEPTED zamanını bul
+          // updatedAt kullanıyoruz çünkü ACCEPTED olduğunda updatedAt güncellenir
+          const createdTime = new Date(order.createdAt).getTime()
+          const acceptedTime = new Date(order.updatedAt).getTime()
+          const diffMs = acceptedTime - createdTime
+          const diffHours = diffMs / (1000 * 60 * 60) // milliseconds to hours
+          
+          // Makul bir süre (0-48 saat arası)
+          if (diffHours >= 0 && diffHours <= 48) {
+            responseTimes.push(diffHours)
+          }
+        }
+        
+        if (responseTimes.length > 0) {
+          avgResponseTime = responseTimes.reduce((sum, time) => sum + time, 0) / responseTimes.length
+        }
+      }
 
       return {
         id: business.ownerUserId,

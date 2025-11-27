@@ -1,21 +1,20 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
-  Bike, Gauge, Wrench, Sparkles, Zap, Truck, Monitor, 
-  GraduationCap, Heart, Scissors, TreePine, Camera, Utensils, Wind, 
-  Square, Shield, Gift, PenTool, HeartPulse, Search, ChevronRight, Loader2,
-  CheckCircle2, Star, Users, MapPin, Clock, DollarSign, Award, TrendingUp,
-  ArrowRight, Phone, MessageCircle, FileText, Lock, ThumbsUp
+  Gauge, Wrench, MapPin, Search,
+  CheckCircle2, Star, Users, Clock, DollarSign, Award, TrendingUp,
+  ArrowRight, FileText, Lock, ThumbsUp, Shield, Gift, Heart,
+  Sparkles, Zap, Truck, Monitor, GraduationCap, Scissors, TreePine,
+  Camera, Utensils, Wind, Square, PenTool, HeartPulse
 } from 'lucide-react'
-import Image from 'next/image'
-import CategoryCard from '@/components/home/CategoryCard'
-import { Input } from '@/components/ui/input'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { getKeywordSuggestions } from '@/lib/utils/keywords'
-import { SERVICE_CATEGORIES } from '@/lib/data/service-categories'
+import SmartSearchBar from '@/components/ui/SmartSearchBar'
+import MobileDemo from '@/components/home/MobileDemo'
+import PopularCategoriesTabs from '@/components/home/PopularCategoriesTabs'
+import { RotatingHeadline } from '@/components/home/RotatingHeadline'
 
 // Popüler kategorilerin SERVICE_CATEGORIES ID mapping'i
 // Eğer mapping yoksa, kategori adından eşleştirme yapılacak
@@ -32,376 +31,119 @@ const CATEGORY_ID_MAPPING: Record<string, string> = {
   // Diğerleri için isimden eşleştirme yapılacak
 }
 
-const BANNERS = [
-  {
-    title: 'Sipariş',
-    description: 'Yemek, market, kırtasiye, eczane vb aradığın tüm esnaflar için tıkla, haritadan seç, siparişini oluştur.',
-    ctaText: "Sipariş'e Git",
-    href: '/map',
-    icon: Bike,
-    bgImage: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=80', // Delicious food dishes
-    overlay: 'rgba(37, 99, 235, 0.05)', // Blue overlay - minimal
-  },
-  {
-    title: 'Hizmetgo', // Logo gibi gösterilecek: hizmet (siyah) + go (turuncu)
-    description: 'Hizmet ihtiyacını yaz, esnaflardan teklif al, en uygun olanı seç. Profesyonel çözümler ile işini halledin!',
-    ctaText: "Hizmetgo'ya Git",
-    href: '/request',
-    icon: Wrench,
-    bgImage: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=1200&q=80', // Person painting wall with roller
-    overlay: 'rgba(16, 185, 129, 0.05)', // Green overlay - minimal
-  },
-  {
-    title: 'Ek Gelir',
-    description: '10 km çevrendeki kısa süreli işlere başvur, ek gelir kazan. Hızlı onay, hızlı ödeme ile anında kazanmaya başla!',
-    ctaText: "Ek Gelir'e Git",
-    href: '/jobs?tab=instant',
-    icon: Gauge,
-    bgImage: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&q=80', // Person doing homework/study
-    overlay: 'rgba(239, 68, 68, 0.05)', // Red overlay - minimal
-  },
-]
 
 export default function HomePage() {
   const router = useRouter()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [instantJobQuery, setInstantJobQuery] = useState('')
-  const [showSuggestions, setShowSuggestions] = useState(false)
-  const [suggestions, setSuggestions] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
-
-  const handleSearch = async (e?: React.FormEvent) => {
-    e?.preventDefault()
-    
-    const query = searchQuery.trim()
-    if (!query) {
-      return
-    }
-
-    // Arama sayfasına yönlendir
-    router.push(`/request?q=${encodeURIComponent(query)}`)
-  }
-
-  const handleInstantJobSearch = async (e?: React.FormEvent) => {
-    e?.preventDefault()
-    
-    const query = instantJobQuery.trim()
-    if (!query) {
-      return
-    }
-
-    // Anlık işler sayfasına yönlendir
-    router.push(`/jobs?tab=instant&q=${encodeURIComponent(query)}`)
-  }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7]">
-      {/* Three Main Banners - Full Width, Divided into 3 */}
-      <section className="w-full">
-        <div className="flex flex-col md:flex-row h-[calc(100vh-170px)] md:h-[600px]">
-          {BANNERS.map((banner, index) => {
-            const Icon = banner.icon
-            return (
-              <div
-                key={banner.href}
-                className="relative flex-1 group overflow-hidden"
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="relative h-full w-full flex flex-col p-8 md:p-12 transition-all duration-300 group-hover:shadow-2xl overflow-hidden"
-                >
-                  {/* Background Image */}
-                  <div className="absolute inset-0">
-                    <Image
-                      src={banner.bgImage}
-                      alt={banner.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      priority
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  </div>
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="relative mt-4 md:mt-6 mb-8 md:mb-10">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-3xl border border-borderSoft/70 bg-gradient-to-br from-white via-slate-50 to-brand-50 shadow-[0_20px_60px_rgba(15,23,42,0.15)] px-5 md:px-8 py-6 md:py-8 lg:py-10 flex flex-col md:flex-row gap-6 md:gap-8 items-center">
+            {/* Sol Blok */}
+            <div className="flex-1 space-y-3 md:space-y-4">
+              {/* Rotating Headline */}
+              <RotatingHeadline />
 
-                  {/* Colored Overlay - Minimal for maximum image visibility */}
-                  <div 
-                    className="absolute inset-0 transition-opacity duration-300 group-hover:opacity-10"
-                    style={{ backgroundColor: banner.overlay }}
-                  ></div>
+              {/* Kısa açıklama */}
+              <p className="text-sm md:text-base text-slate-600 max-w-lg">
+                Ev temizliği, tadilat, nakliyat, çilingir veya market… Hizmet iste, ek gelir kazan
+                ya da çevrendeki esnaflardan sipariş ver. Hepsi tek uygulamada.
+              </p>
 
-                  {/* Content */}
-                  <div className={`relative z-10 flex flex-col items-center justify-start h-full max-w-lg mx-auto pt-8 md:pt-12 ${
-                    index === 0 ? 'px-4 md:px-6' : ''
-                  }`}>
-                    {/* Title - Only show if not empty */}
-                    {banner.title && (
-                      <motion.h2
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: index * 0.1 + 0.3 }}
-                        className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 md:mb-6 group-hover:scale-105 transition-transform text-center leading-tight"
-                        style={{ 
-                          textShadow: '2px 2px 4px rgba(255,255,255,0.8), 0 0 8px rgba(255,255,255,0.5)',
-                          letterSpacing: '-0.03em',
-                          fontFamily: "'Inter', 'Poppins', sans-serif"
-                        }}
-                      >
-                        {banner.title === 'Hizmetgo' ? (
-                          <>
-                            <span 
-                              className="text-black lowercase" 
-                              style={{ 
-                                letterSpacing: '-0.02em',
-                                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
-                                fontWeight: 700
-                              }}
-                            >
-                              hizmet
-                            </span>
-                            <span 
-                              className="lowercase" 
-                              style={{ 
-                                fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
-                                letterSpacing: '-0.02em',
-                                fontWeight: 700,
-                                color: '#FF6000',
-                                WebkitTextStroke: '2px white',
-                              } as React.CSSProperties}
-                            >
-                              go
-                            </span>
-                          </>
-                        ) : (
-                          <span className="text-black">{banner.title}</span>
-                        )}
-                      </motion.h2>
-                    )}
+              {/* Arama barı */}
+              <SmartSearchBar />
 
-                    {/* Description - Clean Typography */}
-                    <motion.p
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: index * 0.1 + 0.5 }}
-                      className={`text-base md:text-lg lg:text-xl font-bold max-w-lg leading-relaxed mb-6 md:mb-8 text-center text-black min-h-[4rem] md:min-h-[5rem] flex items-center ${
-                        index === 0 ? 'px-2 md:px-4' : 'px-4'
-                      }`}
-                      style={{ 
-                        textShadow: '1px 1px 3px rgba(255,255,255,0.8), 0 0 6px rgba(255,255,255,0.5)',
-                        lineHeight: '1.6',
-                        letterSpacing: '0.01em'
-                      }}
-                    >
-                      {banner.description}
-                    </motion.p>
+              {/* Bullet'lar */}
+              <ul className="mt-3 space-y-1.5 text-xs md:text-[13px] text-slate-700">
+                <li>✅ Güvenilir ustalar & esnaflar</li>
+                <li>✅ Anlık işler ile ek gelir fırsatı</li>
+                <li>✅ Harita üzerinden sipariş ve takip</li>
+              </ul>
+            </div>
 
-                    {/* Hizmetgo - Hizmet Arama Barı */}
-                    {index === 1 && (
-                      <motion.div
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: index * 0.1 + 0.7 }}
-                        className="w-full max-w-xl px-4 mt-auto"
-                      >
-                        <form onSubmit={handleSearch} className="mb-4">
-                          <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-10" />
-                            <Input
-                              type="text"
-                              placeholder="Örn: Elektrik, Temizlik, Boya badana, Tesisat..."
-                              value={searchQuery}
-                              onChange={(e) => {
-                                const value = e.target.value
-                                setSearchQuery(value)
-                                
-                                // Anahtar kelime önerileri
-                                if (value.trim().length >= 2) {
-                                  const keywordSuggestions = getKeywordSuggestions(value, 8)
-                                  setSuggestions(keywordSuggestions)
-                                  setShowSuggestions(keywordSuggestions.length > 0)
-                                } else {
-                                  setShowSuggestions(false)
-                                  setSuggestions([])
-                                }
-                              }}
-                              onFocus={() => {
-                                if (searchQuery.trim().length >= 2 && suggestions.length > 0) {
-                                  setShowSuggestions(true)
-                                }
-                              }}
-                              onBlur={() => {
-                                setTimeout(() => setShowSuggestions(false), 200)
-                              }}
-                              className="pl-12 pr-24 h-12 md:h-14 text-base rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 bg-white/95 backdrop-blur-sm"
-                            />
-                            <Button
-                              type="submit"
-                              disabled={loading}
-                              className="absolute right-2 top-1/2 -translate-y-1/2 h-9 md:h-10 px-6 rounded-lg bg-green-500 hover:bg-green-600 text-white"
-                            >
-                              {loading ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                              ) : (
-                                'Ara'
-                              )}
-                            </Button>
+            {/* Sağ Blok (MobileDemo) */}
+            <div className="flex-1 flex justify-end">
+              <MobileDemo />
+            </div>
+          </div>
 
-                            {/* Autocomplete Suggestions */}
-                            {showSuggestions && suggestions.length > 0 && (
-                              <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-200 rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto">
-                                {suggestions.map((suggestion, idx) => (
-                                  <button
-                                    key={idx}
-                                    type="button"
-                                    onClick={() => {
-                                      setSearchQuery(suggestion)
-                                      setShowSuggestions(false)
-                                      handleSearch()
-                                    }}
-                                    className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors flex items-center justify-between group"
-                                  >
-                                    <span className="text-sm text-gray-900">{suggestion}</span>
-                                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-green-500 transition-colors" />
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </form>
-                      </motion.div>
-                    )}
-
-                    {/* Hizmetgo Go - Butonlar */}
-                    {index === 0 && (
-                      <motion.div
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: index * 0.1 + 0.7 }}
-                        className="w-full max-w-2xl px-1 md:px-2 flex flex-col sm:flex-row gap-3 md:gap-4 mt-auto"
-                      >
-                        <Button
-                          onClick={() => router.push('/map?view=list')}
-                          className="flex-[1.2] h-12 md:h-14 bg-[#FF6000] hover:bg-[#FF7000] text-white font-black text-xs sm:text-sm md:text-base rounded-xl shadow-lg hover:shadow-xl transition-all px-2 md:px-4"
-                        >
-                          Yakındaki Esnafları Listele
-                        </Button>
-                        <Button
-                          onClick={() => router.push('/map?view=map')}
-                          className="flex-1 h-12 md:h-14 bg-white hover:bg-gray-50 text-[#FF6000] font-black text-xs sm:text-sm md:text-base rounded-xl border-2 border-[#FF6000] shadow-lg hover:shadow-xl transition-all px-2 md:px-4"
-                        >
-                          Haritadan Seç
-                        </Button>
-                      </motion.div>
-                    )}
-
-                    {/* Ek Gelir - Anlık İşler Arama Barı */}
-                    {index === 2 && (
-                      <motion.div
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: index * 0.1 + 0.7 }}
-                        className="w-full max-w-xl px-4 mt-auto"
-                      >
-                        <form onSubmit={handleInstantJobSearch} className="mb-4">
-                          <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-10" />
-                            <Input
-                              type="text"
-                              placeholder="Örn: Köpeğimi gezdirecek birini arıyorum, Taşıma için ekstra biri lazım..."
-                              value={instantJobQuery}
-                              onChange={(e) => {
-                                setInstantJobQuery(e.target.value)
-                              }}
-                              className="pl-12 pr-24 h-12 md:h-14 text-base rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 bg-white/95 backdrop-blur-sm"
-                            />
-                            <Button
-                              type="submit"
-                              disabled={loading}
-                              className="absolute right-2 top-1/2 -translate-y-1/2 h-9 md:h-10 px-6 rounded-lg bg-red-500 hover:bg-red-600 text-white"
-                            >
-                              {loading ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                              ) : (
-                                'Ara'
-                              )}
-                            </Button>
-                          </div>
-                        </form>
-
-                        {/* Açıklama */}
-                        <motion.div
-                          initial={{ y: 10, opacity: 0 }}
-                          animate={{ y: 0, opacity: 1 }}
-                          transition={{ delay: index * 0.1 + 0.9 }}
-                          className="text-center"
-                        >
-                          <p className="text-xs md:text-sm text-red-600 font-bold mb-2 px-3 py-1.5 border-2 border-black rounded-lg bg-white/90 inline-block mx-auto">
-                            Bu arama barı vasıfsız işler içindir.
-                          </p>
-                          <div className="flex flex-wrap justify-center gap-2 text-xs text-black/60 mt-3">
-                            <span className="px-2 py-1 bg-white/80 rounded-full">Köpeğimi gezdirecek birini arıyorum</span>
-                            <span className="px-2 py-1 bg-white/80 rounded-full">Taşıma için ekstra biri lazım</span>
-                          </div>
-                        </motion.div>
-                      </motion.div>
-                    )}
-                  </div>
-
-                  {/* Subtle Hover Glow */}
-                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                    index === 0 
-                      ? 'bg-gradient-to-br from-orange-100/50 to-transparent' 
-                      : index === 1
-                      ? 'bg-gradient-to-br from-red-50/50 to-transparent'
-                      : 'bg-gradient-to-br from-green-50/50 to-transparent'
-                  }`}></div>
-                </motion.div>
-              </div>
-            )
-          })}
+          {/* Turuncu blob dekoratif background */}
+          <div className="pointer-events-none absolute -right-16 -top-10 h-64 w-64 rounded-full bg-brand-500/20 blur-3xl" />
+          <div className="pointer-events-none absolute -left-10 bottom-[-40px] h-64 w-64 rounded-full bg-amber-400/25 blur-3xl" />
         </div>
       </section>
 
-      {/* Popüler Kategoriler - 20 Adet */}
-      <section className="w-full py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-2">
-              Popüler Kategoriler
-            </h2>
-            <p className="text-gray-600 text-lg">İhtiyacın olan hizmeti hızlıca bul</p>
+      {/* Three Main Feature Cards */}
+      <section className="max-w-6xl mx-auto mt-6 md:mt-8 px-4 md:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {/* Hizmet İste */}
+          <div className="group relative overflow-hidden rounded-2xl bg-surface border border-borderSoft/80 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all p-4 md:p-5 flex flex-col gap-3">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 text-brand-700 text-[11px] px-2.5 py-1">
+              <Wrench className="h-3.5 w-3.5" />
+              <span>Hizmet iste</span>
+            </div>
+            <h3 className="text-base md:text-lg font-semibold text-slate-900">Profesyonel hizmet talep et</h3>
+            <p className="text-sm text-slate-600 flex-1">
+              Kategorini seç, birkaç soruyu cevapla, mahalle ustalarından teklif al.
+            </p>
+            <div className="flex items-center justify-between mt-2">
+              <Button asChild variant="default" size="sm">
+                <Link href="/request">Hemen hizmet iste</Link>
+              </Button>
+              <button className="text-xs text-slate-500 hover:text-brand-600">Nasıl çalışır?</button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-            {POPULAR_CATEGORIES.map((category) => {
-              // SERVICE_CATEGORIES ID'sine çevir
-              let serviceCategoryId: string | undefined = CATEGORY_ID_MAPPING[category.id]
-              
-              // Mapping yoksa, kategori adından eşleştirme yap
-              if (!serviceCategoryId) {
-                const matchedCategory = SERVICE_CATEGORIES.find(cat => 
-                  cat.name.toLowerCase().includes(category.name.toLowerCase()) ||
-                  category.name.toLowerCase().includes(cat.name.toLowerCase())
-                )
-                if (matchedCategory?.id) {
-                  serviceCategoryId = matchedCategory.id
-                }
-              }
-              
-              const href = serviceCategoryId 
-                ? `/request?categoryId=${serviceCategoryId}`
-                : `/request?q=${encodeURIComponent(category.name.toLowerCase())}`
-              
-              return (
-                <CategoryCard 
-                  key={category.id} 
-                  {...category} 
-                  href={href}
-                />
-              )
-            })}
+          {/* Ek Gelir Kazan */}
+          <div className="group relative overflow-hidden rounded-2xl bg-surface border border-borderSoft/80 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all p-4 md:p-5 flex flex-col gap-3">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] px-2.5 py-1">
+              <Gauge className="h-3.5 w-3.5" />
+              <span>Ek gelir</span>
+            </div>
+            <h3 className="text-base md:text-lg font-semibold text-slate-900">Mahallende ek gelir kazan</h3>
+            <p className="text-sm text-slate-600 flex-1">
+              10 km çevrendeki kısa süreli işlere başvur, hızlı onay ve ödeme ile kazanmaya başla.
+            </p>
+            <div className="flex items-center justify-between mt-2">
+              <Button asChild variant="default" size="sm">
+                <Link href="/earn">Ek gelir kazan</Link>
+              </Button>
+              <button className="text-xs text-slate-500 hover:text-emerald-600">Nasıl çalışır?</button>
+            </div>
+          </div>
+
+          {/* Çevrendeki Esnaflar */}
+          <div className="group relative overflow-hidden rounded-2xl bg-surface border border-borderSoft/80 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all p-4 md:p-5 flex flex-col gap-3">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 text-sky-700 text-[11px] px-2.5 py-1">
+              <MapPin className="h-3.5 w-3.5" />
+              <span>Esnaflar</span>
+            </div>
+            <h3 className="text-base md:text-lg font-semibold text-slate-900">Çevrendeki esnaflardan sipariş ver</h3>
+            <p className="text-sm text-slate-600 flex-1">
+              Yemek, market, kırtasiye, eczane… Haritadan seç, siparişini oluştur, kapına gelsin.
+            </p>
+            <div className="flex items-center justify-between mt-2">
+              <Button asChild variant="default" size="sm">
+                <Link href="/map">Esnafları gör</Link>
+              </Button>
+              <button className="text-xs text-slate-500 hover:text-sky-600">Nasıl çalışır?</button>
+            </div>
           </div>
         </div>
+      </section>
+
+
+      {/* Popüler Kategoriler */}
+      <section className="max-w-6xl mx-auto mt-8 md:mt-10 px-4 md:px-6 lg:px-8">
+        <div className="flex items-center justify-between mb-3 md:mb-4">
+          <div>
+            <h2 className="text-lg md:text-2xl font-semibold text-slate-900">Her proje için hazır kategoriler</h2>
+            <p className="text-sm text-slate-600 mt-1">Mahallende en çok talep edilen hizmetleri görsel olarak seç.</p>
+          </div>
+        </div>
+        <PopularCategoriesTabs />
       </section>
 
       {/* Nasıl Çalışır - 3 Adım */}
@@ -412,7 +154,7 @@ export default function HomePage() {
               Nasıl Çalışır?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Hizmetgo ile hizmet almak veya vermek çok kolay
+              Hizmet almak veya vermek çok kolay
             </p>
           </div>
 
@@ -478,7 +220,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
-              Neden Hizmetgo?
+              Neden Biz?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Mahallendeki en iyi esnaflarla buluş, güvenle hizmet al
@@ -614,7 +356,7 @@ export default function HomePage() {
               Güvenle Kullan
             </h2>
             <p className="text-lg text-gray-600">
-              Hizmetgo'de güvenlik ve kalite önceliğimiz
+              Güvenlik ve kalite önceliğimiz
             </p>
           </div>
 

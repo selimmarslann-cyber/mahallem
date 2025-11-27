@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,44 +9,17 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { X } from 'lucide-react'
 import { useToast } from '@/lib/hooks/useToast'
+import { useCartStore } from '@/lib/store/useCartStore'
 
 export default function CartPage() {
   const router = useRouter()
   const { error } = useToast()
-  const [cart, setCart] = useState<any[]>([])
+  const { items: cart, removeItem, updateQuantity, getTotal, clearCart } = useCartStore()
   const [address, setAddress] = useState('')
   const [scheduledAt, setScheduledAt] = useState('')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    const storedCart = localStorage.getItem('cart')
-    if (storedCart) {
-      setCart(JSON.parse(storedCart))
-    }
-  }, [])
-
-  const removeFromCart = (productId: string) => {
-    const newCart = cart.filter((item) => item.id !== productId)
-    setCart(newCart)
-    localStorage.setItem('cart', JSON.stringify(newCart))
-  }
-
-  const updateQuantity = (productId: string, quantity: number) => {
-    if (quantity < 1) {
-      removeFromCart(productId)
-      return
-    }
-    const newCart = cart.map((item) =>
-      item.id === productId ? { ...item, quantity } : item
-    )
-    setCart(newCart)
-    localStorage.setItem('cart', JSON.stringify(newCart))
-  }
-
-  const total = cart.reduce(
-    (sum, item) => sum + parseFloat(item.price) * item.quantity,
-    0
-  )
+  const total = getTotal()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,7 +37,7 @@ export default function CartPage() {
         body: JSON.stringify({
           businessId,
           items: cart.map((item) => ({
-            productId: item.id,
+            productId: item.productId,
             quantity: item.quantity,
           })),
           addressText: address,
@@ -81,7 +54,7 @@ export default function CartPage() {
       }
 
       // Sepeti temizle
-      localStorage.removeItem('cart')
+      clearCart()
       router.push(`/orders/${data.order.id}`)
     } catch (err) {
       error('Bir hata oluştu')
@@ -118,9 +91,14 @@ export default function CartPage() {
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold">{item.name}</h3>
+                      <h3 className="font-semibold">{item.productName}</h3>
+                      {item.businessName && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          {item.businessName}
+                        </p>
+                      )}
                       <p className="text-sm text-gray-600 mt-1">
-                        {item.price} ₺
+                        {parseFloat(item.price.toString()).toFixed(2)} ₺
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -142,7 +120,7 @@ export default function CartPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeItem(item.id)}
                       >
                         <X className="w-4 h-4" />
                       </Button>

@@ -16,8 +16,8 @@ interface MapFiltersProps {
   onCategoriesChange: (categories: string[]) => void
   maxDistance: number
   onDistanceChange: (distance: number) => void
-  sortBy: 'distance' | 'rating' | 'price'
-  onSortChange: (sort: 'distance' | 'rating' | 'price') => void
+  sortBy: 'distance' | 'rating' | 'responseTime'
+  onSortChange: (sort: 'distance' | 'rating' | 'responseTime') => void
   onReset: () => void
 }
 
@@ -118,7 +118,7 @@ export default function MapFilters({
             <SelectContent>
               <SelectItem value="distance">En yakın</SelectItem>
               <SelectItem value="rating">En yüksek puan</SelectItem>
-              <SelectItem value="price">En düşük fiyat</SelectItem>
+              <SelectItem value="responseTime">En hızlı yanıt</SelectItem>
             </SelectContent>
           </Select>
         </div>

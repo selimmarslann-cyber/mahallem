@@ -8,11 +8,22 @@ const ADMIN_USER_IDS = process.env.ADMIN_USER_IDS?.split(',') || []
 
 export async function POST(request: NextRequest) {
   try {
-    // TODO: Gerçek admin kontrolü ekle
-    // const userId = await getUserId()
-    // if (!userId || !ADMIN_USER_IDS.includes(userId)) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    // }
+    // Admin kontrolü
+    const { getUserId } = await import('@/lib/auth/session')
+    const userId = await getUserId(request)
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    })
+    
+    if (!user || user.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
     const body = await request.json()
     const { email = 'admin@admin.com', password = 'admin', name = 'admin' } = body
@@ -37,20 +48,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Kullanıcıyı oluştur
-    const user = await createUser({
+    const newUser = await createUser({
       email,
       password,
       name,
     })
 
     // Referral kodu oluştur
-    const referralCode = await getOrCreateReferralCodeForUser(user.id)
+    const referralCode = await getOrCreateReferralCodeForUser(newUser.id)
 
     // Wallet oluştur
     await prisma.wallet.upsert({
-      where: { userId: user.id },
+      where: { userId: newUser.id },
       create: {
-        userId: user.id,
+        userId: newUser.id,
         balance: 0,
         pendingBalance: 0,
       },
@@ -60,9 +71,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: 'Test kullanıcısı oluşturuldu',
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
         referralCode,
       },
       loginInfo: {
