@@ -22,7 +22,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative mt-6 md:mt-8 mb-10 md:mb-12">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50 to-orange-50/40 shadow-[0_25px_80px_rgba(15,23,42,0.12)] px-5 md:px-8 lg:px-10 py-6 md:py-8 lg:py-10">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50 to-blue-50/40 shadow-[0_25px_80px_rgba(15,23,42,0.12)] px-5 md:px-8 lg:px-10 py-6 md:py-8 lg:py-10">
             {/* Üst: Rotating Headline - Merkezi */}
             <div className="flex flex-col items-center mb-8 md:mb-10">
               <RotatingHeadline />
@@ -57,7 +57,7 @@ export default function HomePage() {
             {/* Hizmet İste */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] flex flex-col justify-between gap-4">
               <div>
-                <div className="h-10 w-10 rounded-2xl bg-orange-50 text-[#FF6000] flex items-center justify-center shadow-sm mb-4">
+                <div className="h-10 w-10 rounded-2xl bg-blue-50 text-brand-500 flex items-center justify-center shadow-sm mb-4">
                   <Wrench className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg md:text-xl font-semibold text-slate-900 mb-2">
@@ -67,7 +67,7 @@ export default function HomePage() {
                   Kategorini seç, birkaç soruyu cevapla, mahalle ustalarından teklif al.
                 </p>
               </div>
-              <Button asChild variant="default" size="sm" className="inline-flex items-center justify-center rounded-full bg-[#FF6000] text-white text-sm font-semibold px-4 py-2 mt-1 hover:bg-[#ff7a26] transition-colors w-full">
+              <Button asChild variant="default" size="sm" className="inline-flex items-center justify-center rounded-full bg-brand-500 text-white text-sm font-semibold px-4 py-2 mt-1 hover:bg-brand-600 transition-colors w-full">
                 <Link href="/request">Hemen hizmet iste</Link>
               </Button>
             </div>
@@ -75,7 +75,7 @@ export default function HomePage() {
             {/* Ek Gelir Kazan */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] flex flex-col justify-between gap-4">
               <div>
-                <div className="h-10 w-10 rounded-2xl bg-orange-50 text-[#FF6000] flex items-center justify-center shadow-sm mb-4">
+                <div className="h-10 w-10 rounded-2xl bg-blue-50 text-brand-500 flex items-center justify-center shadow-sm mb-4">
                   <Wallet className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg md:text-xl font-semibold text-slate-900 mb-2">
@@ -85,7 +85,7 @@ export default function HomePage() {
                   10 km çevrendeki kısa süreli işlere başvur, hızlı onay ve ödeme ile kazanmaya başla.
                 </p>
               </div>
-              <Button asChild variant="default" size="sm" className="inline-flex items-center justify-center rounded-full bg-[#FF6000] text-white text-sm font-semibold px-4 py-2 mt-1 hover:bg-[#ff7a26] transition-colors w-full">
+              <Button asChild variant="default" size="sm" className="inline-flex items-center justify-center rounded-full bg-brand-500 text-white text-sm font-semibold px-4 py-2 mt-1 hover:bg-brand-600 transition-colors w-full">
                 <Link href="/earn">Ek gelir kazan</Link>
               </Button>
             </div>
@@ -93,7 +93,7 @@ export default function HomePage() {
             {/* Çevrendeki Esnaflar */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] flex flex-col justify-between gap-4">
               <div>
-                <div className="h-10 w-10 rounded-2xl bg-orange-50 text-[#FF6000] flex items-center justify-center shadow-sm mb-4">
+                <div className="h-10 w-10 rounded-2xl bg-blue-50 text-brand-500 flex items-center justify-center shadow-sm mb-4">
                   <MapPin className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg md:text-xl font-semibold text-slate-900 mb-2">
@@ -103,7 +103,7 @@ export default function HomePage() {
                   Yemek, market, kırtasiye, eczane… Haritadan seç, siparişini oluştur, kapına gelsin.
                 </p>
               </div>
-              <Button asChild variant="default" size="sm" className="inline-flex items-center justify-center rounded-full bg-[#FF6000] text-white text-sm font-semibold px-4 py-2 mt-1 hover:bg-[#ff7a26] transition-colors w-full">
+              <Button asChild variant="default" size="sm" className="inline-flex items-center justify-center rounded-full bg-brand-500 text-white text-sm font-semibold px-4 py-2 mt-1 hover:bg-brand-600 transition-colors w-full">
                 <Link href="/map">Esnafları gör</Link>
               </Button>
             </div>
@@ -159,7 +159,7 @@ export default function HomePage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-orange-50 flex items-center justify-center relative">
-                      <span className="text-xs font-semibold text-[#FF6000]">{item.step}</span>
+                      <span className="text-xs font-semibold text-brand-500">{item.step}</span>
                     </div>
                     <h3 className="text-base md:text-lg font-semibold text-slate-900">
                       {item.title}
@@ -243,7 +243,7 @@ export default function HomePage() {
       </section>
 
       {/* İstatistikler */}
-      <section className="py-8 md:py-10 bg-[#FF6000] text-white">
+      <section className="py-8 md:py-10 bg-brand-500 text-white">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="grid gap-6 md:grid-cols-4 text-center md:text-left">
             {[
@@ -269,7 +269,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-8 md:py-10 bg-[#FF6000] text-white">
+      <section className="py-8 md:py-10 bg-brand-500 text-white">
         <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight mb-4">
             Hemen Başla!
@@ -281,7 +281,7 @@ export default function HomePage() {
             <Button
               onClick={() => router.push('/request')}
               size="lg"
-              className="bg-white text-[#FF6000] hover:bg-gray-50 font-semibold text-base px-8 py-6"
+              className="bg-white text-brand-500 hover:bg-gray-50 font-semibold text-base px-8 py-6"
             >
               Hizmet Ara
               <ArrowRight className="ml-2 w-5 h-5" />

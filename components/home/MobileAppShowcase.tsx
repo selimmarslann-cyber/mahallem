@@ -33,7 +33,7 @@ export function MobileAppShowcase() {
                 const Icon = feature.icon
                 return (
                   <div key={i} className="flex items-center gap-2">
-                    <Icon className="h-5 w-5 text-[#FF6000] flex-shrink-0" />
+                    <Icon className="h-5 w-5 text-brand-500 flex-shrink-0" />
                     <span className="text-sm text-slate-700">{feature.text}</span>
                   </div>
                 )

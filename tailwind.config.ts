@@ -19,18 +19,18 @@ const config = {
     },
     extend: {
       colors: {
-        // MAHALLEM Premium Brand Colors
+        // MAHALLEM Premium Brand Colors - Thumbtack Blue
         brand: {
-          50: "#FFF7F2",
-          100: "#FFE5D4",
-          200: "#FFCAAA",
-          300: "#FFAC7A",
-          400: "#FF8E4D",
-          500: "#FF6A00", // Ana turuncu
-          600: "#E05900",
-          700: "#B84700",
-          800: "#8F3800",
-          900: "#612400",
+          50: "#E6F7FC",
+          100: "#B3E6F5",
+          200: "#80D5EE",
+          300: "#4DC4E7",
+          400: "#1AB3E0",
+          500: "#009FD9", // Ana mavi - Thumbtack Blue
+          600: "#0080B0",
+          700: "#006087",
+          800: "#00405E",
+          900: "#002035",
         },
         // Neutral & Background Colors
         background: "#F5F5F7",

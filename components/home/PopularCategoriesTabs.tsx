@@ -172,7 +172,7 @@ export default function PopularCategoriesTabs() {
                 className={cn(
                   "inline-flex items-center gap-1 px-3.5 py-2 rounded-full border text-[13px] md:text-sm transition-all whitespace-nowrap",
                   activeGroup === group.id
-                    ? "bg-[#FF6000]/10 border-[#FF6000] text-[#FF6000]"
+                    ? "bg-brand-500/10 border-brand-500 text-brand-500"
                     : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                 )}
               >

@@ -41,7 +41,7 @@ export default function CategoryBar() {
             <button
               key={category.keyword}
               onClick={() => handleCategoryClick(category.keyword)}
-              className="flex-shrink-0 text-sm text-black hover:text-[#FF6000] transition-colors font-medium whitespace-nowrap"
+              className="flex-shrink-0 text-sm text-black hover:text-brand-500 transition-colors font-medium whitespace-nowrap"
             >
               {category.name}
             </button>

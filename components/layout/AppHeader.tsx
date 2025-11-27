@@ -114,7 +114,7 @@ export default function AppHeader({
             <div className="flex items-center gap-1.5">
               {/* Logo Icon */}
               <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center">
-                <span className="text-white font-bold text-lg">T</span>
+                <span className="text-white font-bold text-lg">H</span>
               </div>
               {/* Brand Text */}
               <span 
