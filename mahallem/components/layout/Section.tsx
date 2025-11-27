@@ -1,12 +1,8 @@
-/**
- * Section Wrapper Component
- * 
- * Tüm sayfalarda tutarlı section görünümü için ortak wrapper.
- */
+'use client'
 
 import { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, MoreHorizontal } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
 interface SectionProps {
@@ -91,4 +87,5 @@ function Section({
 }
 
 export default Section
+export { Section }
 
