@@ -37,30 +37,30 @@ export default function PromotionalBanner() {
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-fixed bg-black text-white shadow-2xl overflow-hidden border-b-2 border-[#FF6000]">
+    <div className="w-full bg-black text-white shadow-2xl overflow-hidden border-b-2 border-brand-500">
       {/* Alevli Gradient Arka Plan */}
       <div className="absolute inset-0 bg-gradient-to-r from-black via-gray-900 to-black">
-        <div className="absolute inset-0 bg-gradient-to-t from-[#FF6000]/20 via-[#FF6000]/10 to-transparent"></div>
-        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-[#FF6000]/30 to-transparent opacity-50"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-500/20 via-brand-500/10 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-brand-500/30 to-transparent opacity-50"></div>
       </div>
 
       {/* Alev Efekti */}
-      <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-transparent via-[#FF6000] to-transparent opacity-60 blur-sm"></div>
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#FF6000] to-transparent opacity-80"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-transparent via-brand-500 to-transparent opacity-60 blur-sm"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-500 to-transparent opacity-80"></div>
 
       <div className="relative max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 md:py-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 flex-1 min-w-0">
             <div className="hidden sm:block flex-shrink-0 animate-bounce-slow">
-              <Sparkles className="w-6 h-6 md:w-7 md:h-7 text-[#FF6000] drop-shadow-lg" />
+              <Sparkles className="w-6 h-6 md:w-7 md:h-7 text-brand-500 drop-shadow-lg" />
             </div>
             
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 min-w-0">
-              <span className="text-xs sm:text-sm font-black uppercase tracking-widest whitespace-nowrap animate-fade-in text-[#FF6000]">
+              <span className="text-xs sm:text-sm font-black uppercase tracking-widest whitespace-nowrap animate-fade-in text-brand-500">
                 2026
               </span>
               <span className="text-sm sm:text-base md:text-lg lg:text-xl font-extrabold leading-tight animate-fade-in-delay">
-                Ömür Boyu Referans Geliriyle <span className="text-[#FF6000]">Muhteşem 2026!</span>
+                Ömür Boyu Referans Geliriyle <span className="text-brand-500">Muhteşem 2026!</span>
               </span>
             </div>
           </div>
@@ -68,23 +68,23 @@ export default function PromotionalBanner() {
           <div className="hidden lg:flex items-center gap-4">
             <Link 
               href="/account/referral" 
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF6000]/20 hover:bg-[#FF6000]/30 rounded-lg text-xs sm:text-sm font-bold transition-all backdrop-blur-sm border border-[#FF6000]/40"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-500/20 hover:bg-brand-500/30 rounded-lg text-xs sm:text-sm font-bold transition-all backdrop-blur-sm border border-brand-500/40"
             >
-              <Gift className="w-4 h-4 text-[#FF6000]" />
+              <Gift className="w-4 h-4 text-brand-500" />
               <span>Kazancımı Gör</span>
             </Link>
             <button
               onClick={handleCopyReferralLink}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF6000]/20 hover:bg-[#FF6000]/30 rounded-lg text-xs sm:text-sm font-bold transition-all backdrop-blur-sm border border-[#FF6000]/40"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-500/20 hover:bg-brand-500/30 rounded-lg text-xs sm:text-sm font-bold transition-all backdrop-blur-sm border border-brand-500/40"
             >
               {copied ? (
                 <>
-                  <Check className="w-4 h-4 text-[#FF6000]" />
+                  <Check className="w-4 h-4 text-brand-500" />
                   <span>Kopyalandı!</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-4 h-4 text-[#FF6000]" />
+                  <Copy className="w-4 h-4 text-brand-500" />
                   <span>Referans Linkim</span>
                 </>
               )}

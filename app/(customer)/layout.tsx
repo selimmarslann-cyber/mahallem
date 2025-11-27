@@ -6,6 +6,7 @@ import AppHeader from '@/components/layout/AppHeader'
 import AppFooter from '@/components/layout/AppFooter'
 import PromotionalBanner from '@/components/layout/PromotionalBanner'
 import CategoryBar from '@/components/layout/CategoryBar'
+import TopNavigationBar from '@/components/layout/TopNavigationBar'
 import PartnerIntroDialog from '@/components/partner/PartnerIntroDialog'
 import CustomerBottomNav from '@/components/layout/CustomerBottomNav'
 
@@ -25,7 +26,7 @@ export default function CustomerLayout({
         <>
           <PartnerIntroDialog />
           <PromotionalBanner />
-          <AppHeader isPublic={true} />
+          <TopNavigationBar />
           <CategoryBar />
         </>
       )}
