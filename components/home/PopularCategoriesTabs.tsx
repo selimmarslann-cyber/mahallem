@@ -148,6 +148,18 @@ export default function PopularCategoriesTabs() {
 
   return (
     <div>
+      {/* Header */}
+      <header className="flex items-center justify-between mb-4 md:mb-5">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-semibold text-slate-900 tracking-tight">
+            Popüler kategoriler
+          </h2>
+          <p className="text-sm md:text-[15px] text-slate-600 mt-1">
+            En çok tercih edilen hizmetleri ve mahalle esnaflarını keşfet.
+          </p>
+        </div>
+      </header>
+
       {/* Tab Bar - Thumbtack Style */}
       <div className="mb-6 md:mb-8">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
@@ -158,11 +170,10 @@ export default function PopularCategoriesTabs() {
                 key={group.id}
                 onClick={() => setActiveGroup(group.id)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-3 text-sm md:text-base font-medium transition-all whitespace-nowrap relative",
-                  "border-b-2 border-transparent",
+                  "inline-flex items-center gap-1 px-3.5 py-2 rounded-full border text-[13px] md:text-sm transition-all whitespace-nowrap",
                   activeGroup === group.id
-                    ? "text-brand-600 border-brand-600"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-[#FF6000]/10 border-[#FF6000] text-[#FF6000]"
+                    : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                 )}
               >
                 <IconComponent className="h-5 w-5" />
@@ -178,33 +189,33 @@ export default function PopularCategoriesTabs() {
       </div>
 
       {/* Category Grid - Thumbtack Style */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {currentGroup?.categories.map(cat => (
           <Link
             key={cat.id}
             href={cat.href}
-            className="group relative overflow-hidden rounded-xl bg-white border border-slate-200 hover:border-brand-300 hover:shadow-lg transition-all duration-200 flex flex-col"
+            className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)] transition-shadow"
           >
             {/* Görsel */}
-            <div className="relative h-40 md:h-48 w-full bg-gradient-to-br from-slate-100 to-slate-200">
+            <div className="relative h-32 md:h-36 overflow-hidden">
               <Image
                 src={cat.imageSrc}
                 alt={cat.title}
                 fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                className="object-cover group-hover:scale-[1.03] transition-transform duration-300"
                 sizes="(max-width: 768px) 50vw, 25vw"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement
                   target.style.display = 'none'
                 }}
               />
-            </div>
-            
-            {/* Başlık - Sadece */}
-            <div className="p-4">
-              <h3 className="text-base md:text-lg font-semibold text-slate-900 group-hover:text-brand-600 transition-colors">
-                {cat.title}
-              </h3>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              <div className="absolute bottom-2 left-2 right-2">
+                <p className="text-sm font-semibold text-white drop-shadow-sm">
+                  {cat.title}
+                </p>
+                <p className="text-[11px] text-white/80">Sık kullanılan</p>
+              </div>
             </div>
           </Link>
         ))}
