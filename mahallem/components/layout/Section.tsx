@@ -1,87 +1,61 @@
-'use client'
+import type { ReactNode } from 'react'
 
-import { ReactNode } from 'react'
-import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 
-interface SectionProps {
-  title: string
-  subtitle?: string
+export type SectionProps = {
+  title?: ReactNode
+  subtitle?: ReactNode
+  actions?: ReactNode
   children: ReactNode
-  actions?: {
-    label: string
-    href?: string
-    onClick?: () => void
-  }[]
   className?: string
   contentClassName?: string
 }
 
-export default function Section({
+/**
+ * Uygulama genelinde kullanılan, kart görünümlü bölüm wrapper'ı.
+ * Sadece UI bileşenidir, business logic içermez.
+ */
+function Section({
   title,
   subtitle,
-  children,
   actions,
+  children,
   className,
   contentClassName,
 }: SectionProps) {
   return (
-    <section className={cn('w-full py-8 md:py-12', className)}>
-      <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-        {/* Header */}
-        {(title || subtitle || actions) && (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
-            {(title || subtitle) && (
-              <div>
-                {title && (
-                  <h2 className="text-2xl md:text-3xl font-semibold text-textPrimary mb-2">
-                    {title}
-                  </h2>
-                )}
-                {subtitle && (
-                  <p className="text-base text-textSecondary">{subtitle}</p>
-                )}
-              </div>
+    <section
+      className={cn(
+        'rounded-2xl bg-surface shadow-[0_18px_45px_rgba(15,23,42,0.08)] border border-borderSoft/70 p-5 md:p-6',
+        className
+      )}
+    >
+      {(title || subtitle || actions) && (
+        <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div>
+            {title && (
+              <h2 className="text-lg md:text-xl font-semibold text-slate-900">
+                {title}
+              </h2>
             )}
-            
-            {actions && actions.length > 0 && (
-              <div className="flex items-center gap-2">
-                {actions.map((action, index) => (
-                  action.href ? (
-                    <a key={index} href={action.href}>
-                      <Button
-                        variant={index === 0 ? 'default' : 'outline'}
-                        size="sm"
-                        className="flex items-center gap-2"
-                      >
-                        {action.label}
-                        <ArrowRight className="w-4 h-4" />
-                      </Button>
-                    </a>
-                  ) : (
-                    <Button
-                      key={index}
-                      variant={index === 0 ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={action.onClick}
-                      className="flex items-center gap-2"
-                    >
-                      {action.label}
-                      {index === 0 && <ArrowRight className="w-4 h-4" />}
-                    </Button>
-                  )
-                ))}
-              </div>
+            {subtitle && (
+              <p className="text-sm text-textSecondary mt-1">
+                {subtitle}
+              </p>
             )}
           </div>
-        )}
-
-        {/* Content */}
-        <div className={cn('', contentClassName)}>
-          {children}
-        </div>
+          {actions && (
+            <div className="mt-2 md:mt-0 flex items-center gap-2">
+              {actions}
+            </div>
+          )}
+        </header>
+      )}
+      <div className={cn('space-y-3', contentClassName)}>
+        {children}
       </div>
     </section>
   )
 }
+
+export default Section
