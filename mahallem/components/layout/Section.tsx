@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import { cn } from '@/lib/utils/cn'
 
-export type SectionProps = {
+interface SectionProps {
   title?: ReactNode
   subtitle?: ReactNode
   actions?: ReactNode
@@ -12,21 +12,21 @@ export type SectionProps = {
 }
 
 /**
- * Uygulama genelinde kullanılan, kart görünümlü bölüm wrapper'ı.
- * Sadece UI bileşenidir, business logic içermez.
+ * Global section wrapper component.
+ * Sadece UI/layout sağlar, business logic içermez.
  */
-function Section({
+export default function Section({
   title,
   subtitle,
   actions,
   children,
   className,
-  contentClassName,
+  contentClassName
 }: SectionProps) {
   return (
     <section
       className={cn(
-        'rounded-2xl bg-surface shadow-[0_18px_45px_rgba(15,23,42,0.08)] border border-borderSoft/70 p-5 md:p-6',
+        'rounded-2xl bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)] border border-slate-200 p-5 md:p-6',
         className
       )}
     >
@@ -39,23 +39,18 @@ function Section({
               </h2>
             )}
             {subtitle && (
-              <p className="text-sm text-textSecondary mt-1">
-                {subtitle}
-              </p>
+              <p className="text-sm text-slate-600 mt-1">{subtitle}</p>
             )}
           </div>
           {actions && (
-            <div className="mt-2 md:mt-0 flex items-center gap-2">
-              {actions}
-            </div>
+            <div className="flex items-center gap-2">{actions}</div>
           )}
         </header>
       )}
+
       <div className={cn('space-y-3', contentClassName)}>
         {children}
       </div>
     </section>
   )
 }
-
-export default Section
