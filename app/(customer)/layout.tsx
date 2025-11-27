@@ -29,7 +29,7 @@ export default function CustomerLayout({
           <CategoryBar />
         </>
       )}
-      <main className={`flex-1 ${!isAccountPage ? 'pt-[170px] pb-16 md:pb-0' : ''}`}>
+      <main className={`flex-1 ${!isAccountPage ? 'pb-16 md:pb-0' : ''}`}>
         {children}
       </main>
       {!isAccountPage && <AppFooter />}

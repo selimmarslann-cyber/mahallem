@@ -62,6 +62,7 @@ export default function AppHeader({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Kullanıcı bilgisini yükle
   useEffect(() => {
@@ -80,6 +81,8 @@ export default function AppHeader({
       }
     } catch (err) {
       setIsAuthenticated(false)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -99,10 +102,10 @@ export default function AppHeader({
   const hasWhiteBackground = whiteBackgroundPages.some(page => pathname.startsWith(page)) && pathname !== '/partner'
   
   return (
-    <header className={`sticky top-0 z-50 w-full transition-all ${
+    <header className={`w-full transition-all ${
       isPartnerPage 
         ? 'bg-slate-400/90 backdrop-blur-md shadow-md' 
-        : 'bg-white/95 backdrop-blur-sm border-b border-slate-100'
+        : 'bg-white border-b border-slate-100'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4 py-4">
@@ -143,7 +146,7 @@ export default function AppHeader({
             <SupportHelpButton />
 
             {/* Giriş yapmış kullanıcı için profil */}
-            {isAuthenticated && user ? (
+            {!isLoading && isAuthenticated && user ? (
               <div className="hidden lg:flex items-center gap-3">
                 <Link href="/account">
                   <motion.div
@@ -165,33 +168,31 @@ export default function AppHeader({
                   </motion.div>
                 </Link>
               </div>
-            ) : (
+            ) : !isLoading && isPublic ? (
               /* Desktop CTAs - Thumbtack Style */
-              isPublic && (
-                <div className="hidden lg:flex items-center gap-3">
-                  <Link 
-                    href="/partner"
-                    className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
-                  >
-                    Ortak Ol
-                  </Link>
-                  <Link 
-                    href="/auth/login?redirect=/account"
-                    className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
-                  >
-                    Giriş Yap
-                  </Link>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={() => router.push('/auth/register')}
-                    className="px-4 py-2 text-sm font-semibold"
-                  >
-                    Üye Ol
-                  </Button>
-                </div>
-              )
-            )}
+              <div className="hidden lg:flex items-center gap-3">
+                <Link 
+                  href="/partner"
+                  className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
+                >
+                  Ortak Ol
+                </Link>
+                <Link 
+                  href="/auth/login?redirect=/account"
+                  className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
+                >
+                  Giriş Yap
+                </Link>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => router.push('/auth/register')}
+                  className="px-4 py-2 text-sm font-semibold"
+                >
+                  Üye Ol
+                </Button>
+              </div>
+            ) : null}
 
             {/* Mobile Menu Button - Thumbtack Style */}
             <Button

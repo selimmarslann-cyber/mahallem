@@ -9,10 +9,10 @@ import {
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import SmartSearchBar from '@/components/ui/SmartSearchBar'
-import MobileDemo from '@/components/home/MobileDemo'
 import PopularCategoriesTabs from '@/components/home/PopularCategoriesTabs'
 import { RotatingHeadline } from '@/components/home/RotatingHeadline'
 import { SearchExperienceShowcase } from '@/components/home/SearchExperienceShowcase'
+import { MobileAppShowcase } from '@/components/home/MobileAppShowcase'
 
 export default function HomePage() {
   const router = useRouter()
@@ -22,50 +22,24 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative mt-6 md:mt-8 mb-10 md:mb-12">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-orange-50/40 shadow-[0_25px_80px_rgba(15,23,42,0.12)] px-5 md:px-8 lg:px-10 py-6 md:py-8 lg:py-10">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50 to-orange-50/40 shadow-[0_25px_80px_rgba(15,23,42,0.12)] px-5 md:px-8 lg:px-10 py-6 md:py-8 lg:py-10">
             {/* Üst: Rotating Headline - Merkezi */}
             <div className="flex flex-col items-center mb-8 md:mb-10">
               <RotatingHeadline />
             </div>
             
             {/* Orta: Büyük Arama Barı - Merkezi */}
-            <div className="flex justify-center mb-10 md:mb-12">
+            <div className="flex justify-center mb-4">
               <div className="w-full max-w-4xl">
                 <SmartSearchBar />
               </div>
             </div>
+            
+            {/* Arama barı açıklaması */}
+            <p className="text-xs md:text-sm text-slate-500 text-center mb-10 md:mb-12">
+              Örnek: "Ümraniye ev temizliği", "Ataşehir çilingir"...
+            </p>
 
-            {/* Alt: Sol Yazılar + Sağ Telefon Animasyonu */}
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
-              {/* Sol: Açıklama Yazıları */}
-              <div className="flex-1 space-y-4 max-w-lg">
-                <p className="text-sm md:text-[15px] text-slate-700 leading-relaxed">
-                  Ev temizliği, tadilat, nakliyat, çilingir veya market… Hizmet iste, ek gelir kazan
-                  ya da çevrendeki esnaflardan sipariş ver. Hepsi tek uygulamada.
-                </p>
-                
-                {/* Bullet'lar */}
-                <ul className="space-y-2.5 text-sm md:text-[15px] text-slate-700">
-                  <li className="flex items-center gap-2">
-                    <span className="text-[#FF6000]">✅</span>
-                    <span>Güvenilir ustalar & esnaflar</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-[#FF6000]">✅</span>
-                    <span>Anlık işler ile ek gelir fırsatı</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-[#FF6000]">✅</span>
-                    <span>Harita üzerinden sipariş ve takip</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Sağ: MobileDemo */}
-              <div className="flex-1 flex justify-center lg:justify-end">
-                <MobileDemo />
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -73,8 +47,11 @@ export default function HomePage() {
       {/* Search Experience Showcase */}
       <SearchExperienceShowcase />
 
+      {/* Mobile App Showcase */}
+      <MobileAppShowcase />
+
       {/* Three Main Feature Cards */}
-      <section className="py-8 md:py-10">
+      <section className="py-8 md:py-10 bg-white">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="grid gap-4 md:grid-cols-3">
             {/* Hizmet İste */}
@@ -135,7 +112,7 @@ export default function HomePage() {
       </section>
 
       {/* Popüler Kategoriler */}
-      <section className="py-8 md:py-10">
+      <section className="py-8 md:py-10 bg-white">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
           <PopularCategoriesTabs />
         </div>
@@ -199,7 +176,7 @@ export default function HomePage() {
       </section>
 
       {/* Neden Hizmetgo? */}
-      <section className="py-10 md:py-12">
+      <section className="py-10 md:py-12 bg-white">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="text-center mb-6 md:mb-8">
             <h2 className="text-2xl md:text-3xl font-semibold text-slate-900 tracking-tight">
@@ -266,7 +243,7 @@ export default function HomePage() {
       </section>
 
       {/* İstatistikler */}
-      <section className="py-8 md:py-10 bg-[#FF6000] text-white">
+      <section className="py-8 md:py-10 bg-[#FF6000] text-white border-t border-[#FF6000]">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="grid gap-6 md:grid-cols-4 text-center md:text-left">
             {[
@@ -292,7 +269,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-8 md:py-10 bg-[#FF6000] text-white">
+      <section className="py-8 md:py-10 bg-[#FF6000] text-white border-t border-[#FF6000]">
         <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight mb-4">
             Hemen Başla!

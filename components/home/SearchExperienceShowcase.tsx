@@ -55,10 +55,6 @@ export function SearchExperienceShowcase() {
             <h2 className="text-base md:text-lg font-semibold text-slate-900 mb-1">
               Hizmetgo deneyimini keşfet
             </h2>
-            <p className="text-xs md:text-sm text-slate-600 mb-3">
-              Aşağıdaki senaryolardan birini seç; sağdaki mini ekran, uygulamada neler
-              göreceğini adım adım gösterir.
-            </p>
 
             <div className="space-y-2">
               {SCENARIOS.map((scenario) => {

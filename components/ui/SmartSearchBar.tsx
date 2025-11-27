@@ -41,9 +41,6 @@ export default function SmartSearchBar() {
             Ara
           </Button>
         </div>
-        <p className="text-xs md:text-sm text-slate-500 text-center">
-          Örnek: "Ümraniye ev temizliği", "Ataşehir çilingir"...
-        </p>
       </form>
     </div>
   )

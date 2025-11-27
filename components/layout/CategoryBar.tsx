@@ -34,7 +34,7 @@ export default function CategoryBar() {
   }
 
   return (
-    <div className="fixed top-[123px] left-0 right-0 bg-white border-b border-gray-200 shadow-sm z-fixed">
+    <div className="bg-white border-b border-gray-200">
       <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-6 overflow-x-auto scrollbar-hide py-3">
           {CATEGORIES.map((category) => (
