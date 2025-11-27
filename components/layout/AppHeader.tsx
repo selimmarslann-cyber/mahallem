@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils/cn'
+import SupportHelpButton from '@/components/support/SupportHelpButton'
 
 interface AppHeaderProps {
   showNotifications?: boolean
@@ -101,63 +102,46 @@ export default function AppHeader({
     <header className={`sticky top-0 z-50 w-full transition-all ${
       isPartnerPage 
         ? 'bg-slate-400/90 backdrop-blur-md shadow-md' 
-        : 'bg-white/80 backdrop-blur-xl border-b border-slate-200/60'
+        : 'bg-white border-b border-slate-200'
     }`}>
-      <div className="max-w-[90rem] mx-auto px-6 sm:px-8 lg:px-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4 py-4">
-          {/* Logo + Brand */}
+          {/* Logo + Brand - Thumbtack Style */}
           <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
+              {/* Logo Icon */}
+              <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center">
+                <span className="text-white font-bold text-lg">T</span>
+              </div>
+              {/* Brand Text */}
               <span 
-                className="text-xl md:text-2xl font-bold leading-none text-slate-900 lowercase"
+                className="text-xl md:text-2xl font-semibold leading-none text-slate-900"
                 style={{ 
                   fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-                  letterSpacing: '-0.02em',
-                  fontWeight: 700,
+                  letterSpacing: '-0.01em',
+                  fontWeight: 600,
                 }}
               >
-                hizmet
-              </span>
-              <span 
-                className="text-xl md:text-2xl font-bold leading-none lowercase"
-                style={{ 
-                  fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-                  letterSpacing: '-0.02em',
-                  fontWeight: 700,
-                  color: '#FF6A00',
-                } as React.CSSProperties}
-              >
-                go
+                hizmetgo
               </span>
             </div>
           </Link>
 
-          {/* Center Nav - Three Main CTAs */}
-          <nav className="hidden md:flex items-center gap-3 flex-1 justify-center" aria-label="Main navigation">
-            {[
-              { label: 'Hizmetleri Keşfedin', href: '/request', icon: Wrench, key: 'service' },
-              { label: 'Ek Gelir Kazan', href: '/earn', icon: Gauge, key: 'instant' },
-            ].map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
-              const Icon = item.icon
-              
-              return (
-                <Link key={item.key} href={item.href} aria-label={item.label}>
-                  <Button
-                    variant={isActive ? "default" : "ghost"}
-                    size="sm"
-                    className="flex items-center gap-2"
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </Button>
-                </Link>
-              )
-            })}
+          {/* Center Nav - Thumbtack Style (Explore Services dropdown) */}
+          <nav className="hidden md:flex items-center gap-1 flex-1 justify-center" aria-label="Main navigation">
+            <Link href="/request" className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors">
+              Hizmetleri Keşfedin
+            </Link>
+            <Link href="/earn" className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors">
+              Ek Gelir Kazan
+            </Link>
           </nav>
 
-          {/* Right Actions */}
+          {/* Right Actions - Thumbtack Style */}
           <div className="flex items-center gap-3">
+            {/* Destek Butonu - Çevrimiçi Kulaklık */}
+            <SupportHelpButton />
+
             {/* Giriş yapmış kullanıcı için profil */}
             {isAuthenticated && user ? (
               <div className="hidden lg:flex items-center gap-3">
@@ -167,14 +151,14 @@ export default function AppHeader({
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center gap-2 cursor-pointer"
                   >
-                    <Avatar className="w-10 h-10 border-2 border-gray-300">
+                    <Avatar className="w-8 h-8 border border-slate-200">
                       <AvatarImage src={user.avatarUrl} />
-                      <AvatarFallback className="bg-gray-200 text-black">
+                      <AvatarFallback className="bg-slate-100 text-slate-700">
                         {user.name?.charAt(0)?.toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden xl:block">
-                      <p className="text-sm font-semibold text-black">
+                      <p className="text-sm font-medium text-slate-900">
                         {user.name}
                       </p>
                     </div>
@@ -182,20 +166,26 @@ export default function AppHeader({
                 </Link>
               </div>
             ) : (
-              /* Desktop CTAs */
+              /* Desktop CTAs - Thumbtack Style */
               isPublic && (
-                <div className="hidden lg:flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => router.push('/auth/login?redirect=/account')}
+                <div className="hidden lg:flex items-center gap-3">
+                  <Link 
+                    href="/partner"
+                    className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
+                  >
+                    Ortak Ol
+                  </Link>
+                  <Link 
+                    href="/auth/login?redirect=/account"
+                    className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
                   >
                     Giriş Yap
-                  </Button>
+                  </Link>
                   <Button
                     variant="default"
                     size="sm"
                     onClick={() => router.push('/auth/register')}
+                    className="px-4 py-2 text-sm font-semibold"
                   >
                     Üye Ol
                   </Button>
@@ -203,11 +193,11 @@ export default function AppHeader({
               )
             )}
 
-            {/* Mobile Menu Button - Beyaz */}
+            {/* Mobile Menu Button - Thumbtack Style */}
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden text-black hover:bg-gray-100 rounded-lg"
+              className="md:hidden text-slate-700 hover:bg-slate-100 rounded-md"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
@@ -217,13 +207,13 @@ export default function AppHeader({
               )}
             </Button>
 
-            {/* Notifications & Cart - Beyaz */}
+            {/* Notifications & Cart - Thumbtack Style */}
             {showNotifications && (
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <Button variant="ghost" size="sm" className="relative text-black hover:bg-gray-100 rounded-lg">
+                <Button variant="ghost" size="sm" className="relative text-slate-700 hover:bg-slate-100 rounded-md">
                   <Bell className="w-5 h-5" />
                   <Badge
                     variant="destructive"
@@ -241,7 +231,7 @@ export default function AppHeader({
                 whileTap={{ scale: 0.9 }}
               >
                 <Link href="/cart">
-                  <Button variant="ghost" size="sm" className="relative text-black hover:bg-gray-100 rounded-lg">
+                  <Button variant="ghost" size="sm" className="relative text-slate-700 hover:bg-slate-100 rounded-md">
                     <ShoppingCart className="w-5 h-5" />
                     {cartCount > 0 && (
                       <Badge
@@ -258,13 +248,13 @@ export default function AppHeader({
           </div>
         </div>
 
-        {/* Mobile Menu - Beyaz Yazı */}
+        {/* Mobile Menu - Thumbtack Style */}
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-white/20 bg-[#FF6000] backdrop-blur-md rounded-b-2xl shadow-xl py-4 space-y-2"
+            className="md:hidden border-t border-slate-200 bg-white py-4 space-y-1"
           >
             {/* Main Tabs */}
             {customerTabs.map((tab) => {
@@ -274,16 +264,10 @@ export default function AppHeader({
                 <Link key={tab.key} href={tab.href}>
                   <span
                     className={cn(
-                      "block w-full px-4 py-3 text-base font-semibold text-white rounded-lg transition-all duration-200",
-                      "hover:bg-white/20 hover:text-white",
-                      isActive && "text-white bg-white/20 font-bold"
+                      "block w-full px-4 py-3 text-sm font-medium text-slate-700 rounded-md transition-all duration-200",
+                      "hover:bg-slate-50 hover:text-slate-900",
+                      isActive && "text-brand-600 bg-brand-50 font-semibold"
                     )}
-                    style={{
-                      fontFamily: "'Poppins', 'Inter', sans-serif",
-                      letterSpacing: '-0.3px',
-                      fontWeight: isActive ? 700 : 600,
-                      textShadow: '1px 1px 6px rgba(0,0,0,0.4)',
-                    }}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {tab.label}
@@ -294,64 +278,57 @@ export default function AppHeader({
             
             {/* Mobile: Giriş yapmış kullanıcı */}
             {isAuthenticated && user ? (
-              <div className="pt-4 border-t border-white/20">
+              <div className="pt-4 border-t border-slate-200">
                 <Link
                   href="/account"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-white rounded-lg transition-all duration-200 hover:bg-white/20"
+                  className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 rounded-md transition-all duration-200 hover:bg-slate-50"
                 >
-                  <Avatar className="w-10 h-10">
+                  <Avatar className="w-8 h-8 border border-slate-200">
                     <AvatarImage src={user.avatarUrl} />
-                    <AvatarFallback className="bg-white/20 text-white">
+                    <AvatarFallback className="bg-slate-100 text-slate-700">
                       {user.name?.charAt(0)?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold">{user.name}</p>
-                    <p className="text-xs text-white/80">Hesabım</p>
+                    <p className="font-medium text-slate-900">{user.name}</p>
+                    <p className="text-xs text-slate-500">Hesabım</p>
                   </div>
                 </Link>
               </div>
             ) : (
-              /* Public CTAs */
+              /* Public CTAs - Thumbtack Style */
               isPublic && (
-                <div className="pt-4 border-t border-white/20 space-y-2">
-                  {[
-                    { label: 'Giriş Yap', href: '/auth/login?redirect=/account' },
-                    { label: 'Esnaf Girişi', href: '/auth/business-login' },
-                    { label: 'Kayıt Ol', href: '/auth/register' },
-                    { label: 'Ortak Ol', href: '/partner', highlight: true },
-                  ].map((item) => (
-                    item.highlight ? (
-                      <Button
-                        key={item.label}
-                        onClick={() => {
-                          router.push(item.href)
-                          setMobileMenuOpen(false)
-                        }}
-                        className="w-full bg-slate-500 text-white hover:bg-slate-600 font-semibold"
-                      >
-                        {item.label}
-                      </Button>
-                    ) : (
-                      <span
-                        key={item.label}
-                        className="block w-full px-4 py-3 text-sm font-semibold text-white rounded-lg transition-all duration-200 hover:bg-white/20 hover:text-white cursor-pointer"
-                        style={{
-                          fontFamily: "'Poppins', 'Inter', sans-serif",
-                          letterSpacing: '-0.2px',
-                          fontWeight: 600,
-                          textShadow: '1px 1px 6px rgba(0,0,0,0.4)',
-                        }}
-                        onClick={() => {
-                          router.push(item.href)
-                          setMobileMenuOpen(false)
-                        }}
-                      >
-                        {item.label}
-                      </span>
-                    )
-                  ))}
+                <div className="pt-4 border-t border-slate-200 space-y-1">
+                  <Link
+                    href="/partner"
+                    onClick={() => {
+                      setMobileMenuOpen(false)
+                    }}
+                    className="block w-full px-4 py-3 text-sm font-medium text-slate-700 rounded-md transition-all duration-200 hover:bg-slate-50"
+                  >
+                    Ortak Ol
+                  </Link>
+                  <Link
+                    href="/auth/login?redirect=/account"
+                    onClick={() => {
+                      setMobileMenuOpen(false)
+                    }}
+                    className="block w-full px-4 py-3 text-sm font-medium text-slate-700 rounded-md transition-all duration-200 hover:bg-slate-50"
+                  >
+                    Giriş Yap
+                  </Link>
+                  <Button
+                    onClick={() => {
+                      router.push('/auth/register')
+                      setMobileMenuOpen(false)
+                    }}
+                    variant="default"
+                    size="sm"
+                    className="w-full mt-2"
+                  >
+                    Üye Ol
+                  </Button>
                 </div>
               )
             )}

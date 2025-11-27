@@ -36,50 +36,64 @@ export default function HomePage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative mt-4 md:mt-6 mb-8 md:mb-10">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl border border-borderSoft/70 bg-gradient-to-br from-white via-slate-50 to-brand-50 shadow-[0_20px_60px_rgba(15,23,42,0.15)] px-5 md:px-8 py-6 md:py-8 lg:py-10 flex flex-col md:flex-row gap-6 md:gap-8 items-center">
-            {/* Sol Blok */}
-            <div className="flex-1 space-y-3 md:space-y-4">
-              {/* Rotating Headline */}
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm px-6 md:px-10 py-8 md:py-12 lg:py-16">
+            {/* Üst: Rotating Headline - Merkezi */}
+            <div className="flex flex-col items-center mb-8 md:mb-10">
               <RotatingHeadline />
-
-              {/* Kısa açıklama */}
-              <p className="text-sm md:text-base text-slate-600 max-w-lg">
-                Ev temizliği, tadilat, nakliyat, çilingir veya market… Hizmet iste, ek gelir kazan
-                ya da çevrendeki esnaflardan sipariş ver. Hepsi tek uygulamada.
-              </p>
-
-              {/* Arama barı */}
-              <SmartSearchBar />
-
-              {/* Bullet'lar */}
-              <ul className="mt-3 space-y-1.5 text-xs md:text-[13px] text-slate-700">
-                <li>✅ Güvenilir ustalar & esnaflar</li>
-                <li>✅ Anlık işler ile ek gelir fırsatı</li>
-                <li>✅ Harita üzerinden sipariş ve takip</li>
-              </ul>
             </div>
+            
+            {/* Orta: Büyük Arama Barı - Merkezi */}
+            <div className="flex justify-center mb-10 md:mb-12">
+              <div className="w-full max-w-4xl">
+                <SmartSearchBar />
+                    </div>
+                  </div>
 
-            {/* Sağ Blok (MobileDemo) */}
-            <div className="flex-1 flex justify-end">
-              <MobileDemo />
+            {/* Alt: Sol Yazılar + Sağ Telefon Animasyonu */}
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
+              {/* Sol: Açıklama Yazıları */}
+              <div className="flex-1 space-y-4 max-w-lg">
+                <p className="text-base md:text-lg text-slate-700 leading-relaxed">
+                  Ev temizliği, tadilat, nakliyat, çilingir veya market… Hizmet iste, ek gelir kazan
+                  ya da çevrendeki esnaflardan sipariş ver. Hepsi tek uygulamada.
+                </p>
+                
+                {/* Bullet'lar */}
+                <ul className="space-y-2.5 text-sm md:text-base text-slate-700">
+                  <li className="flex items-center gap-2">
+                    <span className="text-brand-500">✅</span>
+                    <span>Güvenilir ustalar & esnaflar</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-brand-500">✅</span>
+                    <span>Anlık işler ile ek gelir fırsatı</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-brand-500">✅</span>
+                    <span>Harita üzerinden sipariş ve takip</span>
+                  </li>
+                </ul>
+                    </div>
+
+              {/* Sağ: MobileDemo */}
+              <div className="flex-1 flex justify-center lg:justify-end">
+                <MobileDemo />
+              </div>
             </div>
           </div>
 
-          {/* Turuncu blob dekoratif background */}
-          <div className="pointer-events-none absolute -right-16 -top-10 h-64 w-64 rounded-full bg-brand-500/20 blur-3xl" />
-          <div className="pointer-events-none absolute -left-10 bottom-[-40px] h-64 w-64 rounded-full bg-amber-400/25 blur-3xl" />
         </div>
       </section>
 
-      {/* Three Main Feature Cards */}
-      <section className="max-w-6xl mx-auto mt-6 md:mt-8 px-4 md:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+      {/* Three Main Feature Cards - Thumbtack Style */}
+      <section className="max-w-7xl mx-auto mt-12 md:mt-16 px-4 md:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {/* Hizmet İste */}
-          <div className="group relative overflow-hidden rounded-2xl bg-surface border border-borderSoft/80 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all p-4 md:p-5 flex flex-col gap-3">
+          <div className="group relative overflow-hidden rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all p-6 md:p-8 flex flex-col gap-4">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 text-brand-700 text-[11px] px-2.5 py-1">
               <Wrench className="h-3.5 w-3.5" />
               <span>Hizmet iste</span>
@@ -94,14 +108,14 @@ export default function HomePage() {
               </Button>
               <button className="text-xs text-slate-500 hover:text-brand-600">Nasıl çalışır?</button>
             </div>
-          </div>
-
+                    </div>
+                    
           {/* Ek Gelir Kazan */}
-          <div className="group relative overflow-hidden rounded-2xl bg-surface border border-borderSoft/80 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all p-4 md:p-5 flex flex-col gap-3">
+          <div className="group relative overflow-hidden rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all p-6 md:p-8 flex flex-col gap-4">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] px-2.5 py-1">
               <Gauge className="h-3.5 w-3.5" />
               <span>Ek gelir</span>
-            </div>
+                    </div>
             <h3 className="text-base md:text-lg font-semibold text-slate-900">Mahallende ek gelir kazan</h3>
             <p className="text-sm text-slate-600 flex-1">
               10 km çevrendeki kısa süreli işlere başvur, hızlı onay ve ödeme ile kazanmaya başla.
@@ -109,13 +123,13 @@ export default function HomePage() {
             <div className="flex items-center justify-between mt-2">
               <Button asChild variant="default" size="sm">
                 <Link href="/earn">Ek gelir kazan</Link>
-              </Button>
+                        </Button>
               <button className="text-xs text-slate-500 hover:text-emerald-600">Nasıl çalışır?</button>
-            </div>
-          </div>
+                      </div>
+                    </div>
 
           {/* Çevrendeki Esnaflar */}
-          <div className="group relative overflow-hidden rounded-2xl bg-surface border border-borderSoft/80 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all p-4 md:p-5 flex flex-col gap-3">
+          <div className="group relative overflow-hidden rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all p-6 md:p-8 flex flex-col gap-4">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 text-sky-700 text-[11px] px-2.5 py-1">
               <MapPin className="h-3.5 w-3.5" />
               <span>Esnaflar</span>
@@ -129,20 +143,14 @@ export default function HomePage() {
                 <Link href="/map">Esnafları gör</Link>
               </Button>
               <button className="text-xs text-slate-500 hover:text-sky-600">Nasıl çalışır?</button>
-            </div>
+                  </div>
           </div>
         </div>
       </section>
 
 
-      {/* Popüler Kategoriler */}
-      <section className="max-w-6xl mx-auto mt-8 md:mt-10 px-4 md:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-3 md:mb-4">
-          <div>
-            <h2 className="text-lg md:text-2xl font-semibold text-slate-900">Her proje için hazır kategoriler</h2>
-            <p className="text-sm text-slate-600 mt-1">Mahallende en çok talep edilen hizmetleri görsel olarak seç.</p>
-          </div>
-        </div>
+      {/* Popüler Kategoriler - Thumbtack Style */}
+      <section className="max-w-7xl mx-auto mt-12 md:mt-16 px-4 md:px-6 lg:px-8">
         <PopularCategoriesTabs />
       </section>
 

@@ -17,30 +17,31 @@ export default function SmartSearchBar() {
   }
 
   return (
-    <div className="mt-4 md:mt-5 max-w-xl">
-      <form onSubmit={handleSearch} className="flex flex-col gap-2">
-        <div className="flex items-stretch gap-2 bg-white rounded-full shadow-xl border border-slate-200 px-3 py-2.5 md:py-3">
-          {/* Sol input */}
+    <div className="w-full">
+      <form onSubmit={handleSearch} className="flex flex-col gap-3">
+        <div className="flex items-stretch gap-3 bg-white rounded-full shadow-2xl border border-slate-200 px-4 py-3 md:px-6 md:py-4">
+          {/* Sol input - Büyük */}
           <input
             type="text"
             placeholder="İhtiyacını yaz: ev temizliği, boya, çilingir..."
             value={serviceQuery}
             onChange={(e) => setServiceQuery(e.target.value)}
-            className="flex-1 bg-transparent border-none outline-none text-xs md:text-sm text-slate-800 placeholder:text-slate-400"
+            className="flex-1 bg-transparent border-none outline-none text-sm md:text-base lg:text-lg text-slate-800 placeholder:text-slate-400"
           />
           
           {/* Konum */}
-          <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-600">
-            <MapPin className="h-3.5 w-3.5 text-slate-400" />
+          <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 border border-slate-200 text-sm text-slate-600">
+            <MapPin className="h-4 w-4 text-slate-400" />
             <span>Konumun</span>
           </div>
           
-          {/* Buton */}
-          <Button type="submit" variant="default" size="lg" className="px-5 text-xs md:text-sm">
+          {/* Buton - Büyük */}
+          <Button type="submit" variant="default" size="lg" className="px-6 md:px-8 text-sm md:text-base font-semibold">
+            <Search className="h-4 w-4 md:h-5 md:w-5 mr-2" />
             Ara
           </Button>
         </div>
-        <p className="text-[11px] md:text-xs text-slate-500">
+        <p className="text-xs md:text-sm text-slate-500 text-center">
           Örnek: "Ümraniye ev temizliği", "Ataşehir çilingir"...
         </p>
       </form>

@@ -1,43 +1,41 @@
 'use client'
 
 import { useState } from 'react'
-import { Wrench } from 'lucide-react'
+import { Wrench, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { cn } from '@/lib/utils/cn'
 import * as LucideIcons from 'lucide-react'
 
+// Profesyonel stok görselleri - Unsplash
 const categoryGroups = [
   {
     id: 'temizlik',
     icon: 'Sparkles',
-    label: 'Temizlik',
+    label: 'Temizlikçiler',
     categories: [
       {
         id: 'ev-temizligi',
         title: 'Ev Temizliği',
-        description: 'Genel ev temizliği hizmetleri',
-        imageSrc: '/images/categories/ev-temizligi.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop',
         href: '/request?categoryId=cleaning',
       },
       {
         id: 'hali-temizligi',
         title: 'Halı Temizliği',
-        description: 'Profesyonel halı yıkama',
-        imageSrc: '/images/categories/hali-temizligi.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=800&h=600&fit=crop',
         href: '/request?categoryId=cleaning',
       },
       {
         id: 'ofis-temizligi',
         title: 'Ofis Temizliği',
-        description: 'İş yeri temizlik hizmetleri',
-        imageSrc: '/images/categories/ofis-temizligi.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
         href: '/request?categoryId=cleaning',
       },
       {
         id: 'duzen-toplama',
         title: 'Düzen & Toplama',
-        description: 'Ev düzenleme hizmetleri',
-        imageSrc: '/images/categories/duzen-toplama.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop',
         href: '/request?categoryId=cleaning',
       },
     ],
@@ -45,41 +43,36 @@ const categoryGroups = [
   {
     id: 'tamir',
     icon: 'Wrench',
-    label: 'Tamir & Onarım',
+    label: 'Tamirciler',
     categories: [
       {
         id: 'boya-tadilat',
         title: 'Boya & Tadilat',
-        description: 'İç ve dış cephe boyama',
-        imageSrc: '/images/categories/boya-tadilat.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&h=600&fit=crop',
         href: '/request?categoryId=painting',
       },
       {
         id: 'beyaz-esya',
         title: 'Beyaz Eşya',
-        description: 'Tamir ve bakım hizmetleri',
-        imageSrc: '/images/categories/beyaz-esya.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop',
         href: '/request?categoryId=appliance-repair',
       },
       {
         id: 'tesisat',
         title: 'Su Tesisatı',
-        description: 'Tesisat tamir ve montaj',
-        imageSrc: '/images/categories/tesisat.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop',
         href: '/request?categoryId=plumbing',
       },
       {
         id: 'elektrik',
         title: 'Elektrik',
-        description: 'Elektrik işleri ve tamir',
-        imageSrc: '/images/categories/elektrik.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=800&h=600&fit=crop',
         href: '/request?categoryId=electricity',
       },
       {
         id: 'klima',
         title: 'Klima',
-        description: 'Montaj, bakım, tamir',
-        imageSrc: '/images/categories/klima.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&h=600&fit=crop',
         href: '/request?categoryId=ac-installation',
       },
     ],
@@ -87,34 +80,30 @@ const categoryGroups = [
   {
     id: 'tasima',
     icon: 'Truck',
-    label: 'Taşıma & Nakliyat',
+    label: 'Taşıyıcılar',
     categories: [
       {
         id: 'nakliyat',
         title: 'Evden Eve',
-        description: 'Tam ev taşıma hizmetleri',
-        imageSrc: '/images/categories/nakliyat.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop',
         href: '/request?categoryId=moving',
       },
       {
         id: 'parca-esya',
         title: 'Parça Eşya',
-        description: 'Küçük eşya taşıma',
-        imageSrc: '/images/categories/parca-esya.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&h=600&fit=crop',
         href: '/request?categoryId=moving',
       },
       {
         id: 'mobilya',
         title: 'Mobilya Montaj',
-        description: 'Mobilya kurulum hizmetleri',
-        imageSrc: '/images/categories/mobilya.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop',
         href: '/request?categoryId=carpentry',
       },
       {
         id: 'hurda',
         title: 'Hurda Toplama',
-        description: 'Hurda ve atık toplama',
-        imageSrc: '/images/categories/hurda.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&h=600&fit=crop',
         href: '/request?categoryId=moving',
       },
     ],
@@ -127,29 +116,25 @@ const categoryGroups = [
       {
         id: 'market',
         title: 'Market',
-        description: 'Market siparişleri',
-        imageSrc: '/images/categories/market.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1556910096-6f5e72db6803?w=800&h=600&fit=crop',
         href: '/map?category=market',
       },
       {
         id: 'kasap',
         title: 'Kasap',
-        description: 'Et ve et ürünleri',
-        imageSrc: '/images/categories/kasap.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=600&fit=crop',
         href: '/map?category=butcher',
       },
       {
         id: 'yemek',
         title: 'Yemek',
-        description: 'Restoran ve yemek servisi',
-        imageSrc: '/images/categories/yemek.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop',
         href: '/map?category=restaurant',
       },
       {
         id: 'pastane',
         title: 'Pastane',
-        description: 'Tatlı ve pastane ürünleri',
-        imageSrc: '/images/categories/pastane.jpg',
+        imageSrc: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800&h=600&fit=crop',
         href: '/map?category=bakery',
       },
     ],
@@ -163,9 +148,9 @@ export default function PopularCategoriesTabs() {
 
   return (
     <div>
-      {/* Tab Bar */}
-      <div className="flex items-center justify-between gap-4 mb-5">
-        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
+      {/* Tab Bar - Thumbtack Style */}
+      <div className="mb-6 md:mb-8">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
           {categoryGroups.map(group => {
             const IconComponent = (LucideIcons as any)[group.icon] || Wrench
             return (
@@ -173,48 +158,53 @@ export default function PopularCategoriesTabs() {
                 key={group.id}
                 onClick={() => setActiveGroup(group.id)}
                 className={cn(
-                  "flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-xs md:text-sm transition-all whitespace-nowrap",
+                  "flex items-center gap-2 px-4 py-3 text-sm md:text-base font-medium transition-all whitespace-nowrap relative",
+                  "border-b-2 border-transparent",
                   activeGroup === group.id
-                    ? "bg-brand-50 border-brand-300 text-brand-700 shadow-sm"
-                    : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                    ? "text-brand-600 border-brand-600"
+                    : "text-slate-600 hover:text-slate-900"
                 )}
               >
-                <IconComponent className="h-4 w-4" />
+                <IconComponent className="h-5 w-5" />
                 <span>{group.label}</span>
               </button>
             )
           })}
+          {/* Sağ ok ikonu */}
+          <div className="flex items-center text-slate-400 ml-2">
+            <ChevronRight className="h-5 w-5" />
+          </div>
         </div>
       </div>
 
-      {/* Category Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+      {/* Category Grid - Thumbtack Style */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
         {currentGroup?.categories.map(cat => (
           <Link
             key={cat.id}
             href={cat.href}
-            className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
+            className="group relative overflow-hidden rounded-xl bg-white border border-slate-200 hover:border-brand-300 hover:shadow-lg transition-all duration-200 flex flex-col"
           >
-            <div className="relative h-32 md:h-36">
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-slate-200" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
-              <div className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-[10px] text-white backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Mahallende mevcut</span>
-              </div>
+            {/* Görsel */}
+            <div className="relative h-40 md:h-48 w-full bg-gradient-to-br from-slate-100 to-slate-200">
+              <Image
+                src={cat.imageSrc}
+                alt={cat.title}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 25vw"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.style.display = 'none'
+                }}
+              />
             </div>
-            <div className="p-3 md:p-3.5 flex flex-col gap-1.5">
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="text-sm md:text-[15px] font-semibold text-slate-800">
-                  {cat.title}
-                </h3>
-                <span className="inline-flex items-center rounded-full bg-brand-50 text-brand-700 text-[10px] px-2 py-0.5">
-                  Hemen seç
-                </span>
-              </div>
-              <p className="text-[11px] md:text-xs text-slate-600 line-clamp-2">
-                {cat.description}
-              </p>
+            
+            {/* Başlık - Sadece */}
+            <div className="p-4">
+              <h3 className="text-base md:text-lg font-semibold text-slate-900 group-hover:text-brand-600 transition-colors">
+                {cat.title}
+              </h3>
             </div>
           </Link>
         ))}
@@ -222,4 +212,3 @@ export default function PopularCategoriesTabs() {
     </div>
   )
 }
-

@@ -53,25 +53,23 @@ const steps = [
         <div className="grid grid-cols-2 gap-2">
           {/* 4 mini kategori kartı */}
           {[
-            { title: 'Ev Temizliği', img: '/images/categories/ev-temizligi.jpg' },
-            { title: 'Boya & Tadilat', img: '/images/categories/boya-tadilat.jpg' },
-            { title: 'Nakliyat', img: '/images/categories/nakliyat.jpg' },
-            { title: 'Çilingir', img: '/images/categories/cilingir.jpg' }
+            { title: 'Ev Temizliği', img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop' },
+            { title: 'Boya & Tadilat', img: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&h=300&fit=crop' },
+            { title: 'Nakliyat', img: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop' },
+            { title: 'Çilingir', img: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=400&h=300&fit=crop' }
           ].map((cat, i) => (
-            <div key={i} className="relative rounded-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-slate-300">
-                <Image
-                  src={cat.img}
-                  alt={cat.title}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.style.display = 'none'
-                  }}
-                />
-              </div>
+            <div key={i} className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300">
+              <Image
+                src={cat.img}
+                alt={cat.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 50vw, 25vw"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.style.display = 'none'
+                }}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               <div className="relative p-2.5 flex flex-col justify-end h-24">
                 <span className="text-[10px] text-white font-semibold">{cat.title}</span>
@@ -102,12 +100,12 @@ const steps = [
           {
             name: 'Ayşe Temizlik',
             info: '4.9 • 132 yorum • 10 dk cevap',
-            avatar: '/images/avatars/usta-1.jpg'
+            avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face'
           },
           {
             name: 'Temiz İş Ekibi',
             info: '4.8 • 98 yorum • 6 dk cevap',
-            avatar: '/images/avatars/usta-2.jpg'
+            avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face'
           }
         ].map((u, i) => (
           <div

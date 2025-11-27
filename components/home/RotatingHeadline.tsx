@@ -18,9 +18,9 @@ export function RotatingHeadline() {
   const current = phrases[index]
 
   return (
-    <div className="mb-3 md:mb-4">
+    <div className="text-center">
       {/* Üst satır: dönen kısım */}
-      <div className="h-8 md:h-10 overflow-hidden">
+      <div className="h-10 md:h-12 lg:h-14 overflow-hidden mb-2">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
@@ -28,7 +28,7 @@ export function RotatingHeadline() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight text-slate-900"
+            className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-semibold tracking-tight text-slate-900"
           >
             {current}
           </motion.div>
@@ -36,8 +36,8 @@ export function RotatingHeadline() {
       </div>
 
       {/* Alt satır: sabit "Kolaylaştırıldı." */}
-      <div className="mt-1">
-        <p className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-slate-900">
+      <div>
+        <p className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold tracking-tight text-slate-900">
           Kolaylaştırıldı.
         </p>
       </div>
