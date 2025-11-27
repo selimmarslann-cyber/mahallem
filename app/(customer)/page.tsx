@@ -38,9 +38,9 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative mt-4 md:mt-6 mb-8 md:mb-10">
+      <section className="relative mb-12 md:mb-16">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm px-6 md:px-10 py-8 md:py-12 lg:py-16">
+          <div className="relative px-6 md:px-10 py-8 md:py-12 lg:py-16">
             {/* Üst: Rotating Headline - Merkezi */}
             <div className="flex flex-col items-center mb-8 md:mb-10">
               <RotatingHeadline />
@@ -90,60 +90,54 @@ export default function HomePage() {
       </section>
 
       {/* Three Main Feature Cards - Thumbtack Style */}
-      <section className="max-w-7xl mx-auto mt-12 md:mt-16 px-4 md:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      <section className="max-w-7xl mx-auto mt-16 md:mt-20 px-4 md:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
           {/* Hizmet İste */}
-          <div className="group relative overflow-hidden rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all p-6 md:p-8 flex flex-col gap-4">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 text-brand-700 text-[11px] px-2.5 py-1">
-              <Wrench className="h-3.5 w-3.5" />
-              <span>Hizmet iste</span>
+          <div className="group relative p-6 md:p-8 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 text-brand-600 mb-2">
+              <Wrench className="h-5 w-5" />
             </div>
-            <h3 className="text-base md:text-lg font-semibold text-slate-900">Profesyonel hizmet talep et</h3>
-            <p className="text-sm text-slate-600 flex-1">
+            <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-3">Profesyonel hizmet talep et</h3>
+            <p className="text-base text-slate-600 flex-1 leading-relaxed">
               Kategorini seç, birkaç soruyu cevapla, mahalle ustalarından teklif al.
             </p>
-            <div className="flex items-center justify-between mt-2">
-              <Button asChild variant="default" size="sm">
+            <div className="mt-6">
+              <Button asChild variant="default" size="lg" className="w-full">
                 <Link href="/request">Hemen hizmet iste</Link>
               </Button>
-              <button className="text-xs text-slate-500 hover:text-brand-600">Nasıl çalışır?</button>
             </div>
                     </div>
                     
           {/* Ek Gelir Kazan */}
-          <div className="group relative overflow-hidden rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all p-6 md:p-8 flex flex-col gap-4">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] px-2.5 py-1">
-              <Gauge className="h-3.5 w-3.5" />
-              <span>Ek gelir</span>
-                    </div>
-            <h3 className="text-base md:text-lg font-semibold text-slate-900">Mahallende ek gelir kazan</h3>
-            <p className="text-sm text-slate-600 flex-1">
+          <div className="group relative p-6 md:p-8 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 text-emerald-600 mb-2">
+              <Gauge className="h-5 w-5" />
+            </div>
+            <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-3">Mahallende ek gelir kazan</h3>
+            <p className="text-base text-slate-600 flex-1 leading-relaxed">
               10 km çevrendeki kısa süreli işlere başvur, hızlı onay ve ödeme ile kazanmaya başla.
             </p>
-            <div className="flex items-center justify-between mt-2">
-              <Button asChild variant="default" size="sm">
+            <div className="mt-6">
+              <Button asChild variant="default" size="lg" className="w-full">
                 <Link href="/earn">Ek gelir kazan</Link>
-                        </Button>
-              <button className="text-xs text-slate-500 hover:text-emerald-600">Nasıl çalışır?</button>
-                      </div>
-                    </div>
+              </Button>
+            </div>
+          </div>
 
           {/* Çevrendeki Esnaflar */}
-          <div className="group relative overflow-hidden rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md transition-all p-6 md:p-8 flex flex-col gap-4">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 text-sky-700 text-[11px] px-2.5 py-1">
-              <MapPin className="h-3.5 w-3.5" />
-              <span>Esnaflar</span>
+          <div className="group relative p-6 md:p-8 flex flex-col gap-4">
+            <div className="inline-flex items-center gap-2 text-sky-600 mb-2">
+              <MapPin className="h-5 w-5" />
             </div>
-            <h3 className="text-base md:text-lg font-semibold text-slate-900">Çevrendeki esnaflardan sipariş ver</h3>
-            <p className="text-sm text-slate-600 flex-1">
+            <h3 className="text-xl md:text-2xl font-semibold text-slate-900 mb-3">Çevrendeki esnaflardan sipariş ver</h3>
+            <p className="text-base text-slate-600 flex-1 leading-relaxed">
               Yemek, market, kırtasiye, eczane… Haritadan seç, siparişini oluştur, kapına gelsin.
             </p>
-            <div className="flex items-center justify-between mt-2">
-              <Button asChild variant="default" size="sm">
+            <div className="mt-6">
+              <Button asChild variant="default" size="lg" className="w-full">
                 <Link href="/map">Esnafları gör</Link>
               </Button>
-              <button className="text-xs text-slate-500 hover:text-sky-600">Nasıl çalışır?</button>
-                  </div>
+            </div>
           </div>
         </div>
       </section>
@@ -155,68 +149,61 @@ export default function HomePage() {
       </section>
 
       {/* Nasıl Çalışır - 3 Adım */}
-      <section className="w-full py-20 bg-gradient-to-b from-white to-gray-50">
+      <section className="w-full py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-3">
               Nasıl Çalışır?
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
               Hizmet almak veya vermek çok kolay
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid md:grid-cols-3 gap-12 md:gap-16">
             {[
               {
                 step: '01',
                 title: 'İhtiyacını Belirt',
                 description: 'Hangi hizmete ihtiyacın var? Arama yap veya kategori seç, ihtiyacını detaylıca anlat.',
                 icon: Search,
-                color: 'bg-[#FF6000]'
               },
               {
                 step: '02',
                 title: 'Teklifler Al',
                 description: 'Yakındaki esnaflardan teklifler al, fiyatları karşılaştır, yorumları oku ve en uygun olanı seç.',
                 icon: FileText,
-                color: 'bg-green-500'
               },
               {
                 step: '03',
                 title: 'İşini Halledir',
                 description: 'Seçtiğin esnafla iletişime geç, işini hallettir ve memnun kalırsan değerlendirme yap.',
                 icon: CheckCircle2,
-                color: 'bg-blue-500'
               }
             ].map((item, index) => {
               const Icon = item.icon
               return (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="relative"
                 >
-                  <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border-2 border-gray-100 h-full">
+                  <div className="p-6">
                     <div className="flex items-center gap-4 mb-6">
-                      <div className={`${item.color} w-16 h-16 rounded-xl flex items-center justify-center text-white font-black text-2xl`}>
+                      <div className="w-12 h-12 rounded-full bg-brand-500 flex items-center justify-center text-white font-semibold text-lg">
                         {item.step}
                       </div>
-                      <div className={`${item.color} w-12 h-12 rounded-lg flex items-center justify-center text-white`}>
-                        <Icon className="w-6 h-6" />
+                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-slate-700" />
                       </div>
                     </div>
-                    <h3 className="text-2xl font-black text-gray-900 mb-3">
+                    <h3 className="text-xl font-semibold text-slate-900 mb-3">
                       {item.title}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-slate-600 leading-relaxed">
                       {item.description}
                     </p>
                   </div>
-                </motion.div>
+                </div>
               )
             })}
           </div>
@@ -224,96 +211,76 @@ export default function HomePage() {
       </section>
 
       {/* Özellikler */}
-      <section className="w-full py-20 bg-white">
+      <section className="w-full py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-3">
               Neden Biz?
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
               Mahallendeki en iyi esnaflarla buluş, güvenle hizmet al
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
                 icon: MapPin,
                 title: 'Yakındaki Esnaflar',
                 description: '10 km çevrendeki esnafları gör, en yakınını seç',
-                color: 'text-[#FF6000]',
-                bgColor: 'bg-[#FF6000]/10'
               },
               {
                 icon: Star,
                 title: 'Değerlendirmeler',
                 description: 'Gerçek müşteri yorumları ve puanları oku',
-                color: 'text-yellow-500',
-                bgColor: 'bg-yellow-500/10'
               },
               {
                 icon: Shield,
                 title: 'Güvenli Ödeme',
                 description: 'Güvenli ödeme sistemi ile işini güvence altına al',
-                color: 'text-green-500',
-                bgColor: 'bg-green-500/10'
               },
               {
                 icon: Clock,
                 title: 'Hızlı Yanıt',
                 description: 'Esnaflardan dakikalar içinde teklif al',
-                color: 'text-blue-500',
-                bgColor: 'bg-blue-500/10'
               },
               {
                 icon: DollarSign,
                 title: 'Uygun Fiyatlar',
                 description: 'Birden fazla teklif al, en uygun fiyatı seç',
-                color: 'text-purple-500',
-                bgColor: 'bg-purple-500/10'
               },
               {
                 icon: Users,
                 title: 'Binlerce Esnaf',
                 description: '350+ kategoride binlerce kayıtlı esnaf',
-                color: 'text-red-500',
-                bgColor: 'bg-red-500/10'
               },
               {
                 icon: Award,
                 title: 'Kaliteli Hizmet',
                 description: 'Sadece doğrulanmış ve kaliteli esnaflar',
-                color: 'text-indigo-500',
-                bgColor: 'bg-indigo-500/10'
               },
               {
                 icon: TrendingUp,
                 title: 'Ek Gelir Fırsatı',
                 description: 'Vasıfsız işler için anında başvur, ek gelir kazan',
-                color: 'text-orange-500',
-                bgColor: 'bg-orange-500/10'
               }
             ].map((feature, index) => {
               const Icon = feature.icon
               return (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="bg-white rounded-xl p-6 border-2 border-gray-100 hover:border-[#FF6000] hover:shadow-lg transition-all group"
+                  className="p-6"
                 >
-                  <div className={`${feature.bgColor} w-14 h-14 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <Icon className={`w-7 h-7 ${feature.color}`} />
+                  <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center mb-4">
+                    <Icon className="w-5 h-5 text-slate-700" />
                   </div>
-                  <h3 className="text-lg font-black text-gray-900 mb-2">
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-slate-600 text-sm leading-relaxed">
                     {feature.description}
                   </p>
-                </motion.div>
+                </div>
               )
             })}
           </div>
@@ -321,9 +288,9 @@ export default function HomePage() {
       </section>
 
       {/* İstatistikler */}
-      <section className="w-full py-20 bg-gradient-to-br from-[#FF6000] to-[#FF8000]">
+      <section className="w-full py-24 bg-brand-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
             {[
               { number: '10,000+', label: 'Kayıtlı Esnaf', icon: Users },
               { number: '350+', label: 'Hizmet Kategorisi', icon: Gift },
@@ -332,24 +299,20 @@ export default function HomePage() {
             ].map((stat, index) => {
               const Icon = stat.icon
               return (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="text-center"
                 >
-                  <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
-                    <Icon className="w-8 h-8 text-white mx-auto mb-4" />
-                    <div className="text-4xl md:text-5xl font-black text-white mb-2">
+                  <div className="p-6">
+                    <Icon className="w-6 h-6 text-white/90 mx-auto mb-4" />
+                    <div className="text-4xl md:text-5xl font-semibold text-white mb-2">
                       {stat.number}
                     </div>
-                    <div className="text-white/90 font-semibold text-sm md:text-base">
+                    <div className="text-white/80 font-medium text-sm md:text-base">
                       {stat.label}
                     </div>
                   </div>
-                </motion.div>
+                </div>
               )
             })}
           </div>
@@ -357,18 +320,18 @@ export default function HomePage() {
       </section>
 
       {/* Güven Unsurları */}
-      <section className="w-full py-20 bg-gray-50">
+      <section className="w-full py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-3">
               Güvenle Kullan
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-slate-600">
               Güvenlik ve kalite önceliğimiz
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12">
             {[
               {
                 icon: Lock,
@@ -388,24 +351,20 @@ export default function HomePage() {
             ].map((item, index) => {
               const Icon = item.icon
               return (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white rounded-xl p-8 text-center border-2 border-gray-200 hover:border-[#FF6000] transition-all"
+                  className="p-8 text-center"
                 >
-                  <div className="bg-[#FF6000]/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Icon className="w-8 h-8 text-[#FF6000]" />
+                  <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                    <Icon className="w-6 h-6 text-slate-700" />
                   </div>
-                  <h3 className="text-xl font-black text-gray-900 mb-2">
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">
                     {item.title}
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-slate-600">
                     {item.description}
                   </p>
-                </motion.div>
+                </div>
               )
             })}
           </div>
@@ -413,40 +372,33 @@ export default function HomePage() {
       </section>
 
       {/* CTA Bölümü */}
-      <section className="w-full py-20 bg-gradient-to-r from-[#FF6000] to-[#FF8000]">
+      <section className="w-full py-24 bg-brand-500">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-              Hemen Başla!
-            </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Mahallendeki en iyi esnaflarla buluş, hizmet al veya ek gelir kazan
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                onClick={() => router.push('/request')}
-                size="lg"
-                className="bg-white text-[#FF6000] hover:bg-gray-50 font-black text-lg px-8 py-6 rounded-xl shadow-xl"
-              >
-                Hizmet Ara
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-              <Button
-                onClick={() => router.push('/partner')}
-                size="lg"
-                variant="outline"
-                className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-black text-lg px-8 py-6 rounded-xl"
-              >
-                Esnaf Ol
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </div>
-          </motion.div>
+          <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4">
+            Hemen Başla!
+          </h2>
+          <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+            Mahallendeki en iyi esnaflarla buluş, hizmet al veya ek gelir kazan
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              onClick={() => router.push('/request')}
+              size="lg"
+              className="bg-white text-brand-500 hover:bg-gray-50 font-semibold text-base px-8 py-6"
+            >
+              Hizmet Ara
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+            <Button
+              onClick={() => router.push('/partner')}
+              size="lg"
+              variant="outline"
+              className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold text-base px-8 py-6"
+            >
+              Esnaf Ol
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </section>
     </div>
