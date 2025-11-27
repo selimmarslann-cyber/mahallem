@@ -12,7 +12,8 @@ import SmartSearchBar from '@/components/ui/SmartSearchBar'
 import PopularCategoriesTabs from '@/components/home/PopularCategoriesTabs'
 import { RotatingHeadline } from '@/components/home/RotatingHeadline'
 import { SearchExperienceShowcase } from '@/components/home/SearchExperienceShowcase'
-import { MobileAppShowcase } from '@/components/home/MobileAppShowcase'
+import HeroAfterImage from '@/components/home/HeroAfterImage'
+import AppDownloadFinal from '@/components/home/AppDownloadFinal'
 
 export default function HomePage() {
   const router = useRouter()
@@ -44,75 +45,14 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Hero Altı Geniş Fotoğraf */}
+      <HeroAfterImage />
+
       {/* Search Experience Showcase */}
       <SearchExperienceShowcase />
 
-      {/* Mobile App Showcase */}
-      <MobileAppShowcase />
-
-      {/* Three Main Feature Cards */}
-      <section className="py-8 md:py-10 bg-white">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="grid gap-4 md:grid-cols-3">
-            {/* Hizmet İste */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] flex flex-col justify-between gap-4">
-              <div>
-                <div className="h-10 w-10 rounded-2xl bg-blue-50 text-brand-500 flex items-center justify-center shadow-sm mb-4">
-                  <Wrench className="h-5 w-5" />
-                </div>
-                <h3 className="text-lg md:text-xl font-semibold text-slate-900 mb-2">
-                  Profesyonel hizmet talep et
-                </h3>
-                <p className="text-sm text-slate-600 mt-2">
-                  Kategorini seç, birkaç soruyu cevapla, mahalle ustalarından teklif al.
-                </p>
-              </div>
-              <Button asChild variant="default" size="sm" className="inline-flex items-center justify-center rounded-full bg-brand-500 text-white text-sm font-semibold px-4 py-2 mt-1 hover:bg-brand-600 transition-colors w-full">
-                <Link href="/request">Hemen hizmet iste</Link>
-              </Button>
-            </div>
-
-            {/* Ek Gelir Kazan */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] flex flex-col justify-between gap-4">
-              <div>
-                <div className="h-10 w-10 rounded-2xl bg-blue-50 text-brand-500 flex items-center justify-center shadow-sm mb-4">
-                  <Wallet className="h-5 w-5" />
-                </div>
-                <h3 className="text-lg md:text-xl font-semibold text-slate-900 mb-2">
-                  Mahallende ek gelir kazan
-                </h3>
-                <p className="text-sm text-slate-600 mt-2">
-                  10 km çevrendeki kısa süreli işlere başvur, hızlı onay ve ödeme ile kazanmaya başla.
-                </p>
-              </div>
-              <Button asChild variant="default" size="sm" className="inline-flex items-center justify-center rounded-full bg-brand-500 text-white text-sm font-semibold px-4 py-2 mt-1 hover:bg-brand-600 transition-colors w-full">
-                <Link href="/earn">Ek gelir kazan</Link>
-              </Button>
-            </div>
-
-            {/* Çevrendeki Esnaflar */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6 shadow-[0_14px_40px_rgba(15,23,42,0.06)] flex flex-col justify-between gap-4">
-              <div>
-                <div className="h-10 w-10 rounded-2xl bg-blue-50 text-brand-500 flex items-center justify-center shadow-sm mb-4">
-                  <MapPin className="h-5 w-5" />
-                </div>
-                <h3 className="text-lg md:text-xl font-semibold text-slate-900 mb-2">
-                  Çevrendeki esnaflardan sipariş ver
-                </h3>
-                <p className="text-sm text-slate-600 mt-2">
-                  Yemek, market, kırtasiye, eczane… Haritadan seç, siparişini oluştur, kapına gelsin.
-                </p>
-              </div>
-              <Button asChild variant="default" size="sm" className="inline-flex items-center justify-center rounded-full bg-brand-500 text-white text-sm font-semibold px-4 py-2 mt-1 hover:bg-brand-600 transition-colors w-full">
-                <Link href="/map">Esnafları gör</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Popüler Kategoriler */}
-      <section className="py-8 md:py-10 bg-white">
+      <section className="py-10 md:py-12 bg-white">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
           <PopularCategoriesTabs />
         </div>
@@ -268,36 +208,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-8 md:py-10 bg-brand-500 text-white">
-        <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight mb-4">
-            Hemen Başla!
-          </h2>
-          <p className="text-sm md:text-[15px] text-white/90 mt-2 mb-8 max-w-2xl mx-auto">
-            Mahallendeki en iyi esnaflarla buluş, hizmet al veya ek gelir kazan.
-          </p>
-          <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Button
-              onClick={() => router.push('/request')}
-              size="lg"
-              className="bg-white text-brand-500 hover:bg-gray-50 font-semibold text-base px-8 py-6"
-            >
-              Hizmet Ara
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button
-              onClick={() => router.push('/partner')}
-              size="lg"
-              variant="outline"
-              className="bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold text-base px-8 py-6"
-            >
-              Esnaf Ol
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Mobil Uygulama İndir */}
+      <AppDownloadFinal />
     </div>
   )
 }

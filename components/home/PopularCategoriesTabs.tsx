@@ -17,19 +17,19 @@ const categoryGroups = [
       {
         id: 'ev-temizligi',
         title: 'Ev Temizliği',
-        imageSrc: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop',
+        imageSrc: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80',
         href: '/request?categoryId=cleaning',
       },
       {
         id: 'hali-temizligi',
         title: 'Halı Temizliği',
-        imageSrc: 'https://images.unsplash.com/photo-1628177142898-93e36e4e3a50?w=800&h=600&fit=crop',
+        imageSrc: 'https://images.unsplash.com/photo-1615873968403-89e4d5c3774c?q=80',
         href: '/request?categoryId=cleaning',
       },
       {
         id: 'ofis-temizligi',
         title: 'Ofis Temizliği',
-        imageSrc: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
+        imageSrc: 'https://images.unsplash.com/photo-1521782462922-9318be1cfd04?q=80',
         href: '/request?categoryId=cleaning',
       },
       {
@@ -48,13 +48,13 @@ const categoryGroups = [
       {
         id: 'boya-tadilat',
         title: 'Boya & Tadilat',
-        imageSrc: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&h=600&fit=crop',
+        imageSrc: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cf89?q=80',
         href: '/request?categoryId=painting',
       },
       {
         id: 'beyaz-esya',
         title: 'Beyaz Eşya',
-        imageSrc: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop',
+        imageSrc: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80',
         href: '/request?categoryId=appliance-repair',
       },
       {
@@ -85,7 +85,7 @@ const categoryGroups = [
       {
         id: 'nakliyat',
         title: 'Evden Eve',
-        imageSrc: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=600&fit=crop',
+        imageSrc: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c5417d?q=80',
         href: '/request?categoryId=moving',
       },
       {
@@ -122,13 +122,13 @@ const categoryGroups = [
       {
         id: 'kasap',
         title: 'Kasap',
-        imageSrc: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=600&fit=crop',
+        imageSrc: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?q=80',
         href: '/map?category=butcher',
       },
       {
         id: 'yemek',
         title: 'Yemek',
-        imageSrc: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop',
+        imageSrc: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80',
         href: '/map?category=restaurant',
       },
       {
@@ -161,8 +161,8 @@ export default function PopularCategoriesTabs() {
       </header>
 
       {/* Tab Bar - Thumbtack Style */}
-      <div className="mb-6 md:mb-8">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
+      <div className="mt-4">
+        <div className="flex flex-wrap gap-2 text-[13px] md:text-sm">
           {categoryGroups.map(group => {
             const IconComponent = (LucideIcons as any)[group.icon] || Wrench
             return (
@@ -170,26 +170,22 @@ export default function PopularCategoriesTabs() {
                 key={group.id}
                 onClick={() => setActiveGroup(group.id)}
                 className={cn(
-                  "inline-flex items-center gap-1 px-3.5 py-2 rounded-full border text-[13px] md:text-sm transition-all whitespace-nowrap",
+                  "inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 border transition-all whitespace-nowrap",
                   activeGroup === group.id
-                    ? "bg-brand-500/10 border-brand-500 text-brand-500"
+                    ? "bg-sky-50 border-sky-400 text-sky-700"
                     : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                 )}
               >
-                <IconComponent className="h-5 w-5" />
+                <IconComponent className="h-4 w-4" />
                 <span>{group.label}</span>
               </button>
             )
           })}
-          {/* Sağ ok ikonu */}
-          <div className="flex items-center text-slate-400 ml-2">
-            <ChevronRight className="h-5 w-5" />
-          </div>
         </div>
       </div>
 
       {/* Category Grid - Thumbtack Style */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {currentGroup?.categories.map(cat => (
           <Link
             key={cat.id}
@@ -197,7 +193,7 @@ export default function PopularCategoriesTabs() {
             className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-[0_18px_45px_rgba(15,23,42,0.10)] transition-shadow"
           >
             {/* Görsel */}
-            <div className="relative h-32 md:h-36 overflow-hidden">
+            <div className="relative h-32 md:h-40 overflow-hidden">
               <Image
                 src={cat.imageSrc}
                 alt={cat.title}
@@ -209,12 +205,12 @@ export default function PopularCategoriesTabs() {
                   target.style.display = 'none'
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              <div className="absolute bottom-2 left-2 right-2">
-                <p className="text-sm font-semibold text-white drop-shadow-sm">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
+              <div className="absolute bottom-2 left-3">
+                <p className="text-[11px] md:text-sm font-semibold text-white drop-shadow-sm">
                   {cat.title}
                 </p>
-                <p className="text-[11px] text-white/80">Sık kullanılan</p>
+                <p className="text-[10px] text-white/80">Sık kullanılan</p>
               </div>
             </div>
           </Link>
