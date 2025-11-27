@@ -279,19 +279,20 @@ export default function RegisterPage() {
                         Hangi kategoride yeteneklisiniz veya hizmet vermeyi düşünürsünüz?
                       </Label>
                       <p className="text-sm text-slate-600 mt-1 mb-3">
-                        Örnek: Elektrik, Temizlik, Tesisat, Boya, vb.
+                        Örnek: Elektrik, Temizlik, Tesisat, Boya, vb. (Ana kategoriler seçilir, seçtiğiniz kategorinin tüm alt hizmetlerinden bildirim alırsınız)
                       </p>
                       <CategoryAutocomplete
                         value={skillCategories}
                         onChange={setSkillCategories}
-                        placeholder="Kategori ara ve seç... (örn: elektrik, temizlik)"
+                        placeholder="Ana kategori ara ve seç... (örn: elektrik, temizlik)"
                         maxCategories={10}
                       />
                       <div className="mt-3 flex items-start gap-2 text-xs text-amber-700 bg-amber-50 p-2 rounded-lg">
                         <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                         <span>
                           <strong>Önemli:</strong> Bu kısım çok önemlidir! Bildirimler seçeceğiniz kategorilerden gelecektir. 
-                          Yetenekli olduğunuz veya hizmet vermek istediğiniz kategorileri seçin.
+                          Örneğin "Elektrik" seçerseniz, elektrik ile ilgili tüm işlerden bildirim alırsınız. 
+                          Yetenekli olduğunuz veya hizmet vermek istediğiniz ana kategorileri seçin.
                         </span>
                       </div>
                     </div>

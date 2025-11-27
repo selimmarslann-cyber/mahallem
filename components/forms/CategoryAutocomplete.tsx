@@ -26,20 +26,11 @@ export default function CategoryAutocomplete({
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // Tüm kategorileri düzleştir (ana kategoriler + alt hizmetler)
-  const allCategories = SERVICE_CATEGORIES.flatMap((category) => [
-    {
-      id: category.id,
-      name: category.name,
-      type: 'main' as const,
-    },
-    ...(category.subServices?.map((sub) => ({
-      id: `${category.id}-${sub.id}`,
-      name: `${category.name} - ${sub.name}`,
-      type: 'sub' as const,
-      parentId: category.id,
-    })) || []),
-  ])
+  // Sadece ana kategorileri al (alt hizmetler gösterilmeyecek)
+  const allCategories = SERVICE_CATEGORIES.map((category) => ({
+    id: category.id,
+    name: category.name,
+  }))
 
   // Filtreleme
   const filteredCategories = allCategories.filter(
@@ -132,12 +123,7 @@ export default function CategoryAutocomplete({
                   index === highlightedIndex && 'bg-gray-100'
                 )}
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{category.name}</span>
-                  {category.type === 'sub' && (
-                    <span className="text-xs text-gray-500">Alt hizmet</span>
-                  )}
-                </div>
+                <span className="text-sm font-medium">{category.name}</span>
               </div>
             ))}
           </div>
