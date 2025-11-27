@@ -24,6 +24,10 @@ model User {
   role                    UserRole @default(CUSTOMER) // CUSTOMER, VENDOR, ADMIN
   referralBalance         Decimal  @default(0) @map("referral_balance") @db.Decimal(10, 2)
   instantJobNotifications Boolean  @default(false) @map("instant_job_notifications") // Anlık işlerden bildirim almak ister mi?
+  whatsappNotifications   Boolean  @default(false) @map("whatsapp_notifications") // WhatsApp bildirimleri
+  smsNotifications        Boolean  @default(false) @map("sms_notifications") // SMS bildirimleri
+  emailMarketing          Boolean  @default(false) @map("email_marketing") // E-posta reklam/tanıtım
+  skillCategories         String[] @default([]) @map("skill_categories") // Kullanıcının yetenekli olduğu kategoriler
   locationLat             Float?   @map("location_lat") // Kullanıcı konumu (bildirimler için)
   locationLng             Float?   @map("location_lng")
   city                    String?
@@ -46,6 +50,13 @@ model User {
   referredBy      ReferralRelation[] @relation("Referrer")
   referredUsers   ReferralRelation[] @relation("Referred")
   referralRewards ReferralReward[]
+
+  // Support Relations
+  supportTickets       SupportTicket[]    @relation("SupportTicketUser")
+  assignedTickets      SupportTicket[]    @relation("SupportTicketAssigned")
+  resolvedTickets      SupportTicket[]    @relation("SupportTicketResolved")
+  supportMessages      SupportMessage[]   @relation("SupportMessageUser")
+  adminSupportMessages SupportMessage[]   @relation("SupportMessageAdmin")
 
   // FAZ 3: Wallet & Notifications
   wallet        Wallet?
@@ -698,4 +709,90 @@ model JobNotification {
   @@index([businessId])
   @@index([sentAt])
   @@map("job_notifications")
+}
+
+// ============================================
+// 21. SUPPORT_TICKET (Destek talepleri)
+// ============================================
+enum SupportTicketStatus {
+  OPEN          // Açık - bot veya admin cevap bekliyor
+  BOT_RESOLVED  // Bot tarafından çözüldü
+  ADMIN_OPEN    // Admin'e aktarıldı
+  ADMIN_REPLIED // Admin cevap verdi
+  RESOLVED      // Çözüldü - kullanıcı memnun
+  CLOSED        // Kapatıldı
+}
+
+enum SupportTicketCategory {
+  GENERAL       // Genel
+  TECHNICAL     // Teknik
+  PAYMENT       // Ödeme
+  REFUND        // İade/İptal
+  ACCOUNT       // Hesap
+  BUSINESS      // Esnaf Kaydı
+  ORDER         // Sipariş
+  REFERRAL      // Referans
+  OTHER         // Diğer
+}
+
+model SupportTicket {
+  id          String               @id @default(uuid())
+  userId      String?              @map("user_id") // Giriş yapmamış kullanıcılar için null
+  email       String               // İletişim için email (giriş yapmamış kullanıcılar için)
+  name        String?              // Kullanıcı adı
+  category    SupportTicketCategory @default(GENERAL)
+  subject     String
+  status      SupportTicketStatus  @default(OPEN)
+  priority    Int                  @default(3) // 1: Yüksek, 2: Orta, 3: Düşük
+  assignedTo  String?              @map("assigned_to") // Admin userId
+  resolvedBy  String?              @map("resolved_by") // Admin userId (bot için null)
+  isBotResolved Boolean            @default(false) @map("is_bot_resolved")
+  createdAt   DateTime             @default(now()) @map("created_at")
+  updatedAt   DateTime             @updatedAt @map("updated_at")
+  resolvedAt  DateTime?            @map("resolved_at")
+  closedAt    DateTime?            @map("closed_at")
+
+  // Relations
+  user         User?              @relation("SupportTicketUser", fields: [userId], references: [id], onDelete: SetNull)
+  messages     SupportMessage[]
+  assignedAdmin User?             @relation("SupportTicketAssigned", fields: [assignedTo], references: [id], onDelete: SetNull)
+  resolvedAdmin User?             @relation("SupportTicketResolved", fields: [resolvedBy], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+  @@index([category])
+  @@index([assignedTo])
+  @@index([createdAt])
+  @@index([priority])
+  @@map("support_tickets")
+}
+
+// ============================================
+// 22. SUPPORT_MESSAGE (Destek mesajları - chat)
+// ============================================
+enum SupportMessageType {
+  USER    // Kullanıcı mesajı
+  BOT     // Bot mesajı
+  ADMIN   // Admin mesajı
+}
+
+model SupportMessage {
+  id        String             @id @default(uuid())
+  ticketId  String             @map("ticket_id")
+  type      SupportMessageType @default(USER)
+  content   String
+  userId    String?            @map("user_id") // USER type için
+  adminId   String?            @map("admin_id") // ADMIN type için
+  isRead    Boolean            @default(false) @map("is_read")
+  createdAt DateTime           @default(now()) @map("created_at")
+
+  // Relations
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  user      User?         @relation("SupportMessageUser", fields: [userId], references: [id], onDelete: SetNull)
+  admin     User?         @relation("SupportMessageAdmin", fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([ticketId])
+  @@index([createdAt])
+  @@index([isRead])
+  @@map("support_messages")
 }

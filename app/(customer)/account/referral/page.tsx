@@ -89,7 +89,23 @@ export default function AccountReferralPage() {
 
       if (overviewRes.ok) {
         const data = await overviewRes.json()
-        setOverview(data)
+        if (data.error) {
+          console.error('Referral overview error:', data.error)
+        } else {
+          // Referral kodu yoksa bir daha dene
+          if (!data.currentReferralCode) {
+            console.warn('Referral kodu bulunamadı, yeniden deneniyor...')
+            // Kısa bir gecikme sonrası tekrar dene
+            setTimeout(() => {
+              loadReferralData()
+            }, 1000)
+            return
+          }
+          setOverview(data)
+        }
+      } else {
+        const errorData = await overviewRes.json().catch(() => ({}))
+        console.error('Referral overview failed:', overviewRes.status, errorData)
       }
 
       if (invitedRes.ok) {
@@ -150,8 +166,17 @@ export default function AccountReferralPage() {
 
   if (!overview) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div>Veri yüklenemedi</div>
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <div className="text-lg font-semibold text-gray-700">Veri yüklenemedi</div>
+        <button
+          onClick={() => {
+            setLoading(true)
+            loadReferralData()
+          }}
+          className="px-4 py-2 bg-[#FF6000] text-white rounded-lg hover:bg-[#FF7000] transition-colors"
+        >
+          Tekrar Dene
+        </button>
       </div>
     )
   }

@@ -48,6 +48,14 @@ export default function AppFooter() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/admin/login"
+                  className="text-sm text-gray-600 hover:text-[#FF6000] transition-colors"
+                >
+                  Admin Panel
+                </Link>
+              </li>
             </ul>
           </div>
 

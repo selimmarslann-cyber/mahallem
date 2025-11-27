@@ -17,7 +17,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils/cn'
-import AppFooter from '@/components/layout/AppFooter'
 
 interface AccountLayoutProps {
   children: ReactNode
@@ -264,9 +263,6 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
             </div>
           </main>
         </div>
-        
-        {/* Footer - En altta */}
-        <AppFooter />
       </div>
     </div>
   )

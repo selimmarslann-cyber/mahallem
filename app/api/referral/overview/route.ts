@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUserId } from '@/lib/auth/session'
 import { prisma } from '@/lib/db/prisma'
+import { getOrCreateReferralCodeForUser } from '@/lib/services/referralService'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -35,8 +36,12 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Referral kodu
-    const referralCode = user.referralCode?.code || user.id.slice(0, 8).toUpperCase()
+    // Referral kodu - yoksa oluştur
+    let referralCode = user.referralCode?.code
+    if (!referralCode) {
+      referralCode = await getOrCreateReferralCodeForUser(userId)
+    }
+    
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
     const referralLink = `${appUrl}/auth/register?ref=${referralCode}`
 

@@ -24,6 +24,10 @@ export async function createUser(data: {
   password: string
   name: string
   instantJobNotifications?: boolean
+  whatsappNotifications?: boolean
+  smsNotifications?: boolean
+  emailMarketing?: boolean
+  skillCategories?: string[]
 }) {
   const passwordHash = await hashPassword(data.password)
 
@@ -33,6 +37,10 @@ export async function createUser(data: {
       passwordHash,
       name: data.name,
       instantJobNotifications: data.instantJobNotifications ?? false,
+      whatsappNotifications: data.whatsappNotifications ?? false,
+      smsNotifications: data.smsNotifications ?? false,
+      emailMarketing: data.emailMarketing ?? false,
+      skillCategories: data.skillCategories || [],
     },
   })
 }

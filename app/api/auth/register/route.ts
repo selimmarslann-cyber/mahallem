@@ -14,6 +14,10 @@ const registerSchema = z.object({
   password: z.string().min(6, 'Şifre en az 6 karakter olmalı'),
   name: z.string().min(2, 'İsim en az 2 karakter olmalı'),
   instantJobNotifications: z.boolean().optional().default(false), // Anlık işlerden bildirim almak ister mi?
+  whatsappNotifications: z.boolean().optional().default(false), // WhatsApp bildirimleri
+  smsNotifications: z.boolean().optional().default(false), // SMS bildirimleri
+  emailMarketing: z.boolean().optional().default(false), // E-posta reklam/tanıtım
+  skillCategories: z.array(z.string()).optional().default([]), // Yetenek kategorileri
   ref: z.string().optional(), // Referral kodu (query param)
 })
 
@@ -40,6 +44,10 @@ export async function POST(request: NextRequest) {
       password: validated.password,
       name: validated.name,
       instantJobNotifications: validated.instantJobNotifications || false,
+      whatsappNotifications: validated.whatsappNotifications || false,
+      smsNotifications: validated.smsNotifications || false,
+      emailMarketing: validated.emailMarketing || false,
+      skillCategories: validated.skillCategories || [],
     })
 
     // Referral chain oluştur (eğer ref kodu varsa)

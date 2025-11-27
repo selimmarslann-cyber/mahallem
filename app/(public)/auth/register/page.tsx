@@ -9,8 +9,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
-import { Zap, Info, ArrowRight, UserPlus } from 'lucide-react'
+import { Zap, Info, ArrowRight, UserPlus, MessageSquare, Mail, Phone, Sparkles, AlertCircle } from 'lucide-react'
 import { useToast } from '@/lib/hooks/useToast'
+import CategoryAutocomplete from '@/components/forms/CategoryAutocomplete'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -23,6 +24,10 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [refCode, setRefCode] = useState<string | null>(null)
   const [instantJobNotifications, setInstantJobNotifications] = useState(false)
+  const [whatsappNotifications, setWhatsappNotifications] = useState(false)
+  const [smsNotifications, setSmsNotifications] = useState(false)
+  const [emailMarketing, setEmailMarketing] = useState(false)
+  const [skillCategories, setSkillCategories] = useState<string[]>([])
 
   useEffect(() => {
     const ref = searchParams.get('ref')
@@ -48,7 +53,11 @@ export default function RegisterPage() {
           name, 
           email, 
           password,
-          instantJobNotifications 
+          instantJobNotifications,
+          whatsappNotifications,
+          smsNotifications,
+          emailMarketing,
+          skillCategories
         }),
         credentials: 'include',
       })
@@ -170,38 +179,121 @@ export default function RegisterPage() {
                 />
               </div>
 
-              {/* Anlık İşler Bildirimi */}
-              <div className="space-y-3 p-4 bg-emerald-50 rounded-xl border-2 border-emerald-200">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center flex-shrink-0">
-                    <Zap className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <Label htmlFor="instantJobNotifications" className="text-base font-semibold text-slate-900 cursor-pointer">
-                        Anlık İşlerden Bildirim Al
+              {/* Bildirim Tercihleri */}
+              <div className="space-y-4 p-4 bg-blue-50 rounded-xl border-2 border-blue-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                  <h3 className="font-semibold text-slate-900">Bildirim Tercihleri</h3>
+                </div>
+
+                {/* Anlık İşler Bildirimi */}
+                <div className="space-y-2 p-3 bg-white rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-emerald-600" />
+                      <Label htmlFor="instantJobNotifications" className="text-sm font-medium text-slate-900 cursor-pointer">
+                        Vasıf aranmayan işlerden (ek gelir) bildirim almak ister misiniz?
                       </Label>
-                      <Switch
-                        id="instantJobNotifications"
-                        checked={instantJobNotifications}
-                        onCheckedChange={setInstantJobNotifications}
+                    </div>
+                    <Switch
+                      id="instantJobNotifications"
+                      checked={instantJobNotifications}
+                      onCheckedChange={setInstantJobNotifications}
+                    />
+                  </div>
+                  <p className="text-xs text-slate-600">
+                    50 km çevredeki anlık işlerden bildirim al. Örnek: "Ödevimi yapacak birini arıyorum"
+                  </p>
+                </div>
+
+                {/* WhatsApp Bildirimi */}
+                <div className="space-y-2 p-3 bg-white rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-green-600" />
+                      <Label htmlFor="whatsappNotifications" className="text-sm font-medium text-slate-900 cursor-pointer">
+                        WhatsApp API'den bildirim almak ister misiniz?
+                      </Label>
+                    </div>
+                    <Switch
+                      id="whatsappNotifications"
+                      checked={whatsappNotifications}
+                      onCheckedChange={setWhatsappNotifications}
+                    />
+                  </div>
+                  <p className="text-xs text-slate-600">
+                    Önemli bildirimleri WhatsApp üzerinden al
+                  </p>
+                </div>
+
+                {/* SMS Bildirimi */}
+                <div className="space-y-2 p-3 bg-white rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-purple-600" />
+                      <Label htmlFor="smsNotifications" className="text-sm font-medium text-slate-900 cursor-pointer">
+                        SMS olarak bilgilendirme almak ister misiniz?
+                      </Label>
+                    </div>
+                    <Switch
+                      id="smsNotifications"
+                      checked={smsNotifications}
+                      onCheckedChange={setSmsNotifications}
+                    />
+                  </div>
+                  <p className="text-xs text-slate-600">
+                    Sipariş durumu ve önemli bilgileri SMS olarak al
+                  </p>
+                </div>
+
+                {/* E-posta Marketing */}
+                <div className="space-y-2 p-3 bg-white rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-orange-600" />
+                      <Label htmlFor="emailMarketing" className="text-sm font-medium text-slate-900 cursor-pointer">
+                        E-posta reklam/tanıtım almak ister misiniz?
+                      </Label>
+                    </div>
+                    <Switch
+                      id="emailMarketing"
+                      checked={emailMarketing}
+                      onCheckedChange={setEmailMarketing}
+                    />
+                  </div>
+                  <p className="text-xs text-slate-600">
+                    Kampanyalar, özel fırsatlar ve tanıtımları e-posta ile al
+                  </p>
+                </div>
+              </div>
+
+              {/* Yetenek/Kategori Seçimi */}
+              <div className="space-y-3 p-4 bg-purple-50 rounded-xl border-2 border-purple-200">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1 space-y-3">
+                    <div>
+                      <Label htmlFor="skillCategories" className="text-base font-semibold text-slate-900">
+                        Hangi kategoride yeteneklisiniz veya hizmet vermeyi düşünürsünüz?
+                      </Label>
+                      <p className="text-sm text-slate-600 mt-1 mb-3">
+                        Örnek: Elektrik, Temizlik, Tesisat, Boya, vb.
+                      </p>
+                      <CategoryAutocomplete
+                        value={skillCategories}
+                        onChange={setSkillCategories}
+                        placeholder="Kategori ara ve seç... (örn: elektrik, temizlik)"
+                        maxCategories={10}
                       />
-                    </div>
-                    <p className="text-sm text-slate-600 mb-2">
-                      50 km çevredeki anlık işlerden bildirim al.
-                    </p>
-                    <div className="bg-white rounded-lg p-2 text-xs text-slate-500">
-                      <p className="font-semibold mb-1">Örnekler:</p>
-                      <ul className="list-disc list-inside space-y-0.5">
-                        <li>"Ödevimi yapacak birini arıyorum"</li>
-                        <li>"Köpeğimi gezdirecek birini arıyorum"</li>
-                      </ul>
-                    </div>
-                    <div className="mt-2 flex items-start gap-2 text-xs text-amber-700 bg-amber-50 p-2 rounded-lg">
-                      <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                      <span>
-                        <strong>Not:</strong> İstediğin zaman ayarlardan kapatabilirsin.
-                      </span>
+                      <div className="mt-3 flex items-start gap-2 text-xs text-amber-700 bg-amber-50 p-2 rounded-lg">
+                        <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                        <span>
+                          <strong>Önemli:</strong> Bu kısım çok önemlidir! Bildirimler seçeceğiniz kategorilerden gelecektir. 
+                          Yetenekli olduğunuz veya hizmet vermek istediğiniz kategorileri seçin.
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
