@@ -243,7 +243,7 @@ export default function HomePage() {
       </section>
 
       {/* İstatistikler */}
-      <section className="py-8 md:py-10 bg-[#FF6000] text-white border-t border-[#FF6000]">
+      <section className="py-8 md:py-10 bg-[#FF6000] text-white">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="grid gap-6 md:grid-cols-4 text-center md:text-left">
             {[
@@ -269,7 +269,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-8 md:py-10 bg-[#FF6000] text-white border-t border-[#FF6000]">
+      <section className="py-8 md:py-10 bg-[#FF6000] text-white">
         <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight mb-4">
             Hemen Başla!
