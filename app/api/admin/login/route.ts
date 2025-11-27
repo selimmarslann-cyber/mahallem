@@ -55,7 +55,6 @@ export async function POST(req: NextRequest) {
       const token = signToken({
         userId: adminUser.id,
         email: adminUser.email,
-        role: adminUser.role,
       })
 
       // Cookie'ye kaydet
