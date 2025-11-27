@@ -18,12 +18,21 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Kullanıcı bilgisini al (eğer giriş yapmışsa)
+    let user = null
+    if (session?.userId) {
+      user = await prisma.user.findUnique({
+        where: { id: session.userId },
+        select: { id: true, name: true, email: true },
+      })
+    }
+
     // Ticket oluştur (formdan gelenler için)
     const ticket = await prisma.supportTicket.create({
       data: {
-        userId: session?.user?.id || null,
+        userId: user?.id || null,
         email,
-        name: name || session?.user?.name || null,
+        name: name || user?.name || null,
         category: (category as any) || 'GENERAL',
         subject,
         status: 'ADMIN_OPEN',
@@ -37,7 +46,7 @@ export async function POST(req: NextRequest) {
         ticketId: ticket.id,
         type: 'USER',
         content: `İletişim Formu Mesajı:\n\nTelefon: ${phone || 'Belirtilmedi'}\n\n${message}`,
-        userId: session?.user?.id || null,
+        userId: user?.id || null,
         isRead: false,
       },
     })

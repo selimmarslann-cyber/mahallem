@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         ticketId,
         type: 'USER',
         content: content.trim(),
-        userId: session?.user?.id || null,
+        userId: session?.userId || null,
         isRead: true,
       },
     })
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     const botResponse = await processBotMessage({
       ticket,
       userMessage: content.trim(),
-      userId: session?.user?.id || null,
+      userId: session?.userId || null,
     })
 
     let botMessage = null

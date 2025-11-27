@@ -25,8 +25,19 @@ export async function GET(req: NextRequest) {
     }
 
     // Yetki kontrolü
-    if (ticket.userId && session?.user?.id !== ticket.userId && session?.user?.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    if (ticket.userId && session?.userId !== ticket.userId) {
+      // Admin kontrolü
+      if (session?.userId) {
+        const user = await prisma.user.findUnique({
+          where: { id: session.userId },
+          select: { role: true },
+        })
+        if (user?.role !== 'ADMIN') {
+          return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+        }
+      } else {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+      }
     }
 
     // Mesajları getir

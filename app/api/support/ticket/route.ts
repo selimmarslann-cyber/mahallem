@@ -12,10 +12,19 @@ export async function POST(req: NextRequest) {
     const { action } = body
 
     if (action === 'get_or_create') {
+      // Kullanıcı bilgisini al (eğer giriş yapmışsa)
+      let user = null
+      if (session?.userId) {
+        user = await prisma.user.findUnique({
+          where: { id: session.userId },
+          select: { id: true, name: true, email: true },
+        })
+      }
+
       // Kullanıcının açık ticket'ı var mı kontrol et
       const openTicket = await prisma.supportTicket.findFirst({
         where: {
-          userId: session?.user?.id || null,
+          userId: user?.id || null,
           status: {
             in: ['OPEN', 'BOT_RESOLVED', 'ADMIN_OPEN', 'ADMIN_REPLIED'] as any,
           },
@@ -45,9 +54,9 @@ export async function POST(req: NextRequest) {
       // Yeni ticket oluştur
       const newTicket = await prisma.supportTicket.create({
         data: {
-          userId: session?.user?.id || null,
-          email: session?.user?.email || body.email || 'anonymous@hizmetgo.app',
-          name: session?.user?.name || body.name || null,
+          userId: user?.id || null,
+          email: user?.email || session?.email || body.email || 'anonymous@hizmetgo.app',
+          name: user?.name || body.name || null,
           category: 'GENERAL',
           subject: 'Yardım Talebi',
           status: 'OPEN',

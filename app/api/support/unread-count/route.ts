@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getSession()
 
-    if (!session?.user?.id) {
+    if (!session?.userId) {
       return NextResponse.json({ count: 0 })
     }
 
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     const unreadCount = await prisma.supportMessage.count({
       where: {
         ticket: {
-          userId: session.user.id,
+          userId: session.userId,
         },
         isRead: false,
         type: {
