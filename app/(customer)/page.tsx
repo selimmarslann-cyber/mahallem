@@ -22,7 +22,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative mt-6 md:mt-8 mb-10 md:mb-12">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50 to-blue-50/40 shadow-[0_25px_80px_rgba(15,23,42,0.12)] px-5 md:px-8 lg:px-10 py-6 md:py-8 lg:py-10">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white via-slate-50 to-slate-50 shadow-[0_25px_80px_rgba(15,23,42,0.12)] px-5 md:px-8 lg:px-10 py-6 md:py-8 lg:py-10">
             {/* Üst: Rotating Headline - Merkezi */}
             <div className="flex flex-col items-center mb-8 md:mb-10">
               <RotatingHeadline />

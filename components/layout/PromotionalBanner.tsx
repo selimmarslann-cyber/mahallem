@@ -37,7 +37,7 @@ export default function PromotionalBanner() {
   }
 
   return (
-    <div className="w-full bg-black text-white shadow-2xl overflow-hidden border-b-2 border-brand-500">
+    <div className="relative w-full bg-black text-white shadow-2xl overflow-hidden border-b-2 border-brand-500">
       {/* Alevli Gradient Arka Plan */}
       <div className="absolute inset-0 bg-gradient-to-r from-black via-gray-900 to-black">
         <div className="absolute inset-0 bg-gradient-to-t from-brand-500/20 via-brand-500/10 to-transparent"></div>

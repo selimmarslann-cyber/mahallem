@@ -13,34 +13,34 @@ export default function TopNavigationBar() {
           <div className="flex-1"></div>
           
           {/* Menü Butonları */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Link 
               href="/auth/register"
-              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
+              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors whitespace-nowrap"
             >
               Kayıt Ol
             </Link>
             <Link 
               href="/auth/login"
-              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
+              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors whitespace-nowrap"
             >
               Giriş Yap
             </Link>
             <Link 
               href="/partner"
-              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
+              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors whitespace-nowrap"
             >
               Ortak Ol
             </Link>
             <Link 
               href="/business/register"
-              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
+              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors whitespace-nowrap"
             >
               Esnaf Kayıt
             </Link>
             <Link 
               href="/business/login"
-              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors"
+              className="text-sm font-medium text-slate-700 hover:text-slate-900 px-3 py-2 rounded-md transition-colors whitespace-nowrap"
             >
               Esnaf Giriş
             </Link>
