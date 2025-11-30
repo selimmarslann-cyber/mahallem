@@ -38,7 +38,7 @@ export function Toast({
   return (
     <div
       className={cn(
-        'rounded-2xl border-2 shadow-xl p-4 min-w-[320px] max-w-md',
+        'rounded-2xl border-2 shadow-[0_1px_2px_rgba(0,0,0,0.02)] p-4 min-w-[320px] max-w-md',
         variantStyles[variant]
       )}
     >

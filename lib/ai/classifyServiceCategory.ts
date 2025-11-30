@@ -154,10 +154,11 @@ Cevabını JSON formatta döndür:
   let selectedSlug: string | null = null
 
   try {
-    // Groq'u çağır
+    // Groq'u çağır (system prompt göndermiyoruz - token tasarrufu)
+    // System prompt bilgisini user prompt'a ekliyoruz
+    const enhancedUserPrompt = `${systemPrompt}\n\n${userPrompt}`
     const response = await callGroq(
-      [{ role: 'user', content: userPrompt }],
-      systemPrompt
+      [{ role: 'user', content: enhancedUserPrompt }]
     )
 
     // JSON parse et

@@ -2,9 +2,10 @@
 -- Created: 2024-01-15
 
 -- AI Blocks Table - Kullanıcı ban sistemi
+-- NOT: Mevcut tabloda user_id UUID olarak var, değiştirme!
 CREATE TABLE IF NOT EXISTS ai_blocks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL,
+  user_id UUID NOT NULL, -- Mevcut yapıyı koru (UUID)
   blocked_until TIMESTAMP WITH TIME ZONE NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -77,27 +78,33 @@ ALTER TABLE ai_blocks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE listings ENABLE ROW LEVEL SECURITY;
 
 -- AI Blocks Policies
+DROP POLICY IF EXISTS "Users can view their own block status" ON ai_blocks;
 CREATE POLICY "Users can view their own block status"
   ON ai_blocks FOR SELECT
-  USING (auth.uid()::uuid = user_id);
+  USING (auth.uid()::uuid = user_id::uuid);
 
+DROP POLICY IF EXISTS "Service role can manage all blocks" ON ai_blocks;
 CREATE POLICY "Service role can manage all blocks"
   ON ai_blocks FOR ALL
   USING (auth.role() = 'service_role');
 
 -- Listings Policies
+DROP POLICY IF EXISTS "Users can view their own listings" ON listings;
 CREATE POLICY "Users can view their own listings"
   ON listings FOR SELECT
   USING (auth.uid()::uuid = user_id);
 
+DROP POLICY IF EXISTS "Users can insert their own listings" ON listings;
 CREATE POLICY "Users can insert their own listings"
   ON listings FOR INSERT
   WITH CHECK (auth.uid()::uuid = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own listings" ON listings;
 CREATE POLICY "Users can update their own listings"
   ON listings FOR UPDATE
   USING (auth.uid()::uuid = user_id);
 
+DROP POLICY IF EXISTS "Service role can manage all listings" ON listings;
 CREATE POLICY "Service role can manage all listings"
   ON listings FOR ALL
   USING (auth.role() = 'service_role');
@@ -112,11 +119,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Triggers for updated_at
+DROP TRIGGER IF EXISTS update_ai_blocks_updated_at ON ai_blocks;
 CREATE TRIGGER update_ai_blocks_updated_at
   BEFORE UPDATE ON ai_blocks
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_listings_updated_at ON listings;
 CREATE TRIGGER update_listings_updated_at
   BEFORE UPDATE ON listings
   FOR EACH ROW

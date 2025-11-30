@@ -106,7 +106,7 @@ export default function SmartSearchBar() {
             
             {/* Autocomplete Suggestions */}
             {showSuggestions && suggestions.length > 0 && !isInstantJob && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.02)] z-50 max-h-64 overflow-y-auto">
                 {suggestions.map((suggestion, index) => (
                   <button
                     key={index}

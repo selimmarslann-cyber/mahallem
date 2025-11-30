@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-brand-500 text-white hover:bg-brand-600 shadow-[0_10px_30px_rgba(0,159,217,0.40)] hover:shadow-[0_12px_35px_rgba(0,159,217,0.50)] active:scale-[0.98] rounded-full px-4 md:px-5 py-2.5",
+        default: "bg-brand-500 text-white hover:bg-brand-600 shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.03)] active:scale-[0.98] rounded-full px-4 md:px-5 py-2.5",
         destructive:
           "bg-danger text-white hover:bg-red-700 shadow-md hover:shadow-lg active:scale-[0.98]",
         outline:
@@ -18,7 +18,7 @@ const buttonVariants = cva(
           "bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-sm hover:shadow-md active:scale-[0.98]",
         ghost: "text-brand-600 hover:bg-brand-50 active:scale-[0.98] rounded-full",
         link: "text-brand-500 underline-offset-4 hover:underline hover:text-brand-600 font-semibold",
-        premium: "bg-brand-500 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]",
+        premium: "bg-brand-500 text-white shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.03)] hover:scale-[1.02] active:scale-[0.98]",
       },
       size: {
         default: "h-12 px-6 py-3 text-base",

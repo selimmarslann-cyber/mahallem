@@ -224,7 +224,7 @@ export default function EarnPage() {
         {/* Main Action Cards */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* "Ben iş istiyorum" Card */}
-          <Card className="border-2 border-brand-200 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+          <Card className="border-2 border-brand-200 hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:-translate-y-0.5 transition-all">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-brand-600" />
@@ -245,7 +245,7 @@ export default function EarnPage() {
           </Card>
 
           {/* "Ek gelir kazanmak istiyorum" Card */}
-          <Card className="border-2 border-emerald-200 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+          <Card className="border-2 border-emerald-200 hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:-translate-y-0.5 transition-all">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-emerald-600" />
@@ -333,7 +333,7 @@ export default function EarnPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <Card className="hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:-translate-y-0.5 transition-all">
                   <CardContent className="p-5 md:p-6">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                       <div className="flex-1">

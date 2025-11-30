@@ -8,7 +8,7 @@
 @layer base {
   :root {
     /* Hizmetgo Premium Color System - Trendyol Inspired */
-    --background: 0 0% 96.5%; /* #F5F5F7 off-white */
+    --background: 0 0% 100%; /* #FFFFFF white */
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;

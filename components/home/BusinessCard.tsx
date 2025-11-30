@@ -46,7 +46,7 @@ export default function BusinessCard({
         whileHover={{ y: -4 }}
         transition={{ type: 'spring', stiffness: 400, damping: 17 }}
       >
-        <Card className="h-full cursor-pointer border-2 border-gray-200 hover:border-[#FF6000]/30 hover:shadow-lg transition-all duration-200 bg-white overflow-hidden">
+        <Card className="h-full cursor-pointer border-2 border-gray-200 hover:border-[#FF6000]/30 hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all duration-200 bg-white overflow-hidden">
           {/* Image */}
           <div className="relative w-full h-40 md:h-48 bg-gray-100">
             {image ? (

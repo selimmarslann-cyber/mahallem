@@ -5,12 +5,31 @@
 -- ============================================
 
 -- ============================================
--- ENUMS
+-- ENUMS (Sadece yoksa oluştur)
 -- ============================================
-CREATE TYPE job_status AS ENUM ('PENDING', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED');
-CREATE TYPE job_offer_status AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
-CREATE TYPE instant_job_status AS ENUM ('OPEN', 'ACCEPTED', 'COMPLETED', 'CANCELLED');
-CREATE TYPE instant_job_offer_status AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
+DO $$ BEGIN
+  CREATE TYPE job_status AS ENUM ('PENDING', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE job_offer_status AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE instant_job_status AS ENUM ('OPEN', 'ACCEPTED', 'COMPLETED', 'CANCELLED');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE instant_job_offer_status AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- ============================================
 -- 1. JOBS TABLE
@@ -131,19 +150,25 @@ ALTER TABLE instant_jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE instant_job_offers ENABLE ROW LEVEL SECURITY;
 
 -- Jobs: customers can view their jobs, businesses can view relevant jobs
+DROP POLICY IF EXISTS "Customers can view their jobs" ON jobs;
 CREATE POLICY "Customers can view their jobs" ON jobs FOR SELECT USING (auth.uid()::text = customer_id::text);
+DROP POLICY IF EXISTS "Customers can create jobs" ON jobs;
 CREATE POLICY "Customers can create jobs" ON jobs FOR INSERT WITH CHECK (auth.uid()::text = customer_id::text);
 
 -- Job offers: businesses can view their offers
+DROP POLICY IF EXISTS "Businesses can view their job offers" ON job_offers;
 CREATE POLICY "Businesses can view their job offers" ON job_offers FOR SELECT USING (
   EXISTS (SELECT 1 FROM businesses WHERE businesses.id = job_offers.business_id AND businesses.owner_user_id::text = auth.uid()::text)
 );
+DROP POLICY IF EXISTS "Businesses can create job offers" ON job_offers;
 CREATE POLICY "Businesses can create job offers" ON job_offers FOR INSERT WITH CHECK (
   EXISTS (SELECT 1 FROM businesses WHERE businesses.id = job_offers.business_id AND businesses.owner_user_id::text = auth.uid()::text)
 );
 
 -- Instant jobs: customers can view their jobs
+DROP POLICY IF EXISTS "Customers can view their instant jobs" ON instant_jobs;
 CREATE POLICY "Customers can view their instant jobs" ON instant_jobs FOR SELECT USING (auth.uid()::text = customer_id::text);
+DROP POLICY IF EXISTS "Customers can create instant jobs" ON instant_jobs;
 CREATE POLICY "Customers can create instant jobs" ON instant_jobs FOR INSERT WITH CHECK (auth.uid()::text = customer_id::text);
 
 COMMENT ON TABLE jobs IS 'Normal işler tablosu';

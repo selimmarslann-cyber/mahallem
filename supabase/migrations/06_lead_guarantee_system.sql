@@ -290,8 +290,7 @@ BEGIN
   SELECT * INTO v_refund
   FROM lead_refunds
   WHERE id = p_refund_id
-    AND refund_status = 'approved'
-    AND refund_processed = false;
+    AND refund_status = 'approved';
 
   IF NOT FOUND THEN
     RAISE EXCEPTION 'Refund not found or not approved';
@@ -327,7 +326,7 @@ BEGIN
   ) VALUES (
     v_refund.vendor_id,
     v_refund.listing_id,
-    'lead_refund', -- Yeni type eklemek gerekebilir
+    'adjustment', -- lead_refund type'ı henüz eklenmedi, adjustment kullan
     v_refund.refund_amount_tl,
     NOW()
   );
@@ -374,16 +373,19 @@ END $$;
 ALTER TABLE lead_refunds ENABLE ROW LEVEL SECURITY;
 
 -- Lead refunds: Usta kendi iadelerini görebilir
+DROP POLICY IF EXISTS "Vendors can view their own refunds" ON lead_refunds;
 CREATE POLICY "Vendors can view their own refunds"
   ON lead_refunds FOR SELECT
   USING (auth.uid()::text = vendor_id);
 
 -- Lead refunds: Service role tümünü görebilir
+DROP POLICY IF EXISTS "Service role can view all refunds" ON lead_refunds;
 CREATE POLICY "Service role can view all refunds"
   ON lead_refunds FOR SELECT
   USING (auth.role() = 'service_role');
 
 -- Lead refunds: Service role yönetebilir
+DROP POLICY IF EXISTS "Service role can manage refunds" ON lead_refunds;
 CREATE POLICY "Service role can manage refunds"
   ON lead_refunds FOR ALL
   USING (auth.role() = 'service_role');

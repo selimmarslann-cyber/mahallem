@@ -20,6 +20,7 @@ import { z } from 'zod'
 
 const createListingSchema = z.object({
   description: z.string().min(10, 'Açıklama en az 10 karakter olmalı'),
+  title: z.string().optional(), // İlan başlığı (ilk 30 karakter)
   raw_description: z.string().optional(), // Kullanıcının ilk yazdığı ham metin
   city: z.string().optional(),
   district: z.string().optional(),
@@ -76,6 +77,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Listing kaydı oluştur
+    // NOT: title kolonu yok, frontend'de description'dan ilk 30 karakteri title olarak gösterilecek
     const { data: listing, error: insertError } = await supabaseAdmin
       .from('listings')
       .insert({
@@ -89,7 +91,7 @@ export async function POST(request: NextRequest) {
         priority: validated.priority || 'normal',
         address: validated.address || null,
         price_range: validated.price_range || null,
-        status: 'open',
+        status: 'draft', // İlk oluşturulduğunda draft, kullanıcı yayınlayınca 'open'
       })
       .select()
       .single()

@@ -5,14 +5,43 @@
 -- ============================================
 
 -- ============================================
--- ENUMS
+-- ENUMS (Sadece yoksa oluştur)
 -- ============================================
-CREATE TYPE user_role AS ENUM ('CUSTOMER', 'VENDOR', 'ADMIN');
-CREATE TYPE business_category AS ENUM ('TESISAT', 'KUAFOR', 'MARKET', 'NAKLIYE', 'TEMIZLIK', 'ELEKTRIK', 'BOYA', 'MARANGOZ', 'DIGER');
-CREATE TYPE online_status AS ENUM ('ONLINE', 'OFFLINE', 'AUTO_OFFLINE');
-CREATE TYPE delivery_type AS ENUM ('ON_SITE', 'PICKUP', 'DELIVERY');
-CREATE TYPE order_status AS ENUM ('PENDING_CONFIRMATION', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED_BY_CUSTOMER', 'CANCELLED_BY_PROVIDER');
-CREATE TYPE payment_status AS ENUM ('INITIATED', 'AUTHORIZED', 'CAPTURED', 'REFUNDED', 'FAILED');
+DO $$ BEGIN
+  CREATE TYPE user_role AS ENUM ('CUSTOMER', 'VENDOR', 'ADMIN');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE business_category AS ENUM ('TESISAT', 'KUAFOR', 'MARKET', 'NAKLIYE', 'TEMIZLIK', 'ELEKTRIK', 'BOYA', 'MARANGOZ', 'DIGER');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE online_status AS ENUM ('ONLINE', 'OFFLINE', 'AUTO_OFFLINE');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE delivery_type AS ENUM ('ON_SITE', 'PICKUP', 'DELIVERY');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE order_status AS ENUM ('PENDING_CONFIRMATION', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED_BY_CUSTOMER', 'CANCELLED_BY_PROVIDER');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE TYPE payment_status AS ENUM ('INITIATED', 'AUTHORIZED', 'CAPTURED', 'REFUNDED', 'FAILED');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;
 
 -- ============================================
 -- 1. USERS TABLE

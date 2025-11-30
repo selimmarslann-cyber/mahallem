@@ -35,7 +35,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
 
   return (
     <Link href={category.href}>
-      <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-b from-slate-100 to-slate-200 shadow-sm hover:shadow-[0_18px_45px_rgba(15,23,42,0.12)] transition-shadow">
+      <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-b from-slate-100 to-slate-200 shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-shadow">
         <div className="relative h-32 md:h-36 overflow-hidden">
           {!imageError && imageSrc ? (
             <img

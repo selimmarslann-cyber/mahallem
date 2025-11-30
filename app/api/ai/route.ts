@@ -1,114 +1,135 @@
 /**
  * AI Chat API Route
- * Groq AI ile ilan oluşturma akışı
+ * Gemini → Fireworks fallback ile sohbet asistanı
+ * Mevcut FlowEngine yapısı ile uyumlu
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { FlowEngine } from '@/lib/ai/flow-engine'
-import { checkUserBlock } from '@/lib/ai/block-handler'
+import { geminiChat } from '@/lib/ai/geminiClient'
+import { fireworksChat } from '@/lib/ai/fireworksClient'
+import { SERVICE_SYSTEM_PROMPT } from '@/lib/ai/servicePrompt'
 
-// Flow engine'leri sakla (session bazlı)
-const flowEngines = new Map<string, FlowEngine>()
+export const runtime = 'nodejs'
+export const maxDuration = 70 // Vercel timeout
 
-// Session timeout: 30 dakika
-const SESSION_TIMEOUT = 30 * 60 * 1000
+// Basit session yönetimi (mesaj geçmişi)
+const sessions = new Map<string, Array<{ role: string; content: string }>>()
 
-/**
- * POST /api/ai - AI mesaj işleme
- */
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json()
-    const { userId, message, sessionId, action } = body
+    const body = await req.json()
+    const { userId, message, sessionId, action, initialCategory } = body
 
     if (!userId) {
       return NextResponse.json({ error: 'User ID required' }, { status: 401 })
     }
 
-    // Session ID oluştur
+    // Session ID oluştur veya kullan
     const currentSessionId = sessionId || `${userId}-${Date.now()}`
+    
+    // Session mesajlarını al veya oluştur
+    let sessionMessages = sessions.get(currentSessionId) || []
 
-    // Ban kontrolü
-    const blockStatus = await checkUserBlock(userId)
-    if (blockStatus.isBlocked) {
+    // İlk mesaj kontrolü
+    if (action === 'initial' || sessionMessages.length === 0) {
+      // System prompt sadece ilk mesajda - token tasarrufu
+      const systemMsg = {
+        role: 'system',
+        content: SERVICE_SYSTEM_PROMPT,
+      }
+
+      // İlk mesajı ekle (kategori bilgisi varsa ekle)
+      const firstUserMsg = initialCategory 
+        ? `${initialCategory} hizmeti için bilgi topla. ${message}`
+        : message
+
+      sessionMessages = [systemMsg, { role: 'user', content: firstUserMsg }]
+    } else {
+      // Normal mesaj - sadece kullanıcı mesajını ekle (system prompt yok - token tasarrufu)
+      sessionMessages.push({ role: 'user', content: message })
+    }
+
+    // Gemini → Fireworks fallback
+    console.log('🔍 Gemini API çağrısı yapılıyor...', {
+      messageCount: sessionMessages.length,
+      hasGeminiKey: !!process.env.GEMINI_API_KEY,
+      hasFireworksKey: !!process.env.FIREWORKS_API_KEY,
+      messages: sessionMessages.map(m => ({ role: m.role, contentLength: m.content.length })),
+    })
+
+    let aiResponse: string
+    let provider: string
+
+    try {
+      const g = await geminiChat(sessionMessages)
+      
+      if (g.ok && g.text) {
+        aiResponse = g.text
+        provider = 'gemini'
+        console.log('✅ Gemini başarılı:', { responseLength: aiResponse.length })
+      } else {
+        console.warn('⚠️ Gemini hata:', g.error)
+        // Fireworks fallback
+        console.log('🔄 Fireworks fallback deneniyor...')
+        const f = await fireworksChat(sessionMessages)
+        if (f.ok && f.text) {
+          aiResponse = f.text
+          provider = 'fireworks'
+          console.log('✅ Fireworks başarılı:', { responseLength: aiResponse.length })
+        } else {
+          console.error('❌ Her iki model hata verdi:', { gemini: g.error, fireworks: f.error })
+          return NextResponse.json(
+            { 
+              error: 'AI servisleri şu anda kullanılamıyor', 
+              message: 'Lütfen daha sonra tekrar deneyin.',
+              detail: { gemini: g.error, fireworks: f.error } 
+            },
+            { status: 500 }
+          )
+        }
+      }
+    } catch (apiError: any) {
+      console.error('❌ API çağrısı hatası:', apiError)
       return NextResponse.json(
-        {
-          error: 'Blocked',
-          message: `Bu alan sohbet için değildir. ${blockStatus.remainingMinutes} dakika sonra tekrar deneyin.`,
-          blockedUntil: blockStatus.blockedUntil,
+        { 
+          error: 'AI işlem hatası', 
+          message: apiError.message || 'Bir hata oluştu. Lütfen tekrar deneyin.',
+          detail: apiError 
         },
-        { status: 403 }
+        { status: 500 }
       )
     }
 
-    // Flow engine'i al veya oluştur
-    let flowEngine = flowEngines.get(currentSessionId)
-    if (!flowEngine || action === 'reset') {
-      flowEngine = new FlowEngine(userId)
-      flowEngines.set(currentSessionId, flowEngine)
+    if (!aiResponse || aiResponse.trim().length === 0) {
+      console.error('❌ Boş AI cevabı alındı')
+      return NextResponse.json(
+        { 
+          error: 'AI cevap veremedi', 
+          message: 'Lütfen tekrar deneyin.' 
+        },
+        { status: 500 }
+      )
     }
 
-    // Eski session'ları temizle
-    setTimeout(() => {
-      flowEngines.delete(currentSessionId)
-    }, SESSION_TIMEOUT)
+    // AI cevabını session'a ekle
+    sessionMessages.push({ role: 'assistant', content: aiResponse })
+    sessions.set(currentSessionId, sessionMessages)
 
-    // İlk mesaj kontrolü
-    if (action === 'initial' || flowEngine.getState().messages.length === 0) {
-      const initialCategory = body.initialCategory // Arama barından gelen kategori
-      const result = await flowEngine.processInitialMessage(message, initialCategory)
-
-      return NextResponse.json({
-        sessionId: currentSessionId,
-        shouldProceed: result.shouldProceed,
-        localMessage: result.localMessage,
-        aiResponse: result.aiResponse,
-        state: flowEngine.getState(),
-      })
-    }
-
-    // Normal mesaj işleme
-    if (action === 'confirm') {
-      // İlan onayı
-      const result = await flowEngine.confirmListing(message)
-      if (result.success) {
-        // Session'ı temizle
-        flowEngines.delete(currentSessionId)
-        return NextResponse.json({
-          sessionId: currentSessionId,
-          success: true,
-          listingData: result.listingData,
-          state: flowEngine.getState(),
-        })
-      } else {
-        return NextResponse.json({
-          sessionId: currentSessionId,
-          success: false,
-          error: result.error,
-          state: flowEngine.getState(),
-        })
-      }
-    }
-
-    // Normal mesaj
-    const result = await flowEngine.processMessage(message)
+    // İlan tamamlandı mı kontrolü (basit kontrol)
+    const isComplete = aiResponse.toLowerCase().includes('ilanı yayınlayayım') || 
+                      aiResponse.toLowerCase().includes('hazır') ||
+                      aiResponse.toLowerCase().includes('oluşturalım')
 
     return NextResponse.json({
       sessionId: currentSessionId,
-      aiResponse: result.aiResponse,
-      isComplete: result.isComplete,
-      listingData: result.listingData,
-      shouldSwitchToManual: result.shouldSwitchToManual,
-      localMessage: result.localMessage,
-      state: flowEngine.getState(),
+      aiResponse,
+      isComplete,
+      provider, // Debug için
     })
-  } catch (error: any) {
-    console.error('AI API error:', error)
+  } catch (err: any) {
+    console.error('AI API error:', err)
     return NextResponse.json(
-      {
-        error: 'Internal server error',
-        message: error.message || 'AI işlenirken hata oluştu',
-      },
+      { error: 'AI işlem hatası', detail: err.message },
       { status: 500 }
     )
   }
@@ -125,13 +146,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Session ID required' }, { status: 400 })
   }
 
-  const flowEngine = flowEngines.get(sessionId)
-  if (!flowEngine) {
+  const sessionMessages = sessions.get(sessionId)
+  if (!sessionMessages) {
     return NextResponse.json({ error: 'Session not found' }, { status: 404 })
   }
 
   return NextResponse.json({
-    state: flowEngine.getState(),
+    messages: sessionMessages,
   })
 }
-

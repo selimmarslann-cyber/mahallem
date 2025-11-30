@@ -203,7 +203,7 @@ export default function BusinessDashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -223,7 +223,7 @@ export default function BusinessDashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -243,7 +243,7 @@ export default function BusinessDashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -263,7 +263,7 @@ export default function BusinessDashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -288,7 +288,7 @@ export default function BusinessDashboardPage() {
               transition={{ delay: 0.5 }}
               whileHover={{ y: -4 }}
             >
-              <Card className="hover:shadow-xl transition-all cursor-pointer border-2 hover:border-primary">
+              <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all cursor-pointer border-2 hover:border-primary">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
@@ -317,7 +317,7 @@ export default function BusinessDashboardPage() {
               transition={{ delay: 0.55 }}
               whileHover={{ y: -4 }}
             >
-              <Card className="hover:shadow-xl transition-all cursor-pointer border-2 hover:border-primary">
+              <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all cursor-pointer border-2 hover:border-primary">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
@@ -341,7 +341,7 @@ export default function BusinessDashboardPage() {
               transition={{ delay: 0.6 }}
               whileHover={{ y: -4 }}
             >
-              <Card className="hover:shadow-xl transition-all cursor-pointer border-2 hover:border-primary">
+              <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all cursor-pointer border-2 hover:border-primary">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
@@ -365,7 +365,7 @@ export default function BusinessDashboardPage() {
               transition={{ delay: 0.7 }}
               whileHover={{ y: -4 }}
             >
-              <Card className="hover:shadow-xl transition-all cursor-pointer border-2 hover:border-primary">
+              <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all cursor-pointer border-2 hover:border-primary">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
@@ -389,7 +389,7 @@ export default function BusinessDashboardPage() {
               transition={{ delay: 0.8 }}
               whileHover={{ y: -4 }}
             >
-              <Card className="hover:shadow-xl transition-all cursor-pointer border-2 hover:border-primary">
+              <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all cursor-pointer border-2 hover:border-primary">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center">
@@ -413,7 +413,7 @@ export default function BusinessDashboardPage() {
               transition={{ delay: 0.85 }}
               whileHover={{ y: -4 }}
             >
-              <Card className="hover:shadow-xl transition-all cursor-pointer border-2 hover:border-primary">
+              <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all cursor-pointer border-2 hover:border-primary">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
@@ -437,7 +437,7 @@ export default function BusinessDashboardPage() {
               transition={{ delay: 0.9 }}
               whileHover={{ y: -4 }}
             >
-              <Card className="hover:shadow-xl transition-all cursor-pointer border-2 hover:border-primary">
+              <Card className="hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all cursor-pointer border-2 hover:border-primary">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">

@@ -171,36 +171,43 @@ ALTER TABLE lead_levels ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lead_purchases ENABLE ROW LEVEL SECURITY;
 
 -- Service categories: Herkes okuyabilir (aktif olanlar)
+DROP POLICY IF EXISTS "Anyone can view active service categories" ON service_categories;
 CREATE POLICY "Anyone can view active service categories"
   ON service_categories FOR SELECT
   USING (is_active = true);
 
 -- Service categories: Sadece service role yönetebilir
+DROP POLICY IF EXISTS "Service role can manage service categories" ON service_categories;
 CREATE POLICY "Service role can manage service categories"
   ON service_categories FOR ALL
   USING (auth.role() = 'service_role');
 
 -- Lead levels: Herkes okuyabilir
+DROP POLICY IF EXISTS "Anyone can view lead levels" ON lead_levels;
 CREATE POLICY "Anyone can view lead levels"
   ON lead_levels FOR SELECT
   USING (true);
 
 -- Lead levels: Sadece service role yönetebilir
+DROP POLICY IF EXISTS "Service role can manage lead levels" ON lead_levels;
 CREATE POLICY "Service role can manage lead levels"
   ON lead_levels FOR ALL
   USING (auth.role() = 'service_role');
 
 -- Lead purchases: Usta kendi satın alımlarını görebilir
+DROP POLICY IF EXISTS "Vendors can view their own lead purchases" ON lead_purchases;
 CREATE POLICY "Vendors can view their own lead purchases"
   ON lead_purchases FOR SELECT
   USING (auth.uid()::text = vendor_id);
 
 -- Lead purchases: Service role tümünü görebilir
+DROP POLICY IF EXISTS "Service role can view all lead purchases" ON lead_purchases;
 CREATE POLICY "Service role can view all lead purchases"
   ON lead_purchases FOR SELECT
   USING (auth.role() = 'service_role');
 
 -- Lead purchases: Sadece service role insert edebilir (API üzerinden)
+DROP POLICY IF EXISTS "Service role can insert lead purchases" ON lead_purchases;
 CREATE POLICY "Service role can insert lead purchases"
   ON lead_purchases FOR INSERT
   WITH CHECK (auth.role() = 'service_role');

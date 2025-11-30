@@ -33,8 +33,8 @@ export default function FeatureCard({
         <Card className={cn(
           "h-full cursor-pointer border-2 transition-all duration-200 overflow-hidden group bg-white",
           isActive 
-            ? "border-[#FF6000] bg-[#FF6000] shadow-lg" 
-            : "border-gray-200 hover:border-[#FF6000]/30 hover:shadow-lg"
+            ? "border-[#FF6000] bg-[#FF6000] shadow-[0_1px_2px_rgba(0,0,0,0.02)]" 
+            : "border-gray-200 hover:border-[#FF6000]/30 hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
         )}>
           <CardContent className="p-6 md:p-8">
             <div className="flex flex-col items-center text-center space-y-4">

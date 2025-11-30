@@ -257,7 +257,7 @@ export default function ServicesPage() {
 
             {/* Autocomplete Suggestions */}
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-200 rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-gray-200 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.02)] z-50 max-h-64 overflow-y-auto">
                 {suggestions.map((suggestion, index) => (
                   <button
                     key={index}
@@ -299,7 +299,7 @@ export default function ServicesPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="h-full border-2 border-gray-200 hover:border-[#FF6000]/30 hover:shadow-lg transition-all bg-white">
+                  <Card className="h-full border-2 border-gray-200 hover:border-[#FF6000]/30 hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all bg-white">
                     {/* Business Info */}
                     <CardContent className="p-6">
                       <div className="space-y-4">

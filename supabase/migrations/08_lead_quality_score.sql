@@ -10,7 +10,7 @@
 -- ============================================
 CREATE TABLE IF NOT EXISTS lead_quality_scores (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  listing_id UUID NOT NULL REFERENCES listings(id) ON DELETE CASCADE,
+  listing_id UUID NOT NULL,
   overall_score DECIMAL(5,2) NOT NULL DEFAULT 0 CHECK (overall_score >= 0 AND overall_score <= 100),
   description_quality_score DECIMAL(5,2) DEFAULT 0, -- Açıklama kalitesi (0-30)
   category_match_score DECIMAL(5,2) DEFAULT 0, -- Kategori eşleşme skoru (0-20)
@@ -21,6 +21,24 @@ CREATE TABLE IF NOT EXISTS lead_quality_scores (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE(listing_id) -- Her ilan için bir skor
 );
+
+-- Foreign key constraint (listings tablosu varsa)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'listings') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'lead_quality_scores_listing_id_fkey'
+    ) THEN
+      ALTER TABLE lead_quality_scores 
+        ADD CONSTRAINT lead_quality_scores_listing_id_fkey 
+        FOREIGN KEY (listing_id) REFERENCES listings(id) ON DELETE CASCADE;
+    END IF;
+  END IF;
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+  WHEN OTHERS THEN NULL;
+END $$;
 
 CREATE INDEX IF NOT EXISTS idx_lead_quality_scores_listing ON lead_quality_scores(listing_id);
 CREATE INDEX IF NOT EXISTS idx_lead_quality_scores_overall ON lead_quality_scores(overall_score DESC);
@@ -244,11 +262,13 @@ CREATE TRIGGER trigger_listing_quality_score
 ALTER TABLE lead_quality_scores ENABLE ROW LEVEL SECURITY;
 
 -- Lead quality scores: Herkes okuyabilir (public)
+DROP POLICY IF EXISTS "Anyone can view lead quality scores" ON lead_quality_scores;
 CREATE POLICY "Anyone can view lead quality scores"
   ON lead_quality_scores FOR SELECT
   USING (true);
 
 -- Lead quality scores: Service role yönetebilir
+DROP POLICY IF EXISTS "Service role can manage lead quality scores" ON lead_quality_scores;
 CREATE POLICY "Service role can manage lead quality scores"
   ON lead_quality_scores FOR ALL
   USING (auth.role() = 'service_role');

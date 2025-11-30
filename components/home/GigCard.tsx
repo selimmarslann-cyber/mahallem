@@ -33,7 +33,7 @@ export default function GigCard({
       transition={{ duration: 0.3, type: 'spring', stiffness: 300 }}
       className="flex-shrink-0"
     >
-      <Card className="bg-white border-2 border-slate-200 rounded-3xl p-6 w-80 min-w-[320px] h-[320px] shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col group relative overflow-hidden">
+      <Card className="bg-white border-2 border-slate-200 rounded-3xl p-6 w-80 min-w-[320px] h-[320px] shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-all duration-300 flex flex-col group relative overflow-hidden">
         {/* Premium Gradient Accent */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF7A00] via-[#FFB347] to-[#FF7A00] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
@@ -91,7 +91,7 @@ export default function GigCard({
               whileTap={{ scale: 0.98 }}
             >
               <Button
-                className="w-full bg-gradient-to-r from-[#FF7A00] to-[#FF8A00] hover:from-[#FF8A00] hover:to-[#FF9A00] text-white rounded-xl py-6 font-bold shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
+                className="w-full bg-gradient-to-r from-[#FF7A00] to-[#FF8A00] hover:from-[#FF8A00] hover:to-[#FF9A00] text-white rounded-xl py-6 font-bold shadow-[0_1px_2px_rgba(0,0,0,0.02)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-all duration-300 group/btn"
                 onClick={onApply}
               >
                 <span className="flex items-center justify-center gap-2">

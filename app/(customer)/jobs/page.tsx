@@ -110,11 +110,27 @@ export default function CustomerJobsPage() {
     }
   }, [router, currentUser])
 
+  // Kutlama animasyonu için state
+  const [showCelebration, setShowCelebration] = useState(false)
+
   useEffect(() => {
     const tabParam = searchParams.get('tab')
     if (tabParam === 'instant') {
       setActiveTab('nearby')
     }
+    
+    // İlan oluşturuldu mu kontrol et
+    const created = searchParams.get('created')
+    if (created === 'true') {
+      setShowCelebration(true)
+      // URL'den parametreyi temizle
+      router.replace('/jobs', { scroll: false })
+      // 5 saniye sonra animasyonu kapat
+      setTimeout(() => {
+        setShowCelebration(false)
+      }, 5000)
+    }
+    
     loadUser()
     getUserLocation()
   }, [searchParams, loadUser, getUserLocation])
@@ -287,6 +303,51 @@ export default function CustomerJobsPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F5F7] pt-24 pb-24 md:pb-0">
+      {/* Kutlama Animasyonu */}
+      {showCelebration && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+          onClick={() => setShowCelebration(false)}
+        >
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 50, opacity: 0 }}
+            className="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <motion.div
+              animate={{ 
+                scale: [1, 1.2, 1],
+                rotate: [0, 10, -10, 0]
+              }}
+              transition={{ 
+                duration: 0.6,
+                repeat: 2
+              }}
+              className="text-6xl mb-4"
+            >
+              🎉
+            </motion.div>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">
+              İlanınız Yayında!
+            </h2>
+            <p className="text-slate-600 mb-6">
+              İlanınız başarıyla oluşturuldu. Ustalar teklif vermeye başlayacak.
+            </p>
+            <Button
+              onClick={() => setShowCelebration(false)}
+              className="bg-[#FF6000] hover:bg-[#FF6000]/90 text-white"
+            >
+              Harika!
+            </Button>
+          </motion.div>
+        </motion.div>
+      )}
+      
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">İşlerim</h1>
@@ -353,7 +414,7 @@ export default function CustomerJobsPage() {
                       whileHover={{ y: -2 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                     >
-                      <Card className="border-2 border-gray-200 hover:border-[#FF6000]/30 hover:shadow-lg transition-all cursor-pointer bg-white">
+                      <Card className="border-2 border-gray-200 hover:border-[#FF6000]/30 hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all cursor-pointer bg-white">
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">

@@ -20,7 +20,7 @@ export default function CustomerLayout({
   const isAccountPage = pathname.startsWith('/account')
   
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F5F7]">
+    <div className="min-h-screen flex flex-col bg-white">
       {!isAccountPage && (
         <>
           <PartnerIntroDialog />

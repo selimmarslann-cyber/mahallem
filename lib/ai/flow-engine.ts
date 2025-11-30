@@ -107,7 +107,7 @@ export class FlowEngine {
       content: initialUserMessage,
     })
 
-    // İlk AI cevabını al
+    // İlk AI cevabını al (kısa system prompt ile - makale yazmasını engelle)
     try {
       const response = await callGroq(this.state.messages, SYSTEM_PROMPT)
       this.state.totalTokens += response.tokenUsage.total
@@ -138,6 +138,7 @@ export class FlowEngine {
     aiResponse?: string
     isComplete: boolean
     listingData?: any
+    thankYouMessage?: string // Otomatik teşekkür mesajı
     shouldSwitchToManual: boolean
     localMessage?: string
   }> {
@@ -168,7 +169,7 @@ export class FlowEngine {
       content: message,
     })
 
-    // AI cevabını al
+    // AI cevabını al (kısa system prompt ile - makale yazmasını engelle)
     try {
       const response = await callGroq(this.state.messages, SYSTEM_PROMPT)
       this.state.totalTokens += response.tokenUsage.total
@@ -179,8 +180,15 @@ export class FlowEngine {
         content: response.content,
       })
 
-      // "İlanı yayınlayayım mı?" kontrolü
-      const isComplete = response.content.toLowerCase().includes('ilanı yayınlayayım mı')
+      // "İlanı yayınlayayım mı?" kontrolü veya yeterli bilgi toplandı mı?
+      const isComplete = 
+        response.content.toLowerCase().includes('ilanı yayınlayayım mı') ||
+        response.content.toLowerCase().includes('hazır') ||
+        response.content.toLowerCase().includes('oluşturalım')
+      
+      // 1. soruda tatmin edici cevap alındı mı? (uzun cevap = detaylı bilgi)
+      const isDetailedAnswer = message.length > 50 && response.content.length > 30
+      const canCompleteEarly = this.state.questionCount === 1 && isDetailedAnswer
 
       // Token limiti kontrolü (cevap sonrası)
       if (this.state.totalTokens >= MAX_TOKENS) {
@@ -192,25 +200,80 @@ export class FlowEngine {
         }
       }
 
-      // Soru limiti kontrolü
-      if (this.state.questionCount >= MAX_QUESTIONS && !isComplete) {
-        // Son özeti oluştur
+      // Erken bitirme: 1. soruda detaylı cevap alındıysa direkt ilan metnini oluştur
+      if (canCompleteEarly && !isComplete) {
+        // Son özeti oluştur - direkt açıklama metni olarak
         const summaryPrompt = createSummaryPrompt(this.state.messages)
         try {
           const summaryResponse = await callGroq(
             [{ role: 'user', content: summaryPrompt }],
-            SYSTEM_PROMPT
+            SYSTEM_PROMPT // Kısa system prompt ile - makale yazmasını engelle
           )
 
-          // JSON parse dene
-          let listingData = null
-          try {
-            const jsonMatch = summaryResponse.content.match(/\{[\s\S]*\}/)
-            if (jsonMatch) {
-              listingData = JSON.parse(jsonMatch[0])
+          // JSON parse YOK - direkt açıklama metnini kullan
+          const description = summaryResponse.content.trim()
+          
+          if (!description || description.length < 50) {
+            // Açıklama çok kısa, devam et
+            return {
+              aiResponse: response.content,
+              isComplete: false,
             }
-          } catch (e) {
-            // JSON parse başarısız, manuel mode'a geç
+          }
+
+          // Sohbetten bilgileri extract et (generate-listing için)
+          const extractedInfo = this.extractInfoFromConversation()
+
+          // Listing data oluştur - direkt açıklama metni ile
+          const listingData = {
+            description: description, // Tam açıklama metni
+            title: description.substring(0, 30), // İlk 30 karakter başlık
+            date: 'esnek', // Varsayılan
+            priority: 'normal', // Varsayılan
+            address: 'belirtilmemiş', // Varsayılan
+            price_range: 'belirtilmemiş', // Varsayılan
+            // generate-listing için ekstra bilgiler
+            category: extractedInfo.category,
+            location: extractedInfo.location,
+            area: extractedInfo.area,
+            budget: extractedInfo.budget,
+            urgency: extractedInfo.urgency,
+            details: extractedInfo.details,
+          }
+
+          // Otomatik teşekkür mesajı ekle
+          const thankYouMessage = `Bizi tercih ettiğiniz için teşekkür ederiz. Referans sistemimizi inceleyebilir ve ek gelir elde edebilirsiniz. Uygulamamızın diğer özellikleri için olan yakında esnaf ara, vasıf gerektirmeyen işler gibi kategorilerimizi inceleyebilirsiniz. 5 saniye içinde sizi ilanınıza yönlendiriyorum. İlanınıza resim ekleyebilir ve farklı detaylar ekleyebilirsiniz. Bu sohbetimiz hizmet kalitesini arttırmak amacıyla kayıt altına alınmaktadır. Hizmet aldıktan sonra hizmet verene puanlama ve yorum yapmayı unutmayınız. Sağlıcakla kalın.`
+
+          return {
+            aiResponse: 'İlanınız hazır. İlanı yayınlayayım mı?',
+            isComplete: true,
+            listingData,
+            thankYouMessage, // Otomatik teşekkür mesajı
+          }
+        } catch (e) {
+          // Hata durumunda normal akışa devam et
+          return {
+            aiResponse: response.content,
+            isComplete: false,
+          }
+        }
+      }
+
+      // Soru limiti kontrolü (3 soru sonrası direkt ilan metnini oluştur)
+      if (this.state.questionCount >= MAX_QUESTIONS && !isComplete) {
+        // Son özeti oluştur - direkt açıklama metni olarak
+        const summaryPrompt = createSummaryPrompt(this.state.messages)
+        try {
+          const summaryResponse = await callGroq(
+            [{ role: 'user', content: summaryPrompt }],
+            SYSTEM_PROMPT // Kısa system prompt ile - makale yazmasını engelle
+          )
+
+          // JSON parse YOK - direkt açıklama metnini kullan
+          const description = summaryResponse.content.trim()
+          
+          if (!description || description.length < 50) {
+            // Açıklama çok kısa, manuel mode'a geç
             this.state.isManualMode = true
             this.state.manualModeReason = ManualModeReason.TOKEN_LIMIT
             return {
@@ -219,10 +282,34 @@ export class FlowEngine {
             }
           }
 
+          // Sohbetten bilgileri extract et (generate-listing için)
+          const extractedInfo = this.extractInfoFromConversation()
+
+          // Listing data oluştur - direkt açıklama metni ile
+          const listingData = {
+            description: description, // Tam açıklama metni
+            title: description.substring(0, 30), // İlk 30 karakter başlık
+            date: 'esnek', // Varsayılan
+            priority: 'normal', // Varsayılan
+            address: 'belirtilmemiş', // Varsayılan
+            price_range: 'belirtilmemiş', // Varsayılan
+            // generate-listing için ekstra bilgiler
+            category: extractedInfo.category,
+            location: extractedInfo.location,
+            area: extractedInfo.area,
+            budget: extractedInfo.budget,
+            urgency: extractedInfo.urgency,
+            details: extractedInfo.details,
+          }
+
+          // Otomatik teşekkür mesajı ekle
+          const thankYouMessage = `Bizi tercih ettiğiniz için teşekkür ederiz. Referans sistemimizi inceleyebilir ve ek gelir elde edebilirsiniz. Uygulamamızın diğer özellikleri için olan yakında esnaf ara, vasıf gerektirmeyen işler gibi kategorilerimizi inceleyebilirsiniz. 5 saniye içinde sizi ilanınıza yönlendiriyorum. İlanınıza resim ekleyebilir ve farklı detaylar ekleyebilirsiniz. Bu sohbetimiz hizmet kalitesini arttırmak amacıyla kayıt altına alınmaktadır. Hizmet aldıktan sonra hizmet verene puanlama ve yorum yapmayı unutmayınız. Sağlıcakla kalın.`
+
           return {
             aiResponse: 'İlanınız hazır. İlanı yayınlayayım mı?',
             isComplete: true,
             listingData,
+            thankYouMessage, // Otomatik teşekkür mesajı
           }
         } catch (e) {
           this.state.isManualMode = true
@@ -263,7 +350,7 @@ export class FlowEngine {
       try {
         const summaryResponse = await callGroq(
           [{ role: 'user', content: summaryPrompt }],
-          SYSTEM_PROMPT
+          SYSTEM_PROMPT // Kısa system prompt ile - makale yazmasını engelle
         )
 
         // JSON parse
@@ -316,6 +403,44 @@ export class FlowEngine {
       isActive: false,
       isManualMode: false,
       manualModeReason: null,
+    }
+  }
+
+  /**
+   * Sohbetten bilgileri extract et (generate-listing için)
+   */
+  private extractInfoFromConversation(): {
+    category: string
+    location: string
+    area: string
+    budget: string
+    urgency: string
+    details: string
+  } {
+    const conversationText = this.state.messages
+      .map((msg) => `${msg.role}: ${msg.content}`)
+      .join('\n')
+
+    // Basit regex ile bilgileri extract et
+    const categoryMatch = conversationText.match(/(?:kategori|hizmet|iş|tür)[\s:]*([^\n]+)/i)
+    const locationMatch = conversationText.match(/(?:lokasyon|konum|adres|yer|şehir|ilçe)[\s:]*([^\n]+)/i)
+    const areaMatch = conversationText.match(/(?:alan|m²|metrekare|m2)[\s:]*([^\n]+)/i)
+    const budgetMatch = conversationText.match(/(?:bütçe|fiyat|ücret|tutar|para)[\s:]*([^\n]+)/i)
+    const urgencyMatch = conversationText.match(/(?:aciliyet|acil|tarih|zaman|ne zaman)[\s:]*([^\n]+)/i)
+
+    // Kullanıcı mesajlarını birleştir (detaylar için)
+    const userMessages = this.state.messages
+      .filter((msg) => msg.role === 'user')
+      .map((msg) => msg.content)
+      .join(' ')
+
+    return {
+      category: categoryMatch?.[1]?.trim() || 'genel',
+      location: locationMatch?.[1]?.trim() || 'belirtilmemiş',
+      area: areaMatch?.[1]?.trim() || 'belirtilmemiş',
+      budget: budgetMatch?.[1]?.trim() || 'belirtilmemiş',
+      urgency: urgencyMatch?.[1]?.trim() || 'esnek',
+      details: userMessages || 'belirtilmemiş',
     }
   }
 }

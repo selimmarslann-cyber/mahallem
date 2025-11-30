@@ -10,7 +10,7 @@
 -- ============================================
 CREATE TABLE IF NOT EXISTS vendor_verifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  vendor_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  vendor_id TEXT NOT NULL,
   verification_type TEXT NOT NULL CHECK (verification_type IN (
     'identity',        -- Kimlik doğrulama
     'certificate',     -- Sertifika
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS vendor_verifications (
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'expired')),
   document_url TEXT, -- Belge URL'i (Supabase Storage)
   document_type TEXT, -- 'id_card', 'certificate', 'license', etc.
-  verified_by TEXT REFERENCES users(id) ON DELETE SET NULL, -- Admin user_id
+  verified_by TEXT, -- Admin user_id
   verified_at TIMESTAMPTZ,
   expiry_date TIMESTAMPTZ, -- Sertifika/lisans son kullanma tarihi
   notes TEXT,
@@ -29,6 +29,37 @@ CREATE TABLE IF NOT EXISTS vendor_verifications (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE(vendor_id, verification_type) -- Bir usta bir tip için sadece bir doğrulama
 );
+
+-- Foreign key constraints (tablolar varsa)
+DO $$
+BEGIN
+  -- vendor_id foreign key
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'users') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'vendor_verifications_vendor_id_fkey'
+    ) THEN
+      ALTER TABLE vendor_verifications 
+        ADD CONSTRAINT vendor_verifications_vendor_id_fkey 
+        FOREIGN KEY (vendor_id) REFERENCES users(id) ON DELETE CASCADE;
+    END IF;
+  END IF;
+
+  -- verified_by foreign key
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'users') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'vendor_verifications_verified_by_fkey'
+    ) THEN
+      ALTER TABLE vendor_verifications 
+        ADD CONSTRAINT vendor_verifications_verified_by_fkey 
+        FOREIGN KEY (verified_by) REFERENCES users(id) ON DELETE SET NULL;
+    END IF;
+  END IF;
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+  WHEN OTHERS THEN NULL;
+END $$;
 
 CREATE INDEX IF NOT EXISTS idx_vendor_verifications_vendor ON vendor_verifications(vendor_id);
 CREATE INDEX IF NOT EXISTS idx_vendor_verifications_type ON vendor_verifications(verification_type);
@@ -40,7 +71,7 @@ CREATE INDEX IF NOT EXISTS idx_vendor_verifications_expiry ON vendor_verificatio
 -- ============================================
 CREATE TABLE IF NOT EXISTS vendor_quality_scores (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  vendor_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  vendor_id TEXT NOT NULL,
   overall_score DECIMAL(5,2) NOT NULL DEFAULT 0 CHECK (overall_score >= 0 AND overall_score <= 100),
   response_time_score DECIMAL(5,2) DEFAULT 0, -- Yanıt süresi skoru
   completion_rate_score DECIMAL(5,2) DEFAULT 0, -- Tamamlanma oranı skoru
@@ -51,6 +82,24 @@ CREATE TABLE IF NOT EXISTS vendor_quality_scores (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE(vendor_id) -- Her usta için bir skor
 );
+
+-- Foreign key constraint (users tablosu varsa)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'users') THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints 
+      WHERE constraint_name = 'vendor_quality_scores_vendor_id_fkey'
+    ) THEN
+      ALTER TABLE vendor_quality_scores 
+        ADD CONSTRAINT vendor_quality_scores_vendor_id_fkey 
+        FOREIGN KEY (vendor_id) REFERENCES users(id) ON DELETE CASCADE;
+    END IF;
+  END IF;
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+  WHEN OTHERS THEN NULL;
+END $$;
 
 CREATE INDEX IF NOT EXISTS idx_vendor_quality_scores_vendor ON vendor_quality_scores(vendor_id);
 CREATE INDEX IF NOT EXISTS idx_vendor_quality_scores_overall ON vendor_quality_scores(overall_score DESC);
@@ -258,26 +307,31 @@ ALTER TABLE vendor_verifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE vendor_quality_scores ENABLE ROW LEVEL SECURITY;
 
 -- Vendor verifications: Usta kendi doğrulamalarını görebilir
+DROP POLICY IF EXISTS "Vendors can view their own verifications" ON vendor_verifications;
 CREATE POLICY "Vendors can view their own verifications"
   ON vendor_verifications FOR SELECT
   USING (auth.uid()::text = vendor_id);
 
 -- Vendor verifications: Service role tümünü görebilir
+DROP POLICY IF EXISTS "Service role can view all verifications" ON vendor_verifications;
 CREATE POLICY "Service role can view all verifications"
   ON vendor_verifications FOR SELECT
   USING (auth.role() = 'service_role');
 
 -- Vendor verifications: Service role yönetebilir
+DROP POLICY IF EXISTS "Service role can manage verifications" ON vendor_verifications;
 CREATE POLICY "Service role can manage verifications"
   ON vendor_verifications FOR ALL
   USING (auth.role() = 'service_role');
 
 -- Vendor quality scores: Usta kendi skorunu görebilir
+DROP POLICY IF EXISTS "Vendors can view their own quality score" ON vendor_quality_scores;
 CREATE POLICY "Vendors can view their own quality score"
   ON vendor_quality_scores FOR SELECT
   USING (auth.uid()::text = vendor_id);
 
 -- Vendor quality scores: Service role tümünü görebilir
+DROP POLICY IF EXISTS "Service role can view all quality scores" ON vendor_quality_scores;
 CREATE POLICY "Service role can view all quality scores"
   ON vendor_quality_scores FOR SELECT
   USING (auth.role() = 'service_role');

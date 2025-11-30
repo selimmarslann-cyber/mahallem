@@ -38,6 +38,7 @@ export default function AIChatModal({
   const [isComplete, setIsComplete] = useState(false)
   const [isManualMode, setIsManualMode] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
+  const [userName, setUserName] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -48,17 +49,37 @@ export default function AIChatModal({
     scrollToBottom()
   }, [messages])
 
-  // Modal açıldığında ve kategori varsa otomatik mesaj gönder
+  // Kullanıcı bilgisini al (isim için)
   useEffect(() => {
-    if (isOpen && initialCategory && !hasStarted) {
+    if (isOpen && userId && !userName) {
+      const fetchUser = async () => {
+        try {
+          const res = await fetch('/api/auth/me', { credentials: 'include' })
+          if (res.ok) {
+            const data = await res.json()
+            if (data.user?.name) {
+              setUserName(data.user.name)
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching user:', error)
+        }
+      }
+      fetchUser()
+    }
+  }, [isOpen, userId, userName])
+
+  // Modal açıldığında ve kategori varsa otomatik mesaj göster (Groq API çağrısı yapmadan)
+  useEffect(() => {
+    if (isOpen && initialCategory && !hasStarted && userName !== null) {
       setHasStarted(true)
-      // Kısa bir gecikme ile otomatik mesaj gönder
+      // Kısa bir gecikme ile otomatik mesaj göster
       setTimeout(() => {
-        console.log('AIChatModal: Sending initial category message:', initialCategory)
+        console.log('AIChatModal: Showing initial welcome message:', initialCategory)
         handleInitialCategoryMessage(initialCategory)
       }, 500)
     }
-  }, [isOpen, initialCategory, hasStarted])
+  }, [isOpen, initialCategory, hasStarted, userName])
 
   // Modal kapandığında state'i sıfırla
   useEffect(() => {
@@ -71,6 +92,7 @@ export default function AIChatModal({
       setIsComplete(false)
       setIsManualMode(false)
       setHasStarted(false)
+      setUserName(null)
     }
   }, [isOpen])
 
@@ -85,75 +107,25 @@ export default function AIChatModal({
     }
   }, [isOpen])
 
-  const handleInitialCategoryMessage = async (category: string) => {
-    // Otomatik mesaj gönder
+  const handleInitialCategoryMessage = (category: string) => {
+    // Kullanıcı mesajını ekle (kategori)
     const categoryMessage = category
     setInput('')
     setLocalWarning(null)
 
     // Kullanıcı mesajını ekle
     setMessages((prev) => [{ role: 'user', content: categoryMessage }])
-    setLoading(true)
 
-    try {
-      const response = await fetch('/api/ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          message: categoryMessage,
-          sessionId,
-          action: 'initial',
-          initialCategory: category, // Kategori bilgisini gönder
-        }),
-      })
+    // Otomatik hoş geldin mesajını oluştur (Groq API çağrısı YOK - maliyet tasarrufu)
+    const userNameDisplay = userName || 'Değerli'
+    const welcomeMessage = `Merhaba ${userNameDisplay} bey, platformumuza hoşgeldiniz! Yapay zeka asistanımız size yardımcı olacak. Unutmayınız ki bu bir sohbet aracı değildir, olabildiğince kısa ve anlaşılır şekilde ilerleyerek ilanınızı birlikte oluşturacağız. ${category} kategorisiyle ilgili ne tür bir hizmete ihtiyacınız var? Lütfen detaylarıyla belirtin.`
 
-      const data = await response.json()
+    // Otomatik mesajı ekle (assistant rolünde)
+    setMessages((prev) => [...prev, { role: 'assistant', content: welcomeMessage }])
 
-      if (response.status === 403) {
-        // Ban durumu
-        setLocalWarning(
-          data.message || 'Bu alan sohbet için değildir. 30 dakika sonra tekrar deneyin.'
-        )
-        setLoading(false)
-        return
-      }
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Bir hata oluştu')
-      }
-
-      // Session ID'yi kaydet
-      if (data.sessionId) {
-        setSessionId(data.sessionId)
-      }
-
-      // Local mesaj varsa göster
-      if (data.localMessage) {
-        setLocalWarning(data.localMessage)
-        if (data.shouldSwitchToManual) {
-          setIsManualMode(true)
-        }
-      }
-
-      // AI cevabını ekle
-      if (data.aiResponse) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.aiResponse }])
-      }
-
-      // Tamamlandı mı?
-      if (data.isComplete) {
-        setIsComplete(true)
-      }
-    } catch (err: any) {
-      console.error('AI chat error:', err)
-      setLocalWarning('Bir hata oluştu. Lütfen tekrar deneyin.')
-      showError(err.message || 'Bir hata oluştu')
-    } finally {
-      setLoading(false)
-    }
+    // Session ID oluştur (sonraki mesajlarda Groq kullanılacak)
+    const currentSessionId = `${userId}-${Date.now()}`
+    setSessionId(currentSessionId)
   }
 
   const handleSend = async () => {
@@ -168,22 +140,40 @@ export default function AIChatModal({
     setLoading(true)
 
     try {
-      // İlk mesaj kontrolü
-      const isFirstMessage = messages.length === 0
-      const action = isFirstMessage ? 'initial' : isComplete ? 'confirm' : 'message'
+      // İlk mesaj kontrolü - otomatik mesajdan sonra gelen ilk kullanıcı mesajı
+      // Otomatik mesajlar zaten eklenmiş, bu yüzden messages.length > 0 olabilir
+      // Ama sessionId yoksa bu ilk gerçek kullanıcı mesajıdır
+      const isFirstUserMessage = !sessionId
+      const action = isFirstUserMessage ? 'initial' : isComplete ? 'confirm' : 'message'
 
-      const response = await fetch('/api/ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId,
-          message: userMessage,
-          sessionId,
-          action,
-        }),
-      })
+      // Fetch with timeout (70 saniye - API timeout'undan biraz fazla)
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 70000) // 70 saniye timeout
+
+      let response: Response
+      try {
+        response = await fetch('/api/ai', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            message: userMessage,
+            sessionId,
+            action,
+            initialCategory: isFirstUserMessage ? initialCategory : undefined, // İlk mesajda kategori bilgisini gönder
+          }),
+          signal: controller.signal,
+        })
+        clearTimeout(timeoutId)
+      } catch (fetchError: any) {
+        clearTimeout(timeoutId)
+        if (fetchError.name === 'AbortError') {
+          throw new Error('İstek zaman aşımına uğradı. Lütfen tekrar deneyin.')
+        }
+        throw fetchError
+      }
 
       const data = await response.json()
 
@@ -197,7 +187,9 @@ export default function AIChatModal({
       }
 
       if (!response.ok) {
-        throw new Error(data.message || 'Bir hata oluştu')
+        const errorMessage = data.message || data.error || 'Bir hata oluştu. Lütfen tekrar deneyin.'
+        console.error('API error:', { status: response.status, data })
+        throw new Error(errorMessage)
       }
 
       // Session ID'yi kaydet
@@ -227,11 +219,18 @@ export default function AIChatModal({
       // Tamamlandı mı?
       if (data.isComplete) {
         setIsComplete(true)
+        // Eğer thankYouMessage varsa, onu da ekle (3-5 saniye arası rastgele)
+        if (data.thankYouMessage) {
+          const delay = Math.random() * 2000 + 3000 // 3000-5000ms arası (3-5 saniye)
+          setTimeout(() => {
+            setMessages((prev) => [...prev, { role: 'assistant', content: data.thankYouMessage }])
+          }, delay)
+        }
       }
 
       // İlan onayı
       if (action === 'confirm' && data.success && data.listingData) {
-        // İlanı oluştur
+        // İlanı oluştur ve detay sayfasına yönlendir
         await createListing(data.listingData)
       }
     } catch (err: any) {
@@ -245,13 +244,44 @@ export default function AIChatModal({
 
   const createListing = async (listingData: any) => {
     try {
+      // Eğer generate-listing için bilgiler varsa, önce profesyonel ilan metni oluştur
+      let finalDescription = listingData.description || listingData.finalDescription || ''
+      
+      if (listingData.category && listingData.location) {
+        try {
+          const generateResponse = await fetch('/api/generate-listing', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              category: listingData.category || 'genel',
+              location: listingData.location || 'belirtilmemiş',
+              area: listingData.area || 'belirtilmemiş',
+              budget: listingData.budget || 'belirtilmemiş',
+              urgency: listingData.urgency || 'esnek',
+              details: listingData.details || listingData.description || 'belirtilmemiş',
+            }),
+          })
+
+          const generateData = await generateResponse.json()
+          if (generateData.success && generateData.listingText) {
+            finalDescription = generateData.listingText
+          }
+        } catch (generateError) {
+          console.error('Generate listing error:', generateError)
+          // Hata durumunda mevcut description'ı kullan
+        }
+      }
+
       const response = await fetch('/api/listings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          description: listingData.description || listingData.finalDescription || '',
+          description: finalDescription,
+          title: listingData.title || finalDescription.substring(0, 30), // İlk 30 karakter başlık
           raw_description: listingData.rawDescription || '',
           city: listingData.city || '',
           district: listingData.district || '',
@@ -269,20 +299,14 @@ export default function AIChatModal({
         throw new Error(data.error || 'İlan oluşturulamadı')
       }
 
-      // Başarı mesajı göster
-      success('İlan başarıyla oluşturuldu!')
-      setLocalWarning('İlanınız başarıyla oluşturuldu! Yönlendiriliyorsunuz...')
+      // İlan başarıyla oluşturuldu - 5 saniye sonra detay sayfasına yönlendir
+      setLocalWarning('İlanınız oluşturuldu! 5 saniye içinde detay sayfasına yönlendiriliyorsunuz...')
 
-      // İlan detay sayfasına yönlendir
-      if (data.listing?.id) {
-        setTimeout(() => {
-          router.push(`/listings/${data.listing.id}`)
-          onClose()
-        }, 1500)
-      } else {
-        // İlan ID yoksa, başarısız olarak işaretle ve manuel forma yönlendir
-        throw new Error('İlan oluşturuldu ancak detay sayfasına yönlendirilemedi')
-      }
+      // 5 saniye bekle, sonra ilan detay sayfasına yönlendir
+      setTimeout(() => {
+        router.push(`/listings/${data.listing.id}?edit=true&created=true`) // edit=true ile düzenleme modu, created=true ile kutlama
+        onClose()
+      }, 5000) // 5 saniye bekle
     } catch (err: any) {
       console.error('Create listing error:', err)
       showError(err.message || 'İlan oluşturulamadı')
@@ -309,7 +333,7 @@ export default function AIChatModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       {/* Modal Container - Animasyonlu büyüme */}
       <div
-        className="relative w-full max-w-2xl max-h-[85vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300"
+        className="relative w-full max-w-2xl max-h-[85vh] bg-white rounded-2xl shadow-[0_1px_2px_rgba(0,0,0,0.02)] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-300"
         style={{
           animation: 'modalEnter 0.3s ease-out',
         }}

@@ -19,7 +19,7 @@ export default function HomePage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7]">
+    <div className="min-h-screen bg-white">
       {/* Hero Section - Thumbtack Style */}
       <section className="relative mt-8 md:mt-12 mb-16 md:mb-20">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
@@ -55,7 +55,7 @@ export default function HomePage() {
       </section>
 
       {/* Nasıl Çalışır - Thumbtack Style */}
-      <section className="py-16 md:py-20 bg-slate-50">
+      <section className="py-16 md:py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-4" style={{ lineHeight: 1.2, letterSpacing: '-0.01em' }}>
@@ -95,7 +95,7 @@ export default function HomePage() {
                 <Link
                   key={index}
                   href={item.href}
-                  className="rounded-2xl bg-white border border-slate-200 p-6 md:p-8 flex flex-col gap-4 hover:border-brand-300 hover:shadow-sm transition-all cursor-pointer"
+                  className="rounded-2xl bg-white p-6 md:p-8 flex flex-col gap-4 hover:shadow-sm transition-all cursor-pointer"
                 >
                   <div className="flex items-start gap-4">
                     <div className="h-12 w-12 rounded-2xl bg-brand-50 flex items-center justify-center flex-shrink-0">

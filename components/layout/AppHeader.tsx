@@ -132,7 +132,7 @@ export default function AppHeader({
     <header className={`w-full transition-all ${
       isPartnerPage 
         ? 'bg-slate-400/90 backdrop-blur-md shadow-md' 
-        : 'bg-white border-b border-slate-200'
+        : 'bg-white'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Üst menü - Ortalanmış */}
@@ -396,7 +396,7 @@ export default function AppHeader({
         
         {/* CategoryBar - Menüye yapıştırılmış */}
         {!isPartnerPage && (
-          <div className="border-t border-slate-200">
+          <div>
             {/* Kategori barı */}
             <div className="flex items-center gap-2 overflow-x-auto py-2.5 no-scrollbar scroll-smooth">
               {CATEGORIES.map((category) => {

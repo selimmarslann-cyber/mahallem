@@ -26,7 +26,7 @@ export default function Section({
   return (
     <section
       className={cn(
-        'rounded-2xl bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)] border border-slate-200 p-5 md:p-6',
+        'rounded-2xl bg-white shadow-[0_1px_2px_rgba(0,0,0,0.02)] p-5 md:p-6',
         className
       )}
     >

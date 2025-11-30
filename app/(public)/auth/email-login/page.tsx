@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -21,38 +21,146 @@ export default function EmailLoginPage() {
   const [step, setStep] = useState<'email' | 'code' | 'password'>('email')
   const [loading, setLoading] = useState(false)
   const [sendingCode, setSendingCode] = useState(false)
+  const [countdown, setCountdown] = useState(0)
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  const handleSendCode = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // Countdown timer cleanup
+  useEffect(() => {
+    return () => {
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current)
+      }
+    }
+  }, [])
+
+  const handleSendCode = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault()
+    }
     if (!email) {
       error('Lütfen e-posta adresinizi girin')
       return
     }
 
+    // Email format kontrolü
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      error('Lütfen geçerli bir e-posta adresi girin')
+      return
+    }
+
     setSendingCode(true)
+    
+    // Debug: Check if fetch is available
+    if (typeof fetch === 'undefined') {
+      console.error('❌ Fetch is not available!')
+      error('Tarayıcı fetch API desteklemiyor')
+      setSendingCode(false)
+      return
+    }
+    
     try {
+      console.log('📧 Frontend: Starting send code request...')
+      console.log('📧 Frontend: Email:', email)
+      console.log('📧 Frontend: Request URL:', '/api/auth/send-code')
+      
+      const requestBody = JSON.stringify({ email })
+      console.log('📧 Frontend: Request body:', requestBody)
+      
       const res = await fetch('/api/auth/send-code', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        body: requestBody,
+        credentials: 'include',
       })
+      
+      console.log('📧 Frontend: Fetch completed')
+      console.log('📧 Frontend: Response received:', res)
 
-      const data = await res.json()
-
-      if (!res.ok) {
-        error(data.error || 'Kod gönderilemedi')
+      console.log('📧 Frontend: Response status:', res.status)
+      console.log('📧 Frontend: Response ok:', res.ok)
+      
+      // Response body'yi oku
+      const contentType = res.headers.get('content-type')
+      console.log('📧 Frontend: Content-Type:', contentType)
+      
+      let data
+      try {
+        if (contentType?.includes('application/json')) {
+          data = await res.json()
+          console.log('📧 Frontend: Response data:', data)
+        } else {
+          const text = await res.text()
+          console.error('📧 Frontend: Non-JSON response:', text)
+          error('Sunucudan beklenmeyen yanıt alındı. Lütfen tekrar deneyin.')
+          setSendingCode(false)
+          return
+        }
+      } catch (parseError: any) {
+        console.error('📧 Frontend: JSON parse error:', parseError)
+        try {
+          const text = await res.text()
+          console.error('📧 Frontend: Response text:', text)
+        } catch (textError) {
+          console.error('📧 Frontend: Could not read response text')
+        }
+        error('Sunucudan geçersiz yanıt alındı. Lütfen tekrar deneyin.')
+        setSendingCode(false)
         return
       }
 
+      if (!res.ok) {
+        console.error('📧 Frontend: API error:', data)
+        const errorMsg = data?.error || data?.message || `Sunucu hatası (${res.status})`
+        error(errorMsg)
+        setSendingCode(false)
+        return
+      }
+
+      console.log('Code sent successfully, switching to code step')
       success('Doğrulama kodu e-posta adresinize gönderildi')
       setStep('code')
+      setCountdown(300) // 5 dakika (300 saniye)
+      
+      // Countdown timer başlat
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current)
+      }
+      countdownIntervalRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            if (countdownIntervalRef.current) {
+              clearInterval(countdownIntervalRef.current)
+            }
+            return 0
+          }
+          return prev - 1
+        })
+      }, 1000)
       
       // Development mode'da kodu göster
       if (data.mockCode) {
         console.log('Development OTP Code:', data.mockCode)
+        success(`Development Mode: Kod ${data.mockCode}`)
       }
-    } catch (err) {
-      error('Bir hata oluştu. Lütfen tekrar deneyin.')
+    } catch (err: any) {
+      console.error('📧 Frontend: Send code error:', err)
+      console.error('📧 Frontend: Error type:', err?.constructor?.name)
+      console.error('📧 Frontend: Error message:', err?.message)
+      console.error('📧 Frontend: Error stack:', err?.stack)
+      
+      let errorMessage = 'Bir hata oluştu. Lütfen tekrar deneyin.'
+      
+      if (err instanceof TypeError && err.message.includes('fetch')) {
+        errorMessage = 'Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin.'
+      } else if (err.message) {
+        errorMessage = err.message
+      }
+      
+      error(errorMessage)
+      alert(`Hata: ${errorMessage}\n\nKonsolu kontrol edin (F12) daha fazla bilgi için.`)
     } finally {
       setSendingCode(false)
     }
@@ -136,14 +244,14 @@ export default function EmailLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <Card className="border-0 shadow-2xl">
+        <Card className="border-0 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
           <CardHeader className="text-center space-y-2">
             <div className="mx-auto w-16 h-16 bg-[#FF6000] rounded-full flex items-center justify-center mb-4">
               <Mail className="w-8 h-8 text-white" />
@@ -159,7 +267,13 @@ export default function EmailLoginPage() {
           </CardHeader>
           <CardContent>
             {step === 'email' ? (
-              <form onSubmit={handleSendCode} className="space-y-4">
+              <form 
+                onSubmit={(e) => {
+                  console.log('📝 Form submitted')
+                  handleSendCode(e)
+                }} 
+                className="space-y-4"
+              >
                 <div className="space-y-2">
                   <Label htmlFor="email">E-posta Adresi</Label>
                   <Input
@@ -176,11 +290,46 @@ export default function EmailLoginPage() {
                 <Button
                   type="submit"
                   className="w-full bg-[#FF6000] hover:bg-[#FF5500] text-white h-12"
-                  disabled={sendingCode}
+                  disabled={sendingCode || !email}
                 >
-                  {sendingCode ? 'Gönderiliyor...' : 'Kodu Gönder'}
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  {sendingCode ? (
+                    <>
+                      <span className="animate-spin mr-2">⏳</span>
+                      Gönderiliyor...
+                    </>
+                  ) : (
+                    <>
+                      Kodu Gönder
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </>
+                  )}
                 </Button>
+                {sendingCode && (
+                  <p className="text-xs text-center text-slate-500 mt-2">
+                    E-posta gönderiliyor, lütfen bekleyin...
+                  </p>
+                )}
+                {/* Debug: Test API button */}
+                {process.env.NODE_ENV === 'development' && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      console.log('🧪 Testing API...')
+                      try {
+                        const res = await fetch('/api/test/send-code')
+                        const data = await res.json()
+                        console.log('🧪 Test result:', data)
+                        alert(`Test Result:\n${JSON.stringify(data, null, 2)}`)
+                      } catch (err) {
+                        console.error('🧪 Test error:', err)
+                        alert(`Test Error: ${err}`)
+                      }
+                    }}
+                    className="mt-2 text-xs text-blue-600 hover:underline"
+                  >
+                    🧪 Test API Connection
+                  </button>
+                )}
               </form>
             ) : step === 'code' ? (
               <form onSubmit={handleVerifyCode} className="space-y-4">
@@ -196,10 +345,16 @@ export default function EmailLoginPage() {
                     disabled={loading}
                     className="h-12 text-center text-2xl tracking-widest font-mono"
                     maxLength={6}
+                    autoFocus
                   />
                   <p className="text-xs text-slate-500 text-center">
                     {email} adresine gönderilen kodu girin
                   </p>
+                  {countdown > 0 && (
+                    <p className="text-xs text-slate-500 text-center">
+                      Kod süresi: {Math.floor(countdown / 60)}:{(countdown % 60).toString().padStart(2, '0')}
+                    </p>
+                  )}
                 </div>
                 <Button
                   type="submit"
@@ -215,6 +370,10 @@ export default function EmailLoginPage() {
                     onClick={() => {
                       setStep('email')
                       setCode('')
+                      setCountdown(0)
+                      if (countdownIntervalRef.current) {
+                        clearInterval(countdownIntervalRef.current)
+                      }
                     }}
                     className="text-sm text-slate-600 hover:text-[#FF6000]"
                   >
@@ -223,11 +382,23 @@ export default function EmailLoginPage() {
                   <div>
                     <button
                       type="button"
-                      onClick={handleSendCode}
-                      className="text-sm text-[#FF6000] hover:underline"
-                      disabled={sendingCode}
+                      onClick={() => {
+                        if (countdown === 0 || countdown < 60) {
+                          handleSendCode()
+                        }
+                      }}
+                      className={`text-sm ${
+                        countdown > 0 && countdown >= 60
+                          ? 'text-slate-400 cursor-not-allowed'
+                          : 'text-[#FF6000] hover:underline'
+                      }`}
+                      disabled={sendingCode || (countdown > 0 && countdown >= 60)}
                     >
-                      Kodu tekrar gönder
+                      {sendingCode
+                        ? 'Gönderiliyor...'
+                        : countdown > 0 && countdown >= 60
+                        ? `Kodu tekrar gönder (${Math.floor(countdown / 60)}:${(countdown % 60).toString().padStart(2, '0')})`
+                        : 'Kodu tekrar gönder'}
                     </button>
                   </div>
                 </div>

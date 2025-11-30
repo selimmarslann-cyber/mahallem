@@ -27,6 +27,7 @@ CREATE INDEX IF NOT EXISTS idx_otps_used ON otps(used);
 ALTER TABLE otps ENABLE ROW LEVEL SECURITY;
 
 -- OTPs: no public access, only server-side
+DROP POLICY IF EXISTS "No public access to OTPs" ON otps;
 CREATE POLICY "No public access to OTPs" ON otps FOR ALL USING (false);
 
 COMMENT ON TABLE otps IS 'Email doğrulama kodları tablosu';
