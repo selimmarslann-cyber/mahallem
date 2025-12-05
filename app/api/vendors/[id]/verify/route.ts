@@ -29,6 +29,9 @@ const uploadVerificationSchema = z.object({
 /**
  * POST /api/vendors/[id]/verify - Doğrulama belgesi yükle
  */
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } },

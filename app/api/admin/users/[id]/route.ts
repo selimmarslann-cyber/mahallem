@@ -6,6 +6,9 @@ import { getUserId } from "@/lib/auth/session";
  * Admin - Kullanıcı detayı ve referral istatistikleri
  * TODO: Admin yetki kontrolü ekle
  */
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } },

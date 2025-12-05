@@ -14,6 +14,9 @@ const updateBusinessSchema = z.object({
   workingHoursJson: z.any().optional(), // JSON object for working hours
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } },

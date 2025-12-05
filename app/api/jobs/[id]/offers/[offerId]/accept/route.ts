@@ -12,6 +12,9 @@ import { prisma } from "@/lib/db/prisma";
 import { createNotification } from "@/lib/notifications/createNotification";
 import { Decimal } from "@prisma/client/runtime/library";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string; offerId: string } },

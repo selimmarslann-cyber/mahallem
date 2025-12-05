@@ -18,6 +18,9 @@ const setPasswordSchema = z.object({
   password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

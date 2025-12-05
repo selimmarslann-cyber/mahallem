@@ -15,6 +15,9 @@ const getAdminUserIds = (): string[] => {
     .filter((id) => id.length > 0);
 };
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     // Admin kontrolü

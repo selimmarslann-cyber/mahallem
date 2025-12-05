@@ -67,6 +67,9 @@ async function createOrderHandler(request: NextRequest) {
 }
 
 // Export with rate limiting (30 requests per 15 minutes for order creation)
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export const POST = withRateLimit(createOrderHandler, {
   maxRequests: 30,
   windowMs: 15 * 60 * 1000,

@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST() {
   const response = NextResponse.json({ success: true });
 

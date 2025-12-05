@@ -275,6 +275,9 @@ async function aiChatHandler(req: NextRequest) {
 }
 
 // Export with rate limiting (20 requests per 15 minutes for AI chat)
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export const POST = withRateLimit(aiChatHandler, {
   maxRequests: 20,
   windowMs: 15 * 60 * 1000,

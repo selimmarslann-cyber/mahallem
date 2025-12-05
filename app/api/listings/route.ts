@@ -30,6 +30,9 @@ const createListingSchema = z.object({
   price_range: z.string().optional(),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const userId = await getUserId(request);

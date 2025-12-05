@@ -18,6 +18,9 @@ const offerSchema = z.object({
 });
 
 // GET: Job'a gelen teklifleri listele
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } },

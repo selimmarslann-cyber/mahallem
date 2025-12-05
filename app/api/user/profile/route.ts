@@ -19,6 +19,9 @@ const updateProfileSchema = z.object({
   avatarUrl: z.string().url("Geçerli bir URL girin").optional().nullable(),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function PATCH(request: NextRequest) {
   try {
     const userId = await getUserId(request);

@@ -18,6 +18,9 @@ const initPaymentSchema = z.object({
   provider: z.enum(["paytr", "iyzico"]).optional(), // Preferred provider
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const userId = await getUserId(request);

@@ -15,6 +15,9 @@ const pushTokenSchema = z.object({
   platform: z.enum(["ios", "android", "web"]).optional(),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const userId = await getUserId(request);

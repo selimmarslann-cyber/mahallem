@@ -17,6 +17,9 @@ const createInstantJobSchema = z.object({
 
 const NOTIFICATION_RADIUS_KM = 20; // 20 km çevre - anlık işler için
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const userId = await getUserId();

@@ -4,6 +4,9 @@ import { prisma } from "@/lib/db/prisma";
 import { updateProductSchema } from "@/lib/validations/product";
 
 // PATCH: Ürünü güncelle
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string; productId: string } },

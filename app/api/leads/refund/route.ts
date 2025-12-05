@@ -29,6 +29,9 @@ const createRefundRequestSchema = z.object({
 /**
  * POST /api/leads/refund - Lead iade talebi oluştur
  */
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const userId = await getUserId(request);

@@ -16,6 +16,9 @@ const cancelLeadSchema = z.object({
   reason: z.string().min(10, "İptal nedeni en az 10 karakter olmalı"),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } },

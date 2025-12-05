@@ -10,6 +10,9 @@ import { prisma } from "@/lib/db/prisma";
 import { getBestMatchingVendors } from "@/lib/services/smartMatchingService";
 import { haversineDistanceKm } from "@/lib/utils/matching";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } },

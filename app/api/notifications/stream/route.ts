@@ -9,6 +9,9 @@ import { NextRequest } from "next/server";
 import { getUserId } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   const userId = await getUserId(request);
   if (!userId) {

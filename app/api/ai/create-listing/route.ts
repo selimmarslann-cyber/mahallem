@@ -14,6 +14,9 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 /**
  * POST /api/ai/create-listing - İlan oluştur
  */
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

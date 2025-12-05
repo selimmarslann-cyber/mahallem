@@ -21,6 +21,9 @@ const createPayoutRequestSchema = z.object({
   notes: z.string().optional(),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   try {
     const userId = await getUserId(request);

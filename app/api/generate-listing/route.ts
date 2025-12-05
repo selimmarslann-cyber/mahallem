@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { askOpenAI } from "@/lib/ai/openai";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   try {
     const { details } = await req.json();

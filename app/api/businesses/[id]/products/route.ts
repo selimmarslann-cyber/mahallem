@@ -4,6 +4,9 @@ import { prisma } from "@/lib/db/prisma";
 import { createProductSchema } from "@/lib/validations/product";
 
 // GET: İşletmenin ürünlerini listele
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } },

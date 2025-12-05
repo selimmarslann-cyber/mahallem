@@ -14,6 +14,9 @@ const sendCodeSchema = z.object({
   email: z.string().email("Geçerli bir e-posta adresi girin"),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   console.log("📧 Send code API called");
   try {

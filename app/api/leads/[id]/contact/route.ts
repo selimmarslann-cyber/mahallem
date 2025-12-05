@@ -11,6 +11,9 @@ import { getUserId } from "@/lib/auth/session";
 import { requireVendor } from "@/lib/auth/roleCheck";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } },

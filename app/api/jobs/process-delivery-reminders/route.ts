@@ -17,6 +17,9 @@ import { buildDeliverySoonEmail } from "@/lib/mailTemplates";
  *    - sendMail() ile gönderir
  *    - processed = true yapar
  */
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     // API key kontrolü (cron job güvenliği için - opsiyonel)

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCustomerOrders } from "@/lib/services/orderService";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(
   request: NextRequest,
   { params }: { params: { customerId: string } },

@@ -8,6 +8,9 @@ import { getUserId } from "@/lib/auth/session";
 import { prisma } from "@/lib/db/prisma";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   try {
     const userId = await getUserId(request);

@@ -15,6 +15,9 @@ const approveVerificationSchema = z.object({
   notes: z.string().optional(),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } },

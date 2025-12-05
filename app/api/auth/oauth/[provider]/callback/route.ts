@@ -135,6 +135,9 @@ function parseUserInfo(
 }
 
 // OAuth devre dışı bırakıldı - Sadece manuel giriş kullanılıyor
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(
   request: NextRequest,
   { params }: { params: { provider: string } },

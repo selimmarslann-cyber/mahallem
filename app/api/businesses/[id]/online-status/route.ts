@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { updateOnlineStatus } from "@/lib/services/businessService";
 import { updateOnlineStatusSchema } from "@/lib/validations/business";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } },

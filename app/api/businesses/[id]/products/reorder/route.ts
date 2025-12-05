@@ -14,6 +14,9 @@ const reorderSchema = z.object({
   productIds: z.array(z.string()).min(1),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } },

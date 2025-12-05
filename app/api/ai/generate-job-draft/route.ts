@@ -76,6 +76,9 @@ async function generateJobDraftHandler(request: NextRequest) {
 }
 
 // Export with rate limiting (10 requests per 15 minutes)
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export const POST = withRateLimit(generateJobDraftHandler, {
   maxRequests: 10,
   windowMs: 15 * 60 * 1000,

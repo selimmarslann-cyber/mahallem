@@ -9,6 +9,9 @@ import { runAutoOfflineChecks } from "@/lib/services/autoOfflineService";
  *
  * Production'da bu endpoint'i korumalı hale getirmek gerekir (API key veya admin auth)
  */
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     // TODO: Production'da auth kontrolü ekle

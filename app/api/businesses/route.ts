@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createBusiness } from "@/lib/services/businessService";
 import { createBusinessSchema } from "@/lib/validations/business";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

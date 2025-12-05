@@ -4,6 +4,9 @@ import { createReviewSchema } from "@/lib/validations/review";
 import { getUserId } from "@/lib/auth/session";
 import { requireCustomer } from "@/lib/auth/roleCheck";
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const userId = await getUserId(request);

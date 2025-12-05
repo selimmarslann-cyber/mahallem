@@ -10,6 +10,9 @@ const verifyOtpSchema = z.object({
   code: z.string().length(6, "Kod 6 haneli olmalı"),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

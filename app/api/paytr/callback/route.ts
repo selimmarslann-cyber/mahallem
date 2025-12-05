@@ -17,6 +17,9 @@ import { PaymentStatus } from "@prisma/client";
  * - payment_amount: Ödeme tutarı (kuruş bazlı, örn: 12345 = 123.45 TL)
  * - hash: PayTR tarafından gönderilen hash (doğrulama için)
  */
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     // PayTR'dan gelen form data'yı al

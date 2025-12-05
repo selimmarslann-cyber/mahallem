@@ -151,6 +151,9 @@ async function loginHandler(request: NextRequest) {
 }
 
 // Export with rate limiting (10 requests per 15 minutes for login)
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export const POST = withRateLimit(loginHandler, {
   maxRequests: 10,
   windowMs: 15 * 60 * 1000,

@@ -9,6 +9,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getOAuthAuthUrl, type OAuthProvider } from "@/lib/auth/oauth";
 
 // OAuth devre dışı bırakıldı - Sadece manuel giriş kullanılıyor
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function GET(
   request: NextRequest,
   { params }: { params: { provider: string } },

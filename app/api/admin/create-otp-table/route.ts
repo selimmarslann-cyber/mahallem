@@ -45,6 +45,9 @@ CREATE POLICY "No public access to OTPs" ON otps FOR ALL USING (false);
 COMMENT ON TABLE otps IS 'Email doğrulama kodları tablosu';
 `;
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   const databaseUrl = process.env.DATABASE_URL;
 

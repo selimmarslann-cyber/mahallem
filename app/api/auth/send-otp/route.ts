@@ -6,6 +6,9 @@ const sendOtpSchema = z.object({
   phone: z.string().min(10, "Geçerli bir telefon numarası girin"),
 });
 
+
+// Cookie kullandığı için dynamic olmalı
+export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
