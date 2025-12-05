@@ -5,11 +5,22 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {  Calendar,
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Calendar,
   TrendingUp,
   XCircle,
   AlertTriangle,
   CheckCircle2,
+  MessageSquare,
+  Phone,
 } from "lucide-react";
 
 export default function BusinessStatusPage() {

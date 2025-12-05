@@ -10,6 +10,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  Save,
+  Store,
+  Edit,
+  Trash2,
+  X,
+  Upload,
+} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
