@@ -4,15 +4,10 @@
  * Tüm email şablonları burada toplanır
  */
 
-// Tüm config .env'den alınır, default değer yok
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
+// Tüm config .env'den alınır, build sırasında default değer kullan
+// Runtime'da gerçek environment variable değeri kullanılacak
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://hizmetgo.app";
 const APP_NAME = process.env.APP_NAME || "HizmetGo";
-
-if (!APP_URL) {
-  throw new Error(
-    "NEXT_PUBLIC_APP_URL environment variable is required. Please set it in .env file.",
-  );
-}
 
 /**
  * Base email template wrapper
