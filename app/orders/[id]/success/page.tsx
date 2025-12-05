@@ -4,10 +4,10 @@ import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/compon
+import { Card, CardContent } from "@/components/ui/card";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-ents/ui/card";
 
 export default function OrderSuccessPage() {
   const router = useRouter();

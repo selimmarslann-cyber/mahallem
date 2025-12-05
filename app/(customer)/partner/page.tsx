@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/l
+import Link from "next/link";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-ink";
 import {
   Card,
   CardContent,

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "re
+import { useEffect, useState } from "react";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-act";
 import {
   Loader2,
   TrendingUp,

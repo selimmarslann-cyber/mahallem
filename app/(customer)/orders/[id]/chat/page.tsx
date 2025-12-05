@@ -10,10 +10,10 @@ import { useToast } from "@/lib/hooks/useToast";
 import { useRealtimeChat } from "@/lib/hooks/useRealtimeChat";
 import FileUploadButton from "@/components/chat/FileUploadButton";
 import FilePreview from "@/components/chat/FilePreview";
-import FileCountBadge from "@/components/chat/Fi
+import FileCountBadge from "@/components/chat/FileCountBadge";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-leCountBadge";
 
 interface Message {
   id: string;

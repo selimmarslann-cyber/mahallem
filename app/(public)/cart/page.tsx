@@ -9,10 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
-import { useCartStore } from "@/lib/store/
+import { useCartStore } from "@/lib/store/useCartStore";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-useCartStore";
 
 export default function CartPage() {
   const router = useRouter();

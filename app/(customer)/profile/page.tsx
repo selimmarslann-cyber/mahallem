@@ -4,10 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/ba
+import { Badge } from "@/components/ui/badge";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-dge";
 import {
   User,
   MapPin,

@@ -8,10 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/al
+import { Alert, AlertDescription } from "@/components/ui/alert";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-ert";
 import {
   Clock,
   MapPin,

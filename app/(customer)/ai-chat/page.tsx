@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AIChatBox from "@/components/AIChat/AIChatBox";
-import { Loader2 } from "
+import { Loader2 } from "lucide-react";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-lucide-react";
 
 export default function AIChatPage() {
   const router = useRouter();

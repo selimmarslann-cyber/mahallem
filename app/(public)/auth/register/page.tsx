@@ -6,10 +6,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/la
+import { Label } from "@/components/ui/label";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-bel";
 import {
   Card,
   CardContent,

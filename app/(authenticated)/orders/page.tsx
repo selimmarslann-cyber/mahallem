@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/componen
+import { Button } from "@/components/ui/button";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-ts/ui/button";
 
 export default function OrdersPage() {
   const router = useRouter();

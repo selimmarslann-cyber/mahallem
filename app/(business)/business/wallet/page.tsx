@@ -6,10 +6,10 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Coins, TrendingUp, Copy, MessageCircle } from "lucide-react";
-import { useToast } from "@/lib/ho
+import { useToast } from "@/lib/hooks/useToast";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-oks/useToast";
 
 export default function BusinessWalletPage() {
   const router = useRouter();

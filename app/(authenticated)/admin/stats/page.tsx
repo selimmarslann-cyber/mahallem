@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/c
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-ard";
 import {
   BarChart3,
   TrendingUp,

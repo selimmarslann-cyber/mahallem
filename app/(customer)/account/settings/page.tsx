@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-mot
+import { motion } from "framer-motion";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-ion";
 import {
   Card,
   CardContent,

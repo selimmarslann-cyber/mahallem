@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, Users, MapPin, DollarSign } from "
+import { TrendingUp, Users, MapPin, DollarSign } from "lucide-react";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-lucide-react";
 
 interface TopEarner {
   user_id: string;

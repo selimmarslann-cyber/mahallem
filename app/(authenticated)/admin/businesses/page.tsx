@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/but
+import { Button } from "@/components/ui/button";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-ton";
 import {
   Search,
   Store,

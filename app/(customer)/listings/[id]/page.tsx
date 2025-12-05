@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigat
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-ion";
 import {
   Loader2,
   MapPin,

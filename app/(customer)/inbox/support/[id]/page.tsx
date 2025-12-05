@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams, useRouter } from "next/navigat
+import { useParams, useRouter } from "next/navigation";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-ion";
 import {
   ArrowLeft,
   Send,

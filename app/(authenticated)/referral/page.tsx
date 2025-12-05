@@ -3,10 +3,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/ba
+import { Badge } from "@/components/ui/badge";
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-dge";
 import {
   Copy,
   Share2,
