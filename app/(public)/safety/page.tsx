@@ -1,21 +1,20 @@
-import { import { Card } from "@/components/ui/card";
-import { AlertTriangle, CheckCircle2 } from "lucide-react";
-  Shield,
-  Lock,
-  CheckCircle2,
-  Eye,
-  CreditCard,
-  UserCheck,
-  MessageSquare,
+import { Card } from "@/components/ui/card";
+import {
   AlertTriangle,
-  FileText,
-  Server,
-  Key,
-  Globe,
   ArrowRight,
-  Phone,
-  Mail,
+  CheckCircle2,
+  CreditCard,
+  Eye,
+  FileText,
+  Globe,
   Headphones,
+  Key,
+  Lock,
+  Mail,
+  Phone,
+  Server,
+  Shield,
+  UserCheck,
 } from "lucide-react";
 
 export const metadata: Metadata = {
