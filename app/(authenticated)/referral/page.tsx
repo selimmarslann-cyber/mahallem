@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Coins, Copy, LinkIcon, MessageCircle, Share2, TrendingUp, Twitter, Users } from "lucide-react";
 import { getReferralOverview, getReferralRewards } from "@/lib/api/referral";
-
+import type {
   ReferralOverview,
   ReferralReward,
   ReferralRewardsResponse,

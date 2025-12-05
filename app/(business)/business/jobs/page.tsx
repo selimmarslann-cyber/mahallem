@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -11,7 +13,6 @@ import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
 import { useNotificationStream } from "@/lib/hooks/useNotificationStream";
 import { Dialog } from "@/components/ui/dialog";
-"use client";
 
 
 
