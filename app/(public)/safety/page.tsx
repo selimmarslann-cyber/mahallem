@@ -9,7 +9,7 @@ import {
   UserCheck,
   MessageSquare,
   AlertTriangle,
-  FileShield,
+  FileText,
   Server,
   Key,
   Globe,
@@ -57,7 +57,7 @@ export default function SafetyPage() {
       title: "KVKK Uyumluluğu",
       description:
         "Kişisel verileriniz 6698 sayılı KVKK kapsamında korunur. Verileriniz yalnızca hizmet sunumu için kullanılır ve üçüncü taraflarla paylaşılmaz.",
-      icon: FileShield,
+      icon: FileText,
     },
     {
       title: "Güvenli İletişim",
@@ -108,7 +108,7 @@ export default function SafetyPage() {
       title: "Sözleşme ve Fiyatları Kaydedin",
       description:
         "Esnafla yaptığınız anlaşmaları ve fiyat tekliflerini platform üzerinden kaydedin. Bu, olası anlaşmazlıklarda size yardımcı olur.",
-      icon: FileShield,
+      icon: FileText,
     },
   ];
 
@@ -252,7 +252,7 @@ export default function SafetyPage() {
         <section className="mb-16">
           <div className="bg-white border border-slate-200 rounded-2xl p-8 md:p-10">
             <div className="flex items-center gap-3 mb-6">
-              <FileShield className="w-8 h-8 text-brand-600" />
+              <FileText className="w-8 h-8 text-brand-600" />
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
                 Kişisel Verilerinizin Korunması
               </h2>
@@ -435,7 +435,7 @@ export default function SafetyPage() {
               href="/legal/privacy"
               className="block bg-white border border-slate-200 rounded-xl p-6 hover:shadow-md transition-all group"
             >
-              <FileShield className="w-8 h-8 text-brand-600 mb-3" />
+              <FileText className="w-8 h-8 text-brand-600 mb-3" />
               <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-600 transition-colors">
                 Gizlilik Politikası
               </h3>

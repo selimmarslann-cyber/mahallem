@@ -182,7 +182,6 @@ export default function EarnPage() {
     instantJobs,
     searchQuery,
     maxDistance,
-    onlyNoSkills,
     statusFilter,
     userLocation,
   ]);
@@ -343,11 +342,7 @@ export default function EarnPage() {
           <EmptyState
             icon={<Zap className="w-12 h-12" />}
             title="Anlık iş bulunamadı"
-            description={
-              onlyNoSkills
-                ? "Seçtiğiniz filtrelere uygun anlık iş bulunamadı. Filtreleri değiştirmeyi deneyin."
-                : "Şu anda çevrende anlık iş yok. Biraz sonra tekrar kontrol edebilirsin."
-            }
+            description="Şu anda çevrende anlık iş yok. Biraz sonra tekrar kontrol edebilirsin."
             ctaText="Yeni İş Oluştur"
             ctaLink="/instant-jobs/new"
           />
