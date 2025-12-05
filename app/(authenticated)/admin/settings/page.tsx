@@ -1,7 +1,10 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings, Shield, Bell, Database } from "lucide-react";
+import { Settings, Shield, Bell, Database } from "
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+lucide-react";
 
 export default function AdminSettingsPage() {
   return (

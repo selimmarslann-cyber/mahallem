@@ -5,7 +5,10 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/ba
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+dge";
 import {
   Search,
   MessageSquare,

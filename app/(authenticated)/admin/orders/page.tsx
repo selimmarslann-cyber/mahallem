@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, ShoppingCart, Calendar, DollarSign } from "lucide-react";
+import { Search, ShoppingCart, Calendar, DollarSign } from "
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+lucide-react";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);

@@ -4,7 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Coins, Users, TrendingUp } from "lucide-react";
+import { Coins, Users, TrendingUp } from "
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+lucide-react";
 
 export default function AdminUserDetailPage() {
   const params = useParams();

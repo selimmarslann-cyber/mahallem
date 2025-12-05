@@ -6,7 +6,10 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { MapPin, X, Plus, Trash2, Save, ArrowRight, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/but
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+ton";
 import {
   Card,
   CardContent,

@@ -6,7 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, MessageCircle, FileText, ArrowRight } from "lucide-react";
-import { useToast } from "@/lib/hooks/useToast";
+import { useToast } from "@/lib/ho
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+oks/useToast";
 
 export default function OrderDetailPage() {
   const params = useParams();

@@ -4,7 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/al
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+ert";
 import {
   Calendar,
   TrendingUp,

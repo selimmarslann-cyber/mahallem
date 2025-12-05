@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigat
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+ion";
 import {
   MessageSquare,
   HelpCircle,

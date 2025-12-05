@@ -6,7 +6,10 @@ import { X, ArrowLeft, Send, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
-import { useToast } from "@/lib/hooks/useToast";
+import { useToast } from "@/lib/ho
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+oks/useToast";
 
 // Sorun kategorileri
 const problemCategories = [

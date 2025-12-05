@@ -4,7 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/but
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+ton";
 import {
   Wallet,
   Briefcase,

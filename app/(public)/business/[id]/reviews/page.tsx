@@ -5,7 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star } from "lucide-react";
+import { Star } from "
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+lucide-react";
 
 export default function BusinessReviewsPage() {
   const params = useParams();

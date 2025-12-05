@@ -2,7 +2,10 @@
 
 import { Card } from "@/components/ui/card";
 import SupportChatWidget from "@/components/support/SupportChatWidget";
-import { useState } from "react";
+import { useState }
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+ from "react";
 
 export default function ChatPage() {
   const [isMinimized, setIsMinimized] = useState(false);

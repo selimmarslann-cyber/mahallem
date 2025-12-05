@@ -2,7 +2,10 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion } from "framer-mot
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+ion";
 import {
   Card,
   CardContent,

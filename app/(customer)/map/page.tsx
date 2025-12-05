@@ -3,7 +3,10 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-mot
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+ion";
 import {
   Star,
   MapPin,

@@ -14,7 +14,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Save, Calendar } from "lucide-react";
+import 
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+{ Clock, Save, Calendar } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 
 type DayOfWeek = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";

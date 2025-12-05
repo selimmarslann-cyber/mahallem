@@ -11,7 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/lib/hooks/useToast";
-import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
+import { useConfirmDialog } from "@/lib/hooks/useConfirmDia
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+log";
 import {
   Select,
   SelectContent,

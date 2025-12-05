@@ -6,7 +6,10 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/ba
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+dge";
 import {
   Search,
   MapPin,
