@@ -1,8 +1,5 @@
-"use client";
-
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,9 +8,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Briefcase, Calendar, CheckCircle2, Clock, MapPin, Phone, User, Zap } from "lucide-react";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { getMatchingVendors, haversineDistanceKm } from "@/lib/utils/matching";
-import type { Job } from "@/lib/types/mahallem";
-import EmptyState from "@/components/ui/empty-state";
-import ListSkeleton from "@/components/ui/ListSkeleton";
+import { useToast } from "@/lib/hooks/useToast";
+import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Briefcase, Calendar, CheckCircle2, Clock, MapPin, Phone, User, Zap } from "lucide-react";
+import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
+import { getMatchingVendors, haversineDistanceKm } from "@/lib/utils/matching";
 import { useToast } from "@/lib/hooks/useToast";
 import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 

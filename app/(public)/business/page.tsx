@@ -1,7 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { ArrowRight, CheckCircle2, TrendingUp } from "lucide-react";
+import { CheckCircle2, TrendingUp, import { ArrowRight } from "lucide-react";
   TrendingUp,
   Users,
   DollarSign,

@@ -1,7 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { ArrowRight, CheckCircle2, Users, Zap } from "lucide-react";
+import { CheckCircle2, Users, Zap, import { ArrowRight } from "lucide-react";
   Code,
   Key,
   BookOpen,

@@ -1,10 +1,10 @@
-"use client";
-
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+"use client";
+
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

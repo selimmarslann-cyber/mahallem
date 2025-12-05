@@ -1,7 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { Calendar, Phone } from "lucide-react";
+import { Phone, import { Calendar } from "lucide-react";
   Newspaper,
   FileText,
   Mail,

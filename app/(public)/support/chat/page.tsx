@@ -1,7 +1,8 @@
+import { Card } from "@/components/ui/card";
+import { useState } from "react";
 "use client";
 
 import { Card } from "@/components/ui/card";
-import SupportChatWidget from "@/components/support/SupportChatWidget";
 import { useState } from "react";
 
 // Static generation'ı engelle

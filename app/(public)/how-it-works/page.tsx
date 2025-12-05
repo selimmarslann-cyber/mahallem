@@ -1,7 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { ArrowRight, CheckCircle2, Clock, MapPin, MessageSquare } from "lucide-react";
+import { CheckCircle2, Clock, MapPin, MessageSquare, import { ArrowRight } from "lucide-react";
   Search,
   MessageSquare,
   CheckCircle2,

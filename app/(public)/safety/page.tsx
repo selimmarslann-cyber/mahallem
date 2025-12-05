@@ -1,7 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { Card } from "@/components/ui/card";
+import { import { Card } from "@/components/ui/card";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
   Shield,
   Lock,

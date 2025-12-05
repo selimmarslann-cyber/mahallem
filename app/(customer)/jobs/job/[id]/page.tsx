@@ -1,3 +1,15 @@
+import { useCallback, useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Building2, CheckCircle2, Clock, MapPin, Star, TrendingDown } from "lucide-react";
+import { useToast } from "@/lib/hooks/useToast";
+import { motion } from "framer-motion";
+import { Dialog } from "@/components/ui/dialog";
 /**
  * Job Detail Page - Müşteri iş detay sayfası
  *
@@ -9,25 +21,6 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import {
-  MapPin,
-  Clock,
-  Building2,
-  TrendingDown,
-  Star,
-} from "lucide-react";
-import { useToast } from "@/lib/hooks/useToast";
-import { motion } from "framer-motion";
-import { Dialog } from "@/components/ui/dialog";
-import { Building2, CheckCircle2, Clock, MapPin } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

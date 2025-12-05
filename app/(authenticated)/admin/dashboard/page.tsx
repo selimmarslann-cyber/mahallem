@@ -1,14 +1,8 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {  Users,
-  Store,
-  ShoppingCart,
-  MessageSquare,
-  TrendingUp,
-  DollarSign,
-} from "lucide-react";
+import { DollarSign, MessageSquare, ShoppingCart, Store, TrendingUp, Users } from "lucide-react";
+"use client";
+
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<any>(null);

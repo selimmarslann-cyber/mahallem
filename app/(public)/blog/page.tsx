@@ -1,7 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { ArrowRight, Calendar, Clock, User } from "lucide-react";
+import { Calendar, Clock, User, import { ArrowRight } from "lucide-react";
   BookOpen,
   Calendar,
   Clock,

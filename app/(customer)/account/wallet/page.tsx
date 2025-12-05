@@ -1,29 +1,25 @@
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Briefcase, CheckCircle2, Clock, TrendingUp, Users, Wallet, XCircle } from "lucide-react";
+import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
+import { useToast } from "@/lib/hooks/useToast";
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  CheckCircle2,
-  Clock,
-  XCircle,
-  Wallet,
-  Briefcase,
-} from "lucide-react";
+import { Briefcase, CheckCircle2, Clock, TrendingUp, Users, Wallet, XCircle } from "lucide-react";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { useToast } from "@/lib/hooks/useToast";
-import EarningsChart from "@/components/wallet/EarningsChart";
-import { Briefcase, CheckCircle2, Clock, TrendingUp, Users, Wallet, XCircle } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

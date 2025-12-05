@@ -1,3 +1,12 @@
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { CardContent, CardHeader, CardTitle, Gift, import { Card } from "@/components/ui/card";
+import { ArrowRight, CheckCircle2, Copy, Gift, MapPin, Share2, TrendingUp, Users } from "lucide-react";
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -7,9 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
-import {  Gift,
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle, Gift, import { Card } from "@/components/ui/card";
 import { ArrowRight, CheckCircle2, Copy, Gift, MapPin, Share2, TrendingUp, Users } from "lucide-react";
   Copy,
   Share2,

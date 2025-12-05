@@ -1,19 +1,27 @@
-"use client";
-
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import dynamicImport from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import MapFilters from "@/components/map/MapFilters";
-import BusinessCard from "@/components/home/BusinessCard";
 import { useCartStore } from "@/lib/store/useCartStore";
 import { haversineDistanceKm } from "@/lib/utils/matching";
-import EmptyState from "@/components/ui/empty-state";
+import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MapPin, Plus, Store, X, Zap } from "lucide-react";
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCartStore } from "@/lib/store/useCartStore";
+import { haversineDistanceKm } from "@/lib/utils/matching";
 import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MapPin, Plus, Store, X, Zap } from "lucide-react";
 

@@ -1,7 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { ArrowRight, Briefcase, Calendar, CheckCircle2, MapPin } from "lucide-react";
+import { Briefcase, Calendar, CheckCircle2, MapPin, import { ArrowRight } from "lucide-react";
   Star,
   Quote,
   TrendingUp,

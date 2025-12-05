@@ -1,13 +1,17 @@
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Coins, Copy, TrendingUp, import { Coins } from "lucide-react";
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {  Coins,
-import { Coins, Copy, TrendingUp } from "lucide-react";
+import { Coins, Copy, TrendingUp, import { Coins } from "lucide-react";
   TrendingUp,
   Copy,
   Share2,

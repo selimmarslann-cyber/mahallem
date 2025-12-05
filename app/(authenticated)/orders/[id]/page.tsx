@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, FileText, MessageCircle, Star } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
+"use client";
+
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

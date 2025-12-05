@@ -1,3 +1,9 @@
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Bell, CheckCircle2, MapPin, User } from "lucide-react";
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -5,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 import { Bell, CheckCircle2, MapPin, User } from "lucide-react";
 
 // Static generation'ı engelle

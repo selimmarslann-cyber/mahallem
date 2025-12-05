@@ -1,7 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { CheckCircle2, Phone, XCircle } from "lucide-react";
+import { Phone, XCircle, import { CheckCircle2 } from "lucide-react";
   Shield,
   XCircle,
   CheckCircle2,

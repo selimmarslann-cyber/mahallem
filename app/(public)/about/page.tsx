@@ -1,7 +1,4 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { ArrowRight, Calendar, CheckCircle2, MapPin, Phone, Users } from "lucide-react";
+import { Calendar, CheckCircle2, MapPin, Phone, Users, import { ArrowRight } from "lucide-react";
   Target,
   Users,
   Heart,

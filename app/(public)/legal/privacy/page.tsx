@@ -1,7 +1,5 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import {
-import { CheckCircle2, MapPin, Phone, User } from "lucide-react";
+import { MapPin, Phone, User, import { CheckCircle2 } from "lucide-react";
   Lock,
   Shield,
   Eye,

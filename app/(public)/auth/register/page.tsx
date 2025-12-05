@@ -1,8 +1,5 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +7,19 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/lib/hooks/useToast";
-import CategoryAutocomplete from "@/components/forms/CategoryAutocomplete";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, CheckCircle2, MessageSquare, Phone, Zap } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/lib/hooks/useToast";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, CheckCircle2, MessageSquare, Phone, Zap } from "lucide-react";
 

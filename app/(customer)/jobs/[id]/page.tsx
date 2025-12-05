@@ -1,3 +1,11 @@
+import { useCallback, useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/lib/hooks/useToast";
+import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
+import { Clock, MapPin, TrendingUp, User, Zap } from "lucide-react";
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -6,9 +14,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/useToast";
-import EmptyState from "@/components/ui/empty-state";
-import ListSkeleton from "@/components/ui/ListSkeleton";
-import BadgePremium from "@/components/ui/BadgePremium";
 import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
 import { Clock, MapPin, TrendingUp, User, Zap } from "lucide-react";
 

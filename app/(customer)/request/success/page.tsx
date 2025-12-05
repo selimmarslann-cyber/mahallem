@@ -1,13 +1,12 @@
-"use client";
-
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {  CheckCircle2,
-import { ArrowRight, Briefcase, CheckCircle2 } from "lucide-react";
+import { Briefcase, CheckCircle2, import { ArrowRight } from "lucide-react";
+"use client";
+
   Sparkles,
   ArrowRight,
   Home,

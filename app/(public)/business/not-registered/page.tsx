@@ -1,13 +1,17 @@
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Briefcase, CheckCircle2, MapPin, Store, import { ArrowRight } from "lucide-react";
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {  Briefcase,
-import { ArrowRight, CheckCircle2, MapPin, Store } from "lucide-react";
+import { Briefcase, CheckCircle2, MapPin, Store, import { ArrowRight } from "lucide-react";
   MapPin,
   Menu,
   ArrowRight,

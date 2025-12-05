@@ -1,3 +1,13 @@
+import { useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/lib/hooks/useToast";
+import { getKeywordSuggestions } from "@/lib/utils/keywords";
+import { MapPin } from "lucide-react";
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -7,13 +17,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { useToast } from "@/lib/hooks/useToast";
-import BusinessCard from "@/components/home/BusinessCard";
-import EmptyState from "@/components/ui/empty-state";
 import { getKeywordSuggestions } from "@/lib/utils/keywords";
-import RequestFlow from "@/components/request/RequestFlow";
-import AIChatModal from "@/components/AIChat/AIChatModal";
 import { MapPin } from "lucide-react";
 
 // Static generation'ı engelle

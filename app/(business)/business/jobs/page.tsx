@@ -1,28 +1,31 @@
-"use client";
-
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Bell,
-  Building2,
-  AlertTriangle,
-  Clock,
-  User,
-  MapPin,
-} from "lucide-react";
+import { AlertTriangle, Bell, Building2, CheckCircle2, Clock, MapPin, MessageSquare, Phone, User, XCircle } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
 import { useNotificationStream } from "@/lib/hooks/useNotificationStream";
-import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 import { Dialog } from "@/components/ui/dialog";
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, Bell, Building2, CheckCircle2, Clock, MapPin, MessageSquare, Phone, User, XCircle } from "lucide-react";
+import { useToast } from "@/lib/hooks/useToast";
+import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
+import { useNotificationStream } from "@/lib/hooks/useNotificationStream";
+import { Dialog } from "@/components/ui/dialog";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
