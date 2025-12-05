@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +14,6 @@ import { AlertTriangle, CheckCircle2, Edit, Plus, Save, Store, Trash2, Upload, X
 import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-"use client";
 
 
 // Static generation'ı engelle
