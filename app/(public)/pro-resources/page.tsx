@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import {
+import { ArrowRight } from "lucide-react";
   BookOpen,
   TrendingUp,
   DollarSign,

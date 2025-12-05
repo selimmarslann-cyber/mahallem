@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import {  Gift,
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, CheckCircle2, Copy, Gift, MapPin, Share2, TrendingUp, Users } from "lucide-react";
   Copy,
   Share2,
   TrendingUp,

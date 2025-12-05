@@ -7,17 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { User, Camera } from "lucide-react";
+import { Bell, Camera, LinkIcon, MapPin, Save, Store, User, X, Zap } from "lucide-react";
 import { getSectors, getSkillsBySector } from "@/lib/data/skills";
 import type { SkillKeyword } from "@/lib/types/mahallem";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { useToast } from "@/lib/hooks/useToast";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

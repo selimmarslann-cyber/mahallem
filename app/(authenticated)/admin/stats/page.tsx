@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {  BarChart3,
+import { TrendingUp, Users } from "lucide-react";
   TrendingUp,
   Users,
   DollarSign,

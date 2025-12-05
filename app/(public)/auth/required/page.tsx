@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+import { ArrowRight, CheckCircle2, User } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

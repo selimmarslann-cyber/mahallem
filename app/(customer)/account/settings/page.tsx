@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Bell, Shield, MapPin, Save, Phone, Lock } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
+import { CardContent, CardTitle } from "@/components/ui/card";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

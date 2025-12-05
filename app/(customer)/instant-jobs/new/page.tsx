@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/lib/hooks/useToast";
 import Link from "next/link";
+import { Calendar, MapPin } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

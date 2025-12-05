@@ -16,6 +16,7 @@ import { useToast } from "@/lib/hooks/useToast";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+import { Bell, CheckCircle2 } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

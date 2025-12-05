@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+import { Bell, CheckCircle2, MapPin, User } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

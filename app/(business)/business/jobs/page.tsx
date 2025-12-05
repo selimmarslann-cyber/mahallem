@@ -21,6 +21,8 @@ import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
 import { useNotificationStream } from "@/lib/hooks/useNotificationStream";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+import { Dialog } from "@/components/ui/dialog";
+import { AlertTriangle, Bell, Building2, CheckCircle2, Clock, MapPin, MessageSquare, Phone, User, XCircle } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

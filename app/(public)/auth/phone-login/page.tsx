@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Phone, ArrowLeft, CheckCircle2, ArrowRight } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

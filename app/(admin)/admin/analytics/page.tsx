@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle2, TrendingUp, Users } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

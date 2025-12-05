@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {  Search,
+import { User } from "lucide-react";
   MessageSquare,
   User,
   Calendar,

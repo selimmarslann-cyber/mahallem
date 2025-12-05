@@ -15,6 +15,9 @@ import BadgePremium from "@/components/ui/BadgePremium";
 import { useToast } from "@/lib/hooks/useToast";
 import Link from "next/link";
 import { haversineDistanceKm } from "@/lib/utils/matching";
+import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Briefcase, Clock, MapPin, Plus, TrendingUp, Zap } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

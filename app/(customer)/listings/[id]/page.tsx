@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/lib/hooks/useToast";
+import { Calendar, CheckCircle2, MapPin } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

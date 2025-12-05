@@ -23,6 +23,7 @@ import {
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { useToast } from "@/lib/hooks/useToast";
 import EarningsChart from "@/components/wallet/EarningsChart";
+import { Briefcase, CheckCircle2, Clock, TrendingUp, Users, Wallet, XCircle } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

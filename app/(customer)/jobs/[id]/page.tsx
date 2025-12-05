@@ -10,6 +10,7 @@ import EmptyState from "@/components/ui/empty-state";
 import ListSkeleton from "@/components/ui/ListSkeleton";
 import BadgePremium from "@/components/ui/BadgePremium";
 import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
+import { Clock, MapPin, TrendingUp, User, Zap } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

@@ -30,6 +30,7 @@ import type { AnalyticsDashboardData } from "@/lib/analytics/types";
 import RevenueChart from "@/components/analytics/RevenueChart";
 import OrderStatusChart from "@/components/analytics/OrderStatusChart";
 import RatingDistributionChart from "@/components/analytics/RatingDistributionChart";
+import { TrendingUp } from "lucide-react";
 
 // Static generation'ı engelle - client component olduğu için
 export const dynamic = "force-dynamic";

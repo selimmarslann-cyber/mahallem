@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import {
+import { ArrowRight, Briefcase, Calendar, CheckCircle2, MapPin } from "lucide-react";
   Star,
   Quote,
   TrendingUp,

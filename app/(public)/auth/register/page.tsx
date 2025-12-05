@@ -11,6 +11,8 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/lib/hooks/useToast";
 import CategoryAutocomplete from "@/components/forms/CategoryAutocomplete";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, CheckCircle2, MessageSquare, Phone, Zap } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

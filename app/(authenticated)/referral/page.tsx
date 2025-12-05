@@ -31,6 +31,7 @@ import type {
   ReferralRewardsResponse,
 } from "@/lib/types/domain";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+import { Coins, Copy, LinkIcon, Share2, TrendingUp, Twitter, Users } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

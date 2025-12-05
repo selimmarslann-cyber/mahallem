@@ -14,6 +14,7 @@ import EmptyState from "@/components/ui/empty-state";
 import { getKeywordSuggestions } from "@/lib/utils/keywords";
 import RequestFlow from "@/components/request/RequestFlow";
 import AIChatModal from "@/components/AIChat/AIChatModal";
+import { MapPin } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

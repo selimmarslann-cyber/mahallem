@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
 import {  findProductByName,
+import { Select, SelectItem, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
   getProductSuggestions,
   type ProductData,
 } from "@/lib/data/product-database";

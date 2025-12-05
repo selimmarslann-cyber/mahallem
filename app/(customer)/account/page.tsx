@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+import { ArrowRight, Briefcase, Gift, Plus, TrendingUp, Wallet } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

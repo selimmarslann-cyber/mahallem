@@ -11,6 +11,7 @@ import { login, getMe } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { useToast } from "@/lib/hooks/useToast";
 import { Mail, Phone, ArrowRight, UserPlus, Key } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

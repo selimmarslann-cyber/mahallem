@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
+import { Dialog } from "@/components/ui/dialog";
+import { Building2, CheckCircle2, Clock, MapPin } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

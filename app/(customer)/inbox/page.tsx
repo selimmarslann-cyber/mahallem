@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/lib/hooks/useToast";
+import { Briefcase, CheckCircle2, Clock, MessageSquare } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

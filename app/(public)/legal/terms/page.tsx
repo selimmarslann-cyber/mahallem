@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import {
+import { CheckCircle2 } from "lucide-react";
   FileText,
   AlertCircle,
   CheckCircle2,
