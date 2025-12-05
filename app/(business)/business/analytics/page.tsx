@@ -1,9 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle, BarChart3, Clock, DollarSign, Package, RefreshCw, ShoppingBag, Star, Target, TrendingDown, TrendingUp, Users } from "lucide-react";
-import { useToast } from "@/lib/hooks/useToast";
 /**
  * Business Analytics Dashboard (Comprehensive)
  *
@@ -12,13 +6,29 @@ import { useToast } from "@/lib/hooks/useToast";
 
 "use client";
 
-
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle, BarChart3, Clock, DollarSign, Package, RefreshCw, ShoppingBag, Star, Target, TrendingDown, TrendingUp, Users } from "lucide-react";
+import {
+  AlertCircle,
+  BarChart3,
+  Clock,
+  DollarSign,
+  Package,
+  RefreshCw,
+  ShoppingBag,
+  Star,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
+import type { AnalyticsDashboardData } from "@/lib/analytics/types";
+import RevenueChart from "@/components/analytics/RevenueChart";
+import OrderStatusChart from "@/components/analytics/OrderStatusChart";
+import RatingDistributionChart from "@/components/analytics/RatingDistributionChart";
 
 // Static generation'ı engelle - client component olduğu için
 export const dynamic = "force-dynamic";
