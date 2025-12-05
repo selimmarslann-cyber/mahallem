@@ -3,11 +3,9 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { useToast } from "@/lib/hooks/useToast";
 import EarningsChart from "@/components/wallet/EarningsChart";

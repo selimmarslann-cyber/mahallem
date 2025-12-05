@@ -12,9 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
-import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 // Static generation'ı engelle

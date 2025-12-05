@@ -8,7 +8,6 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
 import { useToast } from "@/lib/hooks/useToast";
 
 // Static generation'ı engelle

@@ -8,8 +8,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 
-// Static generation'ı engelle - client component olduğu için
-export const dynamic = "force-dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -35,6 +33,8 @@ import RatingDistributionChart from "@/components/analytics/RatingDistributionCh
 
 export default function BusinessAnalyticsPage() {
   const { error } = useToast();
+// Static generation'ı engelle - client component olduğu için
+export const dynamic = "force-dynamic";
   const [data, setData] = useState<AnalyticsDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<"7d" | "30d" | "90d">("30d");

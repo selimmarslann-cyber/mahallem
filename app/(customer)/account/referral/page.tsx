@@ -3,17 +3,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import {
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-  Gift,
+import {  Gift,
   Copy,
   Share2,
   TrendingUp,

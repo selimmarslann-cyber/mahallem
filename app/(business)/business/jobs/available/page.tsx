@@ -10,8 +10,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 
-// Static generation'ı engelle - client component olduğu için
-export const dynamic = "force-dynamic";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,6 +41,8 @@ import { motion } from "framer-motion";
 
 interface Job {
   id: string;
+// Static generation'ı engelle - client component olduğu için
+export const dynamic = "force-dynamic";
   customerId: string;
   mainCategoryId: string;
   subServiceId?: string;

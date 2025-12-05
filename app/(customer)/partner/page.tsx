@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
 import { motion } from "framer-motion";
 
 // Static generation'ı engelle

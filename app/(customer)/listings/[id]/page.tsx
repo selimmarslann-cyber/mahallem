@@ -2,7 +2,6 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import {
 import ListingImageUpload from "@/components/listings/ListingImageUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

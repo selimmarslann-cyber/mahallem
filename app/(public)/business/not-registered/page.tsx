@@ -6,11 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-  Briefcase,
+import {  Briefcase,
   MapPin,
   Menu,
   ArrowRight,

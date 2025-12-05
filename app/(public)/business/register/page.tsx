@@ -7,17 +7,11 @@ import { motion } from "framer-motion";
 import { MapPin, X, Plus, Trash2, Save, ArrowRight, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
-import {
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-  findProductByName,
+import {  findProductByName,
   getProductSuggestions,
   type ProductData,
 } from "@/lib/data/product-database";

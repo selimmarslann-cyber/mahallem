@@ -6,11 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-  Coins,
+import {  Coins,
   TrendingUp,
   Copy,
   Share2,

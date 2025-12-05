@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
 import { Phone, ArrowLeft, CheckCircle2, ArrowRight } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 

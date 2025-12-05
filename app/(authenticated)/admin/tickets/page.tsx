@@ -6,11 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-  Search,
+import {  Search,
   MessageSquare,
   User,
   Calendar,

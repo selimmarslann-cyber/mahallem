@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-  Users,
+import {  Users,
   Store,
   ShoppingCart,
   MessageSquare,

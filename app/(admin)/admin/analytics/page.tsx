@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Static generation'ı engelle
