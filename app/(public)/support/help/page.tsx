@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X, ArrowLeft, Send, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useToast } from "@/lib/hooks/useToast";
 
 // Static generation'ı engelle

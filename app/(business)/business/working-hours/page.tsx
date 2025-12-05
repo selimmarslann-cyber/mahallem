@@ -6,7 +6,7 @@
 
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Save, Clock, Plus } from "lucide-react";
+import { Calendar, Clock, Plus, Save } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 
 // Static generation'ı engelle

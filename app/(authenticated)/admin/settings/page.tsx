@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings, Shield, Bell, Database } from "lucide-react";
+import { Bell, Database, Settings, Shield } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

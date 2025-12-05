@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Power, Package, ShoppingBag, Star, AlertTriangle } from "lucide-react";
+import { AlertTriangle, Package, Power, ShoppingBag, Star } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

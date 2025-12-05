@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, ShoppingCart, Calendar, DollarSign } from "lucide-react";
+import { Calendar, DollarSign, Search, ShoppingCart } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

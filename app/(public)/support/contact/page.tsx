@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mail, Phone, MapPin, MessageSquare } from "lucide-react";
+import { Mail, MapPin, MessageSquare, Phone } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { useToast } from "@/lib/hooks/useToast";

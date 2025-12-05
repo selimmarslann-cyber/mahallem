@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import ListingImageUpload from "@/components/listings/ListingImageUpload";
 import { Button } from "@/components/ui/button";

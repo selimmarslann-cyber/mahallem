@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/lib/hooks/useToast";
-import { Shield, Lock, User } from "lucide-react";
+import { Lock, Shield, User } from "lucide-react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Static generation'ı engelle

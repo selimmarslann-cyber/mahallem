@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CheckCircle2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";

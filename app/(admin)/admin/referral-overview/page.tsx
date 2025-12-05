@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, Users, MapPin, DollarSign } from "lucide-react";
+import { DollarSign, MapPin, TrendingUp, Users } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

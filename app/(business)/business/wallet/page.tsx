@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Coins, TrendingUp, Copy, MessageCircle, Wallet } from "lucide-react";
+import { Coins, Copy, MessageCircle, TrendingUp, Wallet } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 
 // Static generation'ı engelle

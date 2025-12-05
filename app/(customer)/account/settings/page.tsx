@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Bell, Shield, MapPin, Save, Phone, Lock } from "lucide-react";
+import { Bell, Lock, MapPin, Phone, Save, Shield } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { CardContent, CardTitle } from "@/components/ui/card";
 
