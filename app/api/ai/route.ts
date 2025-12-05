@@ -187,13 +187,27 @@ async function aiChatHandler(req: NextRequest) {
             content: m.content,
           }));
 
-    // OpenAI çağrısı - System prompt HER ZAMAN en başta
+    // İlk mesaj kontrolü: System prompt sadece ilk mesajda gönderilir
+    // Bu sayede token tasarrufu yapılır ve sohbet bağlamı korunur
+    const isFirstMessage = 
+      conversationHistory.length === 0 && 
+      sessionMessages.length === 1 && // Sadece şu anki user mesajı var
+      action === "initial";
+
+    // OpenAI çağrısı - System prompt SADECE ilk mesajda
     const openai = getOpenAIClient();
-    const messages = [
-      { role: "system" as const, content: HIZMETGO_SYSTEM_PROMPT },
-      ...formattedMessages,
-      { role: "user" as const, content: userMessage },
-    ];
+    const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [];
+    
+    // System prompt sadece ilk mesajda ekle
+    if (isFirstMessage) {
+      messages.push({ role: "system", content: HIZMETGO_SYSTEM_PROMPT });
+    }
+    
+    // Conversation history'yi ekle
+    messages.push(...formattedMessages);
+    
+    // Son olarak kullanıcı mesajını ekle
+    messages.push({ role: "user", content: userMessage });
 
     // Timeout kontrolü (10 saniye)
     const timeoutPromise = new Promise((_, reject) => {
