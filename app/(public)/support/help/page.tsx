@@ -11,9 +11,6 @@ import { useToast } from "@/lib/hooks/useToast";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-
 // Sorun kategorileri
 const problemCategories = [
   {

@@ -10,9 +10,6 @@ import { Card, CardContent } from "@/components/ui/card";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-
 export default function WelcomePage() {
   const router = useRouter();
 
