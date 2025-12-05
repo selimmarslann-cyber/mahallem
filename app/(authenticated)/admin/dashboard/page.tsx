@@ -1,7 +1,8 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, MessageSquare, ShoppingCart, Store, TrendingUp, Users } from "lucide-react";
-"use client";
 
 
 export default function AdminDashboardPage() {

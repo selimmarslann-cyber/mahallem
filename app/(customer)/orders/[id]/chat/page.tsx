@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,13 +8,6 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Send, User, Wifi, WifiOff } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { useRealtimeChat } from "@/lib/hooks/useRealtimeChat";
-"use client";
-
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ArrowLeft, Send, User, Wifi, WifiOff } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { useRealtimeChat } from "@/lib/hooks/useRealtimeChat";
