@@ -11,6 +11,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
