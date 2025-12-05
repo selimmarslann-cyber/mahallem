@@ -1,10 +1,10 @@
+"use client";
+
 /**
  * Business Analytics Dashboard (Comprehensive)
  *
  * Interactive charts, trend analysis, customer insights, performance metrics
  */
-
-"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +25,10 @@ import {
   Users,
 } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
+import RevenueChart from "@/components/analytics/RevenueChart";
+import OrderStatusChart from "@/components/analytics/OrderStatusChart";
+import RatingDistributionChart from "@/components/analytics/RatingDistributionChart";
+import type { AnalyticsDashboardData } from "@/lib/analytics/types";
 
 // Static generation'ı engelle - client component olduğu için
 export const dynamic = "force-dynamic";

@@ -17,10 +17,6 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Plus, Save } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 
-"use client";
-
-
-
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -7,7 +9,6 @@ import { Switch } from "@/components/ui/switch";
 import { Bell, Lock, MapPin, Phone, Save, Shield } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { CardContent, CardTitle } from "@/components/ui/card";
-"use client";
 
 
 // Static generation'ı engelle

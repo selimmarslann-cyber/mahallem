@@ -8,13 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, CheckCircle2, Copy, Gift, MapPin, Share2, TrendingUp, Users } from "lucide-react";
-  CheckCircle2,
-  ArrowRight,
-  Award,
-  Target,
-  MapPin,
-} from "lucide-react";
+import { ArrowRight, Award, CheckCircle2, Copy, Gift, MapPin, Share2, Target, TrendingUp, Users } from "lucide-react";
 
 interface ReferralOverview {
   currentReferralCode: string;
