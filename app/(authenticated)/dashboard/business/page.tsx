@@ -11,9 +11,6 @@ import { Power, Package, ShoppingBag, Star, AlertTriangle } from "lucide-react";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-
 export default function BusinessDashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);

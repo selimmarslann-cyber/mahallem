@@ -11,9 +11,6 @@ import { Search, User, Mail, Calendar, Shield } from "lucide-react";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-
 export default function AdminUsersPage() {
   const router = useRouter();
   const [users, setUsers] = useState<any[]>([]);

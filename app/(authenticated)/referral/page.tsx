@@ -9,6 +9,10 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { getReferralOverview, getReferralRewards } from "@/lib/api/referral";
 import type {
+  ReferralOverview,
+  ReferralReward,
+  ReferralRewardsResponse,
+} from "@/lib/types/domain";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 // Static generation'ı engelle
