@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -8,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/lib/hooks/useToast";
 import { getKeywordSuggestions } from "@/lib/utils/keywords";
 import { MapPin } from "lucide-react";
-"use client";
 
 
 // Static generation'ı engelle

@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -8,7 +10,6 @@ import { Label } from "@/components/ui/label";
 import { Briefcase, CheckCircle2, Clock, TrendingUp, Users, Wallet, XCircle } from "lucide-react";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { useToast } from "@/lib/hooks/useToast";
-"use client";
 
 
 // Static generation'ı engelle

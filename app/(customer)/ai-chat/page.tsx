@@ -1,7 +1,8 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-"use client";
 
 
 // Static generation'ı engelle

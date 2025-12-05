@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +13,15 @@ import { AlertTriangle, Bell, Building2, CheckCircle2, Clock, MapPin, MessageSqu
 import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
 import { useNotificationStream } from "@/lib/hooks/useNotificationStream";
-import { Dialog } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 
 

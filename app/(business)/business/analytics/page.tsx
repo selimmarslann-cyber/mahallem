@@ -1,14 +1,30 @@
 /**
-import { useCallback, useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle, BarChart3, Clock, DollarSign, Package, RefreshCw, ShoppingBag, Star, Target, TrendingDown, TrendingUp, Users } from "lucide-react";
-import { useToast } from "@/lib/hooks/useToast";
  * Business Analytics Dashboard (Comprehensive)
  *
  * Interactive charts, trend analysis, customer insights, performance metrics
  */
+
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertCircle,
+  BarChart3,
+  Clock,
+  DollarSign,
+  Package,
+  RefreshCw,
+  ShoppingBag,
+  Star,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from "lucide-react";
+import { useToast } from "@/lib/hooks/useToast";
 
 "use client";
 
