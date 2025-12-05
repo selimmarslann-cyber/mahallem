@@ -26,9 +26,6 @@ import {
 } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 
-"use client";
-
-
 // Static generation'ı engelle - client component olduğu için
 export const dynamic = "force-dynamic";
 
