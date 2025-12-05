@@ -4,6 +4,7 @@ import { DollarSign, MapPin, TrendingUp, Users } from "lucide-react";
 "use client";
 
 
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 

@@ -11,17 +11,6 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, CheckCircle2, MessageSquare, Phone, Zap } from "lucide-react";
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/lib/hooks/useToast";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, CheckCircle2, MessageSquare, Phone, Zap } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

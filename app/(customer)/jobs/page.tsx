@@ -12,18 +12,6 @@ import { useToast } from "@/lib/hooks/useToast";
 import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Calendar, CheckCircle2, Clock, MapPin, Phone, User, Zap } from "lucide-react";
-import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
-import { getMatchingVendors, haversineDistanceKm } from "@/lib/utils/matching";
-import { useToast } from "@/lib/hooks/useToast";
-import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

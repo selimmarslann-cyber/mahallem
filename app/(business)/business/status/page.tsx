@@ -8,6 +8,7 @@ import { AlertTriangle, Calendar, CheckCircle2, MessageSquare, Phone, TrendingUp
 "use client";
 
 
+
 export default function BusinessStatusPage() {
   const router = useRouter();
   const [business, setBusiness] = useState<any>(null);

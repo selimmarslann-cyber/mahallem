@@ -1,9 +1,9 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Coins, TrendingUp, Users } from "lucide-react";
+"use client";
+
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

@@ -3,20 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, import { User } from "lucide-react";
+import { AlertCircle, Calendar, MessageSquare, Search, User } from "lucide-react";
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Search, import { User } from "lucide-react";
-  MessageSquare,
-  User,
-  Calendar,
-  AlertCircle,
-} from "lucide-react";
 
 export default function AdminTicketsPage() {
   const [tickets, setTickets] = useState<any[]>([]);

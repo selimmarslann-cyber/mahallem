@@ -4,6 +4,7 @@ import { CheckCircle2, TrendingUp, Users } from "lucide-react";
 "use client";
 
 
+
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 

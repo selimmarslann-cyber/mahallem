@@ -1,3 +1,4 @@
+/**
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Clock, MapPin, MessageSquare, Phone, User } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
-/**
  * Order Detail Page - Esnaf sipariş detay sayfası
  *
  * Bu sayfada esnaf:
@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
  */
 
 "use client";
+
 
 
 // Static generation'ı engelle

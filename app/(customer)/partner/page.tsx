@@ -7,13 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowRight, Building2, CheckCircle2, Gift, Share2, TrendingUp, Users, Zap } from "lucide-react";
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Building2, CheckCircle2, Gift, Share2, TrendingUp, Users, Zap } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

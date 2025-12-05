@@ -9,15 +9,6 @@ import { useToast } from "@/lib/hooks/useToast";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 "use client";
 
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft, ArrowRight, CheckCircle2, Phone } from "lucide-react";
-import { useToast } from "@/lib/hooks/useToast";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

@@ -6,12 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, CheckCircle2, User } from "lucide-react";
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, CheckCircle2, User } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

@@ -4,10 +4,6 @@ import { HelpCircle, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { HelpCircle, MessageSquare } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

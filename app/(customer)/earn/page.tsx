@@ -1,32 +1,19 @@
+import { useCallback, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/lib/hooks/useToast";
+import { haversineDistanceKm } from "@/lib/utils/matching";
+import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Briefcase, Clock, MapPin, Plus, TrendingUp, Zap } from "lucide-react";
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/lib/hooks/useToast";
-import { haversineDistanceKm } from "@/lib/utils/matching";
-import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Briefcase, Clock, MapPin, Plus, TrendingUp, Zap } from "lucide-react";
 
-import { useCallback, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/lib/hooks/useToast";
-import { haversineDistanceKm } from "@/lib/utils/matching";
-import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Briefcase, Clock, MapPin, Plus, TrendingUp, Zap } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

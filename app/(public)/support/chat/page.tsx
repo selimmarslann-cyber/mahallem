@@ -2,8 +2,6 @@ import { Card } from "@/components/ui/card";
 import { useState } from "react";
 "use client";
 
-import { Card } from "@/components/ui/card";
-import { useState } from "react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

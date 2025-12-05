@@ -1,3 +1,4 @@
+/**
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +11,6 @@ import { Building2, CheckCircle2, Clock, MapPin, Star, TrendingDown } from "luci
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
 import { Dialog } from "@/components/ui/dialog";
-/**
  * Job Detail Page - Müşteri iş detay sayfası
  *
  * Bu sayfada müşteri:

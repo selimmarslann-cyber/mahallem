@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,11 +7,8 @@ import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { useCartStore } from "@/lib/store/useCartStore";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { X } from "lucide-react";
-import { useToast } from "@/lib/hooks/useToast";
-import { useCartStore } from "@/lib/store/useCartStore";
+"use client";
+
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";

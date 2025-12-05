@@ -1,18 +1,10 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Search,
-  Store,
-  MapPin,
-  Phone,
-  Mail,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle2, Mail, MapPin, Phone, Search, Store, XCircle } from "lucide-react";
+"use client";
+
 
 export default function AdminBusinessesPage() {
   const [businesses, setBusinesses] = useState<any[]>([]);
