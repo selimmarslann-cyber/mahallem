@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Coins, Copy, LinkIcon, MessageCircle, Share2, TrendingUp, Twitter, Users } from "lucide-react";
 import { getReferralOverview, getReferralRewards } from "@/lib/api/referral";
-"use client";
 
   ReferralOverview,
   ReferralReward,

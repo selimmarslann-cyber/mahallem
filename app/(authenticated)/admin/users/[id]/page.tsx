@@ -1,9 +1,10 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Coins, TrendingUp, Users } from "lucide-react";
-"use client";
 
 
 

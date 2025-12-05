@@ -1,6 +1,7 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bell, Database, Settings, Shield } from "lucide-react";
-"use client";
 
 
 
