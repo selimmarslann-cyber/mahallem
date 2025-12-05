@@ -13,11 +13,17 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { B
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
+  MapPin,
+  Clock,
+  Building2,
+  TrendingDown,
+  Star,
+} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
 

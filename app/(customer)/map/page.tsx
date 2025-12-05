@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ import EmptyState from "@/components/ui/empty-state";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
-const LeafletMap = dynamic(
+const LeafletMap = dynamicImport(
   () => import("@/components/map/LeafletMapBusinesses"),
   { ssr: false },
 );
