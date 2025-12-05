@@ -4,13 +4,10 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Users, Coins } from "lucide-react";
-import Link fro
+import Link from "next/link";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-m "next/link";
 
 export default function AdminReferralsPage() {
   const [stats, setStats] = useState<any>(null);

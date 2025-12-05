@@ -7,9 +7,6 @@ import { TrendingUp, Users, MapPin, DollarSign } from "lucide-react";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-
 interface TopEarner {
   user_id: string;
   name: string;
