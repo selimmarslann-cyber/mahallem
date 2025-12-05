@@ -39,10 +39,11 @@ import {
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
 
-interface Job {
-  id: string;
 // Static generation'ı engelle - client component olduğu için
 export const dynamic = "force-dynamic";
+
+interface Job {
+  id: string;
   customerId: string;
   mainCategoryId: string;
   subServiceId?: string;
