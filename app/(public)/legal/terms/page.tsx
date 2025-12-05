@@ -1,10 +1,10 @@
 import { Metadata } from "next";
-import { import { CheckCircle2 } from "lucide-react";
-  FileText,
+import {
   AlertCircle,
-  CheckCircle2,
-  Shield,
   ArrowRight,
+  CheckCircle2,
+  FileText,
+  Shield,
 } from "lucide-react";
 
 export const metadata: Metadata = {

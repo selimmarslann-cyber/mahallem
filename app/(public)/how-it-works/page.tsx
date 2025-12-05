@@ -1,17 +1,16 @@
-import { CheckCircle2, Clock, MapPin, MessageSquare, import { ArrowRight } from "lucide-react";
-  Search,
-  MessageSquare,
+import {
+  ArrowRight,
   CheckCircle2,
-  Star,
-  Shield,
   Clock,
-  MapPin,
   CreditCard,
   FileText,
-  Users,
+  MapPin,
+  MessageSquare,
   Phone,
-  Mail,
-  ArrowRight,
+  Search,
+  Shield,
+  Star,
+  Users,
 } from "lucide-react";
 
 export const metadata: Metadata = {

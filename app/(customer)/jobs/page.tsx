@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -10,7 +12,6 @@ import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { getMatchingVendors, haversineDistanceKm } from "@/lib/utils/matching";
 import { useToast } from "@/lib/hooks/useToast";
 import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-"use client";
 
 
 // Static generation'ı engelle

@@ -1,6 +1,7 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
-"use client";
 
 
 // Static generation'ı engelle

@@ -1,18 +1,18 @@
 import { Metadata } from "next";
-import { MapPin, Phone, User, import { CheckCircle2 } from "lucide-react";
-  Lock,
-  Shield,
-  Eye,
-  Database,
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  CreditCard,
-  FileText,
-  CheckCircle2,
+import {
   AlertCircle,
   ArrowRight,
+  CheckCircle2,
+  CreditCard,
+  Database,
+  Eye,
+  FileText,
+  Lock,
+  Mail,
+  MapPin,
+  Phone,
+  Shield,
+  User,
 } from "lucide-react";
 
 export const metadata: Metadata = {

@@ -1,16 +1,16 @@
-import { Calendar, CheckCircle2, MapPin, Phone, Users, import { ArrowRight } from "lucide-react";
-  Target,
-  Users,
-  Heart,
-  Award,
-  TrendingUp,
-  Shield,
-  CheckCircle2,
+import {
   ArrowRight,
+  Award,
   Calendar,
-  MapPin,
+  CheckCircle2,
+  Heart,
   Mail,
+  MapPin,
   Phone,
+  Shield,
+  Target,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 
 export const metadata: Metadata = {

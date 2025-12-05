@@ -1,13 +1,13 @@
-import { Phone, import { Calendar } from "lucide-react";
-  Newspaper,
-  FileText,
-  Mail,
-  Phone,
-  Calendar,
+import {
   ArrowRight,
+  Calendar,
   Download,
-  Users,
+  FileText,
   Globe,
+  Mail,
+  Newspaper,
+  Phone,
+  Users,
 } from "lucide-react";
 
 export const metadata: Metadata = {

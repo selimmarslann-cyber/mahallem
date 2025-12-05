@@ -1,18 +1,18 @@
-import { CheckCircle2, Users, Zap, import { ArrowRight } from "lucide-react";
-  Code,
-  Key,
-  BookOpen,
-  Zap,
-  Shield,
-  Globe,
-  ArrowRight,
-  CheckCircle2,
-  FileText,
-  Terminal,
-  Lock,
+import {
   AlertCircle,
+  ArrowRight,
+  BookOpen,
+  CheckCircle2,
+  Code,
+  FileText,
+  Globe,
+  Key,
+  Lock,
   Mail,
+  Shield,
+  Terminal,
   Users,
+  Zap,
 } from "lucide-react";
 
 export const metadata: Metadata = {

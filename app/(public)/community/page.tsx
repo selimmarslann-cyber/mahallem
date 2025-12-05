@@ -1,18 +1,18 @@
-import { CheckCircle2, Clock, MessageSquare, Users, import { ArrowRight } from "lucide-react";
-  Users,
-  MessageSquare,
+import {
+  ArrowRight,
+  Award,
   BookOpen,
   Calendar,
-  Award,
-  TrendingUp,
-  Lightbulb,
-  HelpCircle,
-  ArrowRight,
-  Heart,
-  Star,
   CheckCircle2,
   Clock,
+  Heart,
+  HelpCircle,
+  Lightbulb,
+  MessageSquare,
+  Star,
   Tag,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 
 export const metadata: Metadata = {

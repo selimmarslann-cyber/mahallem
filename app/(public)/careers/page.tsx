@@ -1,17 +1,17 @@
-import { Briefcase, Calendar, MapPin, import { ArrowRight } from "lucide-react";
-  Briefcase,
-  Users,
-  Heart,
-  Award,
-  TrendingUp,
-  Globe,
+import {
   ArrowRight,
-  CheckCircle2,
-  Zap,
-  Target,
+  Award,
+  Briefcase,
   Calendar,
-  MapPin,
+  CheckCircle2,
+  Globe,
+  Heart,
   Mail,
+  MapPin,
+  Target,
+  TrendingUp,
+  Users,
+  Zap,
 } from "lucide-react";
 
 export const metadata: Metadata = {

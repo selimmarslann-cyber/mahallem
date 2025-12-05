@@ -1,10 +1,10 @@
+"use client";
+
 /**
  * Working Hours Management Page
  *
  * Esnaf çalışma saatlerini yönetir
  */
-
-"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";

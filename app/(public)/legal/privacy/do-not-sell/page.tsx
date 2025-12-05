@@ -1,13 +1,13 @@
-import { Phone, XCircle, import { CheckCircle2 } from "lucide-react";
-  Shield,
-  XCircle,
-  CheckCircle2,
+import {
   AlertCircle,
+  ArrowRight,
+  CheckCircle2,
+  FileText,
+  Lock,
   Mail,
   Phone,
-  ArrowRight,
-  Lock,
-  FileText,
+  Shield,
+  XCircle,
 } from "lucide-react";
 
 export const metadata: Metadata = {

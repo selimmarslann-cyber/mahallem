@@ -1,4 +1,11 @@
 /**
+ * Notification Center Page
+ *
+ * Comprehensive notification center with filtering, real-time updates
+ */
+
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,12 +15,6 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/lib/hooks/useToast";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bell, CheckCircle2 } from "lucide-react";
- * Notification Center Page
- *
- * Comprehensive notification center with filtering, real-time updates
- */
-
-"use client";
 
 
 // Static generation'ı engelle
