@@ -8,6 +8,9 @@ import { Loader2 } from "lucide-react";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+
 export default function AIChatPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string | null>(null);

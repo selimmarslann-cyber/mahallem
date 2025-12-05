@@ -5,19 +5,12 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+import Link from "next/link";
+import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-import {
-  Wallet,
-  Briefcase,
-  TrendingUp,
-  Gift,
-  ArrowRight,
-  Plus,
-} from "lucide-react";
-import Link from "next/link";
-import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 export default function AccountDashboardPage() {
   const router = useRouter();

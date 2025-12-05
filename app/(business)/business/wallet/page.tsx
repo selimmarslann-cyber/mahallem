@@ -11,6 +11,9 @@ import { useToast } from "@/lib/hooks/useToast";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+
 export default function BusinessWalletPage() {
   const router = useRouter();
   const { success } = useToast();

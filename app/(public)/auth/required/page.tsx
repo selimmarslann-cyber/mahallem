@@ -6,19 +6,11 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-import {
-  Lock,
-  User,
-  Briefcase,
-  Wallet,
-  ArrowRight,
-  CheckCircle2,
-  Sparkles,
-} from "lucide-react";
-import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 export default function AuthRequiredPage() {
   const router = useRouter();

@@ -10,31 +10,16 @@ import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Butt
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-on } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  Bell,
-  CheckCircle2,
-  Circle,
-  ArrowLeft,
-  CheckCheck,
-  Filter,
-  RefreshCw,
-  ShoppingBag,
-  Briefcase,
-  Star,
-  DollarSign,
-  Gift,
-  AlertCircle,
-  X,
-} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/lib/hooks/useToast";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 interface Notification {
   id: string;

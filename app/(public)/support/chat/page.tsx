@@ -3,6 +3,9 @@
 import { Card } from "@/components/ui/card";
 import SupportChatWidget from "@/components/support/SupportChatWidget";
 import { useState }
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
  from "react";

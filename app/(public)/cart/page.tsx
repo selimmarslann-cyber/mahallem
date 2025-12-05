@@ -14,6 +14,9 @@ import { useCartStore } from "@/lib/store/useCartStore";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+
 export default function CartPage() {
   const router = useRouter();
   const { error } = useToast();

@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-import {
   Calendar,
   TrendingUp,
   XCircle,

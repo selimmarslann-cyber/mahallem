@@ -7,20 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Search,
-  MapPin,
-  Star,
-  Phone,
-  MessageCircle,
-  FileText,
-  Loader2,
-  ChevronRight,
-  Sparkles,
-} from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/lib/hooks/useToast";
 import BusinessCard from "@/components/home/BusinessCard";
@@ -28,6 +15,9 @@ import EmptyState from "@/components/ui/empty-state";
 import { getKeywordSuggestions } from "@/lib/utils/keywords";
 import RequestFlow from "@/components/request/RequestFlow";
 import AIChatModal from "@/components/AIChat/AIChatModal";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 interface Business {
   id: string;

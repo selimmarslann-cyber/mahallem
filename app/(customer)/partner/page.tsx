@@ -3,37 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  CheckCircle2,
-  Users,
-  Share2,
-  TrendingUp,
-  Award,
-  Shield,
-  Gift,
-  Target,
-  MapPin,
-  Building2,
-  Globe,
-  ArrowRight,
-  Percent,
-  Zap,
-  Crown,
-  Star,
-} from "lucide-react";
 import { motion } from "framer-motion";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function PartnerPage() {
   const router = useRouter();

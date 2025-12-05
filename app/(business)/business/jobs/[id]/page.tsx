@@ -11,26 +11,15 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-i
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-mport { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  MapPin,
-  Clock,
-  User,
-  Phone,
-  MessageSquare,
-  CheckCircle2,
-  XCircle,
-  Package,
-  DollarSign,
-} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function BusinessOrderDetailPage() {
   const params = useParams();

@@ -2,24 +2,15 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  ArrowLeft,
-  Send,
-  Loader2,
-  User,
-  Bot,
-  Shield,
-  CheckCircle2,
-  Clock,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/lib/hooks/useToast";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 interface Message {
   id: string;

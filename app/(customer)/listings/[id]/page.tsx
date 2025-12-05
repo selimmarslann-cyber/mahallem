@@ -2,25 +2,15 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Loader2,
-  MapPin,
-  Calendar,
-  DollarSign,
-  AlertCircle,
-  CheckCircle2,
-  Upload,
-  Home,
-  Sparkles,
-} from "lucide-react";
 import ListingImageUpload from "@/components/listings/ListingImageUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/lib/hooks/useToast";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 interface Listing {
   id: string;

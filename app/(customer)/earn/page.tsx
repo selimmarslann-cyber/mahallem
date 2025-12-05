@@ -3,26 +3,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Section from "@/components/layout/Section";
@@ -30,19 +15,12 @@ import EmptyState from "@/components/ui/empty-state";
 import ListSkeleton from "@/components/ui/ListSkeleton";
 import BadgePremium from "@/components/ui/BadgePremium";
 import {
-  Zap,
-  MapPin,
-  Clock,
-  DollarSign,
-  Filter,
-  Plus,
-  Search,
-  Briefcase,
-  TrendingUp,
-} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import Link from "next/link";
 import { haversineDistanceKm } from "@/lib/utils/matching";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 interface InstantJob {
   id: string;

@@ -2,22 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Bell, Shield, MapPin, Save, Phone, Lock } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function AccountSettingsPage() {
   const { success: showSuccessToast, error: showErrorToast } = useToast();

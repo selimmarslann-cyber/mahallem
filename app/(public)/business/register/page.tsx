@@ -7,28 +7,16 @@ import { motion } from "framer-motion";
 import { MapPin, X, Plus, Trash2, Save, ArrowRight, Info } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
 import {
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
   findProductByName,
   getProductSuggestions,
   type ProductData,

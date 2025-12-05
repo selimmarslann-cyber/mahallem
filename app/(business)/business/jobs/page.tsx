@@ -9,34 +9,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Clock,
-  MapPin,
-  User,
-  ChevronRight,
-  AlertTriangle,
-  Phone,
-  MessageSquare,
-  CheckCircle2,
-  XCircle,
-  Bell,
-  Building2,
-} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
 import { useNotificationStream } from "@/lib/hooks/useNotificationStream";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function BusinessJobsPage() {
   const router = useRouter();

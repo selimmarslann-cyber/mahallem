@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Users, Coins } from "lucide-react";
 import Link fro
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 m "next/link";

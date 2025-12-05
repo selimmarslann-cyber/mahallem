@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-import {
   CheckCircle2,
   Sparkles,
   ArrowRight,

@@ -9,24 +9,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-impor
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-t { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Download,
-  Smartphone,
-  CheckCircle2,
-  Star,
-  MapPin,
-  Briefcase,
-  Wallet,
-  Users,
-  ArrowRight,
-} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 const FEATURES = [
   {

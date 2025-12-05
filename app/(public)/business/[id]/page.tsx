@@ -8,21 +8,11 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+import { useToast } from "@/lib/hooks/useToast";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-import {
-  Star,
-  ShoppingCart,
-  MapPin,
-  Phone,
-  MessageSquare,
-  ArrowLeft,
-  Store,
-  Clock,
-  CheckCircle2,
-} from "lucide-react";
-import { useToast } from "@/lib/hooks/useToast";
 
 interface Product {
   id: string;

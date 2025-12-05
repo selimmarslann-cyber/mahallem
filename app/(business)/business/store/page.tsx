@@ -12,32 +12,13 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
+import {
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Store,
-  Star,
-  MapPin,
-  Plus,
-  Edit,
-  Trash2,
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  Upload,
-  Save,
-  X,
-} from "lucide-react";
-import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 type BusinessType = "restaurant" | "market" | "grocery" | "tailor" | "other";
 

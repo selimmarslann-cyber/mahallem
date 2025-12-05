@@ -2,22 +2,14 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  MessageSquare,
-  HelpCircle,
-  ShoppingBag,
-  Briefcase,
-  Mail,
-  CheckCircle2,
-  Clock,
-} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/lib/hooks/useToast";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 interface InboxItem {
   id: string;

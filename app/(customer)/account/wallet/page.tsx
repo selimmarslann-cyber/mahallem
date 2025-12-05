@@ -3,35 +3,17 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Wallet,
-  ArrowDownCircle,
-  ArrowUpCircle,
-  CreditCard,
-  TrendingUp,
-  History,
-  Briefcase,
-  Users,
-  Clock,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { useToast } from "@/lib/hooks/useToast";
 import EarningsChart from "@/components/wallet/EarningsChart";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 interface Transaction {
   id: string;

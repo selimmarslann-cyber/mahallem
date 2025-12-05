@@ -14,35 +14,16 @@ import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { B
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
-utton } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import {
-  Star,
-  MapPin,
-  Clock,
-  User,
-  DollarSign,
-  CheckCircle2,
-  XCircle,
-  MessageSquare,
-  Building2,
-  TrendingUp,
-  TrendingDown,
-} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 interface JobOffer {
   id: string;

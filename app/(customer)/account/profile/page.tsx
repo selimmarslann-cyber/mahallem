@@ -3,51 +3,25 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-  Camera,
-  Save,
-  User,
-  X,
-  Zap,
-  Bell,
-  Info,
-  Lock,
-  Link as LinkIcon,
-  LogOut,
-  Store,
-  Star,
-  MapPin,
-} from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { getSectors, getSkillsBySector } from "@/lib/data/skills";
 import type { SkillKeyword } from "@/lib/types/mahallem";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { useToast } from "@/lib/hooks/useToast";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function AccountProfilePage() {
   const router = useRouter();

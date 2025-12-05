@@ -5,26 +5,15 @@ import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Star,
-  MessageCircle,
-  MapPin,
-  Clock,
-  User,
-  ArrowLeft,
-  Zap,
-  TrendingUp,
-  DollarSign,
-  FileText,
-} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import EmptyState from "@/components/ui/empty-state";
 import ListSkeleton from "@/components/ui/ListSkeleton";
 import BadgePremium from "@/components/ui/BadgePremium";
 import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 interface Job {
   id: string;

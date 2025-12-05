@@ -7,20 +7,14 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { login, getMe } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { useToast } from "@/lib/hooks/useToast";
 import { Mail, Phone, ArrowRight, UserPlus, Key } from "lucide-react";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function LoginPage() {
   const router = useRouter();

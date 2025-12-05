@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+
 export default function OrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<any[]>([]);

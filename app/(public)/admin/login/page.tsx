@@ -6,18 +6,12 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+import { useToast } from "@/lib/hooks/useToast";
+import { Shield, Lock, User } from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useToast } from "@/lib/hooks/useToast";
-import { Shield, Lock, User } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();

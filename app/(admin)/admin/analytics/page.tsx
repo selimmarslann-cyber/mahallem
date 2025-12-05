@@ -1,18 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-import {
-  Loader2,
-  TrendingUp,
-  DollarSign,
-  Users,
-  AlertCircle,
-  CheckCircle2,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface LeadAnalytics {
   period: {

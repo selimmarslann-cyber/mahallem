@@ -7,18 +7,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+import { Phone, ArrowLeft, CheckCircle2, ArrowRight } from "lucide-react";
+import { useToast } from "@/lib/hooks/useToast";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Phone, ArrowLeft, CheckCircle2, ArrowRight } from "lucide-react";
-import { useToast } from "@/lib/hooks/useToast";
 
 export default function PhoneLoginPage() {
   const router = useRouter();

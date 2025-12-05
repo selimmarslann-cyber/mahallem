@@ -1,18 +1,13 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { HelpCircle, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function FAQPage() {
   const faqCategories = [

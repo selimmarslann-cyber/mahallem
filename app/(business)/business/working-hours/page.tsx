@@ -16,9 +16,10 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import 
 // Static generation'ı engelle
-export const dynamic = "force-dynamic";
-{ Clock, Save, Calendar } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 type DayOfWeek = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 

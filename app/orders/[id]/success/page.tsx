@@ -9,6 +9,9 @@ import { Card, CardContent } from "@/components/ui/card";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+
 export default function OrderSuccessPage() {
   const router = useRouter();
   const params = useParams();

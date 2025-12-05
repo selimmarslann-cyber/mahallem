@@ -7,33 +7,15 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Zap,
-  Info,
-  ArrowRight,
-  UserPlus,
-  MessageSquare,
-  Mail,
-  Phone,
-  Sparkles,
-  AlertCircle,
-  CheckCircle2,
-  Brain,
-} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import CategoryAutocomplete from "@/components/forms/CategoryAutocomplete";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function RegisterPage() {
   const router = useRouter();

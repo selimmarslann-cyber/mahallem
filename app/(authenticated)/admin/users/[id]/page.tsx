@@ -9,6 +9,9 @@ import { Coins, Users, TrendingUp } from "lucide-react";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+
 export default function AdminUserDetailPage() {
   const params = useParams();
   const [user, setUser] = useState<any>(null);

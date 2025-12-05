@@ -8,40 +8,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
-  Clock,
-  MapPin,
-  ChevronRight,
-  Briefcase,
-  Zap,
-  Calendar,
-  Filter,
-  Send,
-  ChevronDown,
-  ChevronUp,
-  Phone,
-  Mail,
-  MessageCircle,
-  DollarSign,
-  User,
-  CheckCircle2,
-} from "lucide-react";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { getMatchingVendors, haversineDistanceKm } from "@/lib/utils/matching";
 import type { Job } from "@/lib/types/mahallem";
 import EmptyState from "@/components/ui/empty-state";
 import ListSkeleton from "@/components/ui/ListSkeleton";
 import { useToast } from "@/lib/hooks/useToast";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function CustomerJobsPage() {
   const router = useRouter();

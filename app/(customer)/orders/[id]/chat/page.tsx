@@ -15,6 +15,9 @@ import FileCountBadge from "@/components/chat/FileCountBadge";
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+
 interface Message {
   id: string;
   content: string;

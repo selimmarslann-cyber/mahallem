@@ -4,36 +4,17 @@ import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
-// Static generation'ı engelle
-export const dynamic = "force-dynamic";
 import {
-  Copy,
-  Share2,
-  TrendingUp,
-  Users,
-  Coins,
-  Link as LinkIcon,
-  MessageCircle,
-  Twitter,
-} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import Link from "next/link";
 import { getReferralOverview, getReferralRewards } from "@/lib/api/referral";
 import type {
-  ReferralOverview,
-  ReferralReward,
-  ReferralRewardsResponse,
-} from "@/lib/types/domain";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
 
 export default function ReferralPage() {
   const [overview, setOverview] = useState<ReferralOverview | null>(null);
