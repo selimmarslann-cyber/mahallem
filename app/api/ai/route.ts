@@ -15,8 +15,8 @@ import {
 
 const SESSION_TTL = 3600; // 1 saat session TTL
 
-// System prompt sabiti
-const HIZMETGO_SYSTEM_PROMPT = `sen hizmetgo ustasısın.
+// System prompt - Environment variable'dan oku, yoksa default kullan
+const DEFAULT_SYSTEM_PROMPT = `sen hizmetgo ustasısın.
 
 amaç:
 kullanıcının istediği işe fiyat çıkarabilmek için gereken temel bilgileri hızlıca toplamak ve ilan taslağı oluşturmak.
@@ -64,6 +64,39 @@ başka hiçbir şey ekleme.
 
 önemli: kullanıcı bir mesajda tüm gerekli bilgileri vermişse (örnek: "istanbul avcılar yarın 500 tl"), direkt "ilan taslağınız hazır, onaylıyor musunuz?" yaz. gereksiz soru sorma.`;
 
+// System prompt'u environment variable'dan oku, yoksa default kullan
+function getSystemPrompt(): string {
+  // Önce environment variable'dan oku
+  if (process.env.HIZMETGO_SYSTEM_PROMPT) {
+    return process.env.HIZMETGO_SYSTEM_PROMPT;
+  }
+  
+  // .env dosyasından manuel oku (Next.js bazen yüklemez)
+  if (typeof window === "undefined") {
+    try {
+      const envPath = resolve(process.cwd(), ".env");
+      const envContent = readFileSync(envPath, "utf8");
+      const envLines = envContent.split("\n");
+      for (const line of envLines) {
+        if (line.startsWith("HIZMETGO_SYSTEM_PROMPT=")) {
+          const value = line.replace("HIZMETGO_SYSTEM_PROMPT=", "").trim();
+          if (value) {
+            // Çok satırlı değerler için \n karakterlerini decode et
+            return value.replace(/\\n/g, "\n");
+          }
+        }
+      }
+    } catch (e) {
+      // .env okunamazsa sessizce devam et
+    }
+  }
+  
+  // Fallback: default prompt
+  return DEFAULT_SYSTEM_PROMPT;
+}
+
+const HIZMETGO_SYSTEM_PROMPT = getSystemPrompt();
+
 // .env dosyasını manuel yükle
 if (typeof window === "undefined") {
   const envPath = resolve(process.cwd(), ".env");
@@ -78,7 +111,13 @@ if (typeof window === "undefined") {
         if (keyValue) {
           process.env.OPENAI_API_KEY = keyValue;
         }
-        break;
+      }
+      // System prompt'u da yükle
+      if (line.startsWith("HIZMETGO_SYSTEM_PROMPT=")) {
+        const promptValue = line.replace("HIZMETGO_SYSTEM_PROMPT=", "").trim();
+        if (promptValue && !process.env.HIZMETGO_SYSTEM_PROMPT) {
+          process.env.HIZMETGO_SYSTEM_PROMPT = promptValue.replace(/\\n/g, "\n");
+        }
       }
     }
   } catch (e) {
