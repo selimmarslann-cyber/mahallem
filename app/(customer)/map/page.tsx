@@ -1,3 +1,6 @@
+"use client";
+
+import dynamicImport from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -8,10 +11,27 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCartStore } from "@/lib/store/useCartStore";
 import { haversineDistanceKm } from "@/lib/utils/matching";
-import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MapPin, Plus, Store, X, Zap } from "lucide-react";
-"use client";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  MapPin,
+  Plus,
+  Store,
+  X,
+  Zap,
+  Search,
+  List,
+  MapIcon,
+  Filter,
+  Star,
+  Minus,
+  ShoppingCart,
+} from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -300,7 +320,10 @@ export default function MapPage() {
                     <List className="w-4 h-4" />
                     Liste
                   </TabsTrigger>
-                  <TabsTrigger value="map" className="flex items-center gap-2">
+                  <TabsTrigger
+                    value="map"
+                    className="flex items-center gap-2"
+                  >
                     <MapIcon className="w-4 h-4" />
                     Yakınımdakiler
                   </TabsTrigger>

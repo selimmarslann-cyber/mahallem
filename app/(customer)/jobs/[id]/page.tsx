@@ -1,13 +1,25 @@
+"use client";
+
+import type { ReactNode } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import {
+  ArrowLeft,
+  Clock,
+  MapPin,
+  TrendingUp,
+  User,
+  Zap,
+  Star,
+  FileText,
+  MessageCircle,
+  DollarSign,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/useToast";
 import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
-import { Clock, MapPin, TrendingUp, User, Zap } from "lucide-react";
-"use client";
-
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -88,10 +100,45 @@ interface MatchedVendor {
   };
 }
 
+/** Basit loading skeleton */
+function SimpleSkeleton({ rows = 5 }: { rows?: number }) {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: rows }).map((_, i) => (
+        <div
+          key={i}
+          className="h-16 rounded-lg bg-gray-200 animate-pulse"
+        />
+      ))}
+    </div>
+  );
+}
+
+/** Basit boş durum component’i */
+function SimpleEmptyState({
+  icon,
+  title,
+  description,
+}: {
+  icon: ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="text-center max-w-sm mx-auto px-4 py-8">
+      <div className="flex items-center justify-center mb-4 text-gray-400">
+        {icon}
+      </div>
+      <h2 className="text-lg font-semibold mb-2 text-gray-900">{title}</h2>
+      <p className="text-sm text-gray-600">{description}</p>
+    </div>
+  );
+}
+
 export default function JobDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { success, error } = useToast();
+  const { error } = useToast();
   const [job, setJob] = useState<Job | null>(null);
   const [matchedVendors, setMatchedVendors] = useState<MatchedVendor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -125,8 +172,8 @@ export default function JobDetailPage() {
                 setPriceGuide(priceData);
               }
             }
-          } catch (err) {
-            // Fiyat rehberi yüklenemezse devam et
+          } catch {
+            // Fiyat rehberi hata verirse sessiz geç
           }
         }
       } else {
@@ -163,7 +210,10 @@ export default function JobDetailPage() {
   };
 
   const getStatusBadge = (status: string) => {
-    const statusMap: Record<string, { text: string; variant: any }> = {
+    const statusMap: Record<
+      string,
+      { text: string; variant: "default" | "secondary" | "outline" | "destructive" }
+    > = {
       PENDING: { text: "Teklif Bekleniyor", variant: "secondary" },
       ACCEPTED: { text: "Kabul Edildi", variant: "default" },
       IN_PROGRESS: { text: "İş Devam Ediyor", variant: "default" },
@@ -176,8 +226,20 @@ export default function JobDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <div className="bg-white border-b sticky top-0 z-10">
+          <div className="max-w-md mx-auto px-4 py-3">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" onClick={() => router.back()}>
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+              <h1 className="font-semibold text-lg">İş Detayı</h1>
+            </div>
+          </div>
+        </div>
+
         <div className="max-w-md mx-auto px-4 py-6">
-          <ListSkeleton count={5} />
+          <SimpleSkeleton rows={5} />
         </div>
       </div>
     );
@@ -185,12 +247,26 @@ export default function JobDetailPage() {
 
   if (!job) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <EmptyState
-          icon={<FileText className="w-12 h-12" />}
-          title="İş bulunamadı"
-          description="Bu iş kaydı bulunamadı veya görüntüleme yetkiniz yok."
-        />
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <div className="bg-white border-b sticky top-0 z-10">
+          <div className="max-w-md mx-auto px-4 py-3">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="sm" onClick={() => router.back()}>
+                <ArrowLeft className="w-4 h-4" />
+              </Button>
+              <h1 className="font-semibold text-lg">İş Detayı</h1>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-md mx-auto px-4 py-6">
+          <SimpleEmptyState
+            icon={<FileText className="w-12 h-12" />}
+            title="İş bulunamadı"
+            description="Bu iş kaydı bulunamadı veya görüntüleme yetkiniz yok."
+          />
+        </div>
       </div>
     );
   }
@@ -202,7 +278,7 @@ export default function JobDetailPage() {
     job.subServiceId,
   );
 
-  // Average response time hesapla
+  // Ortalama yanıt süresi
   const avgResponseTime =
     matchedVendors.length > 0
       ? matchedVendors
@@ -269,7 +345,7 @@ export default function JobDetailPage() {
 
             {job.scheduledAt && (
               <div>
-                <p className="text-sm text-gray-500 mb-1">Tarih & Saat</p>
+                <p className="text-sm text-gray-500 mb-1">Tarih &amp; Saat</p>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-gray-400" />
                   <p>{new Date(job.scheduledAt).toLocaleString("tr-TR")}</p>
@@ -286,7 +362,7 @@ export default function JobDetailPage() {
           </CardContent>
         </Card>
 
-        {/* Summary Badges */}
+        {/* Özet Kart (eşleşen esnaf, ort. yanıt süresi, ort. fiyat) */}
         {job.status === "PENDING" && matchedVendors.length > 0 && (
           <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
             <CardContent className="p-4">
@@ -356,7 +432,7 @@ export default function JobDetailPage() {
           </Card>
         )}
 
-        {/* Matched Vendors */}
+        {/* Önerilen Esnaflar */}
         {job.status === "PENDING" && matchedVendors.length > 0 && (
           <div>
             <h2 className="text-xl font-bold mb-4">Önerilen Esnaflar</h2>
@@ -389,11 +465,12 @@ export default function JobDetailPage() {
                               {vendor.businessName}
                             </h3>
                             {vendor.onlineStatus === "ONLINE" && (
-                              <BadgePremium
-                                type="verified"
-                                size="sm"
-                                className="mt-1"
-                              />
+                              <Badge
+                                variant="outline"
+                                className="mt-1 text-xs border-green-300 text-green-700 bg-green-50"
+                              >
+                                Çevrimiçi &amp; Önerilen
+                              </Badge>
                             )}
                           </div>
                           {vendor.matchScore > 0.7 && (
@@ -460,7 +537,6 @@ export default function JobDetailPage() {
                             size="sm"
                             className="flex-1"
                             onClick={() => {
-                              // Chat sayfasına yönlendir (job için chat endpoint'i gerekli)
                               router.push(
                                 `/jobs/${job.id}/chat?businessId=${vendor.businessId}`,
                               );
@@ -479,7 +555,7 @@ export default function JobDetailPage() {
           </div>
         )}
 
-        {/* Existing Offers */}
+        {/* Gelen Teklifler */}
         {job.offers.length > 0 && (
           <div>
             <h2 className="text-xl font-bold mb-4">
@@ -559,7 +635,7 @@ export default function JobDetailPage() {
           </div>
         )}
 
-        {/* Accepted Business */}
+        {/* Kabul Eden Esnaf */}
         {job.acceptedBy && (
           <Card className="border-2 border-green-200 bg-green-50">
             <CardHeader>
@@ -600,9 +676,9 @@ export default function JobDetailPage() {
           </Card>
         )}
 
-        {/* Empty State for Vendors */}
+        {/* Eşleşen esnaf yoksa boş durum */}
         {job.status === "PENDING" && matchedVendors.length === 0 && (
-          <EmptyState
+          <SimpleEmptyState
             icon={<User className="w-12 h-12" />}
             title="Henüz esnaf bulunamadı"
             description="Bu iş için uygun esnaf bulunamadı. Biraz sonra tekrar kontrol edebilirsiniz."

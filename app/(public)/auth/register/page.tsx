@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -9,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/lib/hooks/useToast";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, CheckCircle2, MessageSquare, Phone, Zap } from "lucide-react";
-"use client";
+
 
 
 // Static generation'ı engelle

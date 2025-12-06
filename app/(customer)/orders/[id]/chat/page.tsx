@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,8 +8,6 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Send, User, Wifi, WifiOff } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { useRealtimeChat } from "@/lib/hooks/useRealtimeChat";
-"use client";
-
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -40,6 +40,7 @@ export default function OrderChatPage() {
   const router = useRouter();
   const { error, success } = useToast();
   const orderId = params.id as string;
+
   const [order, setOrder] = useState<{
     id: string;
     status: string;
@@ -173,7 +174,7 @@ export default function OrderChatPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF6000]"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#FF6000]" />
           <p className="mt-4 text-gray-500">Yükleniyor...</p>
         </div>
       </div>
@@ -286,7 +287,7 @@ export default function OrderChatPage() {
                   {showDateSeparator && (
                     <div className="flex items-center justify-center my-4">
                       <div className="flex items-center gap-2">
-                        <div className="h-px bg-gray-200 flex-1 w-16"></div>
+                        <div className="h-px bg-gray-200 flex-1 w-16" />
                         <span className="text-xs text-gray-500 font-medium">
                           {isToday
                             ? "Bugün"
@@ -296,14 +297,16 @@ export default function OrderChatPage() {
                                 year: "numeric",
                               })}
                         </span>
-                        <div className="h-px bg-gray-200 flex-1 w-16"></div>
+                        <div className="h-px bg-gray-200 flex-1 w-16" />
                       </div>
                     </div>
                   )}
 
                   {/* Message Bubble */}
                   <div
-                    className={`flex items-end gap-2 ${isMyMessage ? "justify-end" : "justify-start"}`}
+                    className={`flex items-end gap-2 ${
+                      isMyMessage ? "justify-end" : "justify-start"
+                    }`}
                   >
                     {!isMyMessage && (
                       <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
@@ -389,15 +392,15 @@ export default function OrderChatPage() {
                   <div
                     className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                     style={{ animationDelay: "0ms" }}
-                  ></div>
+                  />
                   <div
                     className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                     style={{ animationDelay: "150ms" }}
-                  ></div>
+                  />
                   <div
                     className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                     style={{ animationDelay: "300ms" }}
-                  ></div>
+                  />
                 </div>
               </div>
             </div>

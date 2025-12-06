@@ -1,22 +1,28 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/lib/hooks/useToast";
 import { ArrowRight, Lock, Mail } from "lucide-react";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-"use client";
-
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
 export default function EmailLoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { success, error } = useToast();
+
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +31,9 @@ export default function EmailLoginPage() {
   const [loading, setLoading] = useState(false);
   const [sendingCode, setSendingCode] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const countdownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(
+    null,
+  );
 
   // Countdown timer cleanup
   useEffect(() => {
@@ -54,7 +62,6 @@ export default function EmailLoginPage() {
 
     setSendingCode(true);
 
-    // Debug: Check if fetch is available
     if (typeof fetch === "undefined") {
       console.error("❌ Fetch is not available!");
       error("Tarayıcı fetch API desteklemiyor");
@@ -81,15 +88,13 @@ export default function EmailLoginPage() {
 
       console.log("📧 Frontend: Fetch completed");
       console.log("📧 Frontend: Response received:", res);
-
       console.log("📧 Frontend: Response status:", res.status);
       console.log("📧 Frontend: Response ok:", res.ok);
 
-      // Response body'yi oku
       const contentType = res.headers.get("content-type");
       console.log("📧 Frontend: Content-Type:", contentType);
 
-      let data;
+      let data: any;
       try {
         if (contentType?.includes("application/json")) {
           data = await res.json();
@@ -106,7 +111,7 @@ export default function EmailLoginPage() {
         try {
           const text = await res.text();
           console.error("📧 Frontend: Response text:", text);
-        } catch (textError) {
+        } catch {
           console.error("📧 Frontend: Could not read response text");
         }
         error("Sunucudan geçersiz yanıt alındı. Lütfen tekrar deneyin.");
@@ -126,9 +131,9 @@ export default function EmailLoginPage() {
       console.log("Code sent successfully, switching to code step");
       success("Doğrulama kodu e-posta adresinize gönderildi");
       setStep("code");
-      setCountdown(300); // 5 dakika (300 saniye)
+      setCountdown(300); // 5 dakika
 
-      // Countdown timer başlat
+      // Countdown timer
       if (countdownIntervalRef.current) {
         clearInterval(countdownIntervalRef.current);
       }
@@ -144,17 +149,13 @@ export default function EmailLoginPage() {
         });
       }, 1000);
 
-      // Development mode'da kodu göster
+      // Dev mode'da kodu logla
       if (data.mockCode) {
         console.log("Development OTP Code:", data.mockCode);
         success(`Development Mode: Kod ${data.mockCode}`);
       }
     } catch (err: any) {
       console.error("📧 Frontend: Send code error:", err);
-      console.error("📧 Frontend: Error type:", err?.constructor?.name);
-      console.error("📧 Frontend: Error message:", err?.message);
-      console.error("📧 Frontend: Error stack:", err?.stack);
-
       let errorMessage = "Bir hata oluştu. Lütfen tekrar deneyin.";
 
       if (err instanceof TypeError && err.message.includes("fetch")) {
@@ -182,7 +183,6 @@ export default function EmailLoginPage() {
 
     setLoading(true);
     try {
-      // Sadece kodu doğrula, şifre ekranına geç
       const res = await fetch("/api/auth/verify-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -197,10 +197,9 @@ export default function EmailLoginPage() {
         return;
       }
 
-      // Kod doğrulandı, şifre ekranına geç
       setStep("password");
       success("Kod doğrulandı. Şimdi şifrenizi belirleyin.");
-    } catch (err) {
+    } catch {
       error("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
@@ -238,12 +237,11 @@ export default function EmailLoginPage() {
 
       success("Şifreniz belirlendi! Giriş yapılıyor...");
 
-      // Anasayfaya yönlendir
       setTimeout(() => {
         router.push("/");
         router.refresh();
       }, 1000);
-    } catch (err) {
+    } catch {
       error("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
@@ -274,6 +272,7 @@ export default function EmailLoginPage() {
                   : "Yeni şifrenizi belirleyin"}
             </CardDescription>
           </CardHeader>
+
           <CardContent>
             {step === "email" ? (
               <form
@@ -318,7 +317,7 @@ export default function EmailLoginPage() {
                     E-posta gönderiliyor, lütfen bekleyin...
                   </p>
                 )}
-                {/* Debug: Test API button */}
+
                 {process.env.NODE_ENV === "development" && (
                   <button
                     type="button"
@@ -411,7 +410,9 @@ export default function EmailLoginPage() {
                       {sendingCode
                         ? "Gönderiliyor..."
                         : countdown > 0 && countdown >= 60
-                          ? `Kodu tekrar gönder (${Math.floor(countdown / 60)}:${(countdown % 60).toString().padStart(2, "0")})`
+                          ? `Kodu tekrar gönder (${Math.floor(countdown / 60)}:${(countdown % 60)
+                              .toString()
+                              .padStart(2, "0")})`
                           : "Kodu tekrar gönder"}
                     </button>
                   </div>
