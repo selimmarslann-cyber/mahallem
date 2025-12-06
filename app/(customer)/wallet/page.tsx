@@ -1,21 +1,34 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Coins, Copy, TrendingUp, import { Coins } from "lucide-react";
 "use client";
 
-  TrendingUp,
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Coins,
   Copy,
+  TrendingUp,
   Share2,
   MessageCircle,
   Sparkles,
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+// Static generation'ı engelle
+export const dynamic = "force-dynamic";
+
+interface WalletOverview {
+  currentBalance: number;
+  totalEarnings: number;
+  monthlyEarnings: number;
+  currentReferralCode: string;
+  referralLink: string;
+}
 
 export default function CustomerWalletPage() {
   const router = useRouter();
-  const [overview, setOverview] = useState<any>(null);
+  const [overview, setOverview] = useState<WalletOverview | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
@@ -52,7 +65,8 @@ export default function CustomerWalletPage() {
   const shareWhatsApp = () => {
     if (!overview) return;
     const text = encodeURIComponent(
-      "Hizmetgo'e katıl, kazan! Bu link ile kayıt ol: " + overview.referralLink,
+      "Hizmetgo'ya katıl, kazan! Bu link ile kayıt ol: " +
+        overview.referralLink,
     );
     window.open(`https://wa.me/?text=${text}`, "_blank");
   };
@@ -96,6 +110,7 @@ export default function CustomerWalletPage() {
       <div className="max-w-md mx-auto px-4 py-6 space-y-6 -mt-6">
         {/* Üst Kartlar */}
         <div className="grid grid-cols-1 gap-4">
+          {/* Kullanılabilir Bakiye */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -116,7 +131,10 @@ export default function CustomerWalletPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-slate-900 mb-1">
-                  {overview?.currentBalance.toFixed(2) || "0.00"} ₺
+                  {overview
+                    ? overview.currentBalance.toFixed(2)
+                    : "0.00"}{" "}
+                  ₺
                 </div>
                 <p className="text-xs text-slate-500 mt-1">
                   Çekilebilir bakiye
@@ -125,6 +143,7 @@ export default function CustomerWalletPage() {
             </Card>
           </motion.div>
 
+          {/* Toplam Referral Kazancı */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -136,11 +155,14 @@ export default function CustomerWalletPage() {
                 <CardTitle className="text-sm font-semibold text-slate-700">
                   Referral Kazancın
                 </CardTitle>
-                <TrendingUp className="h-5 w-5 text-emerald-600" />
+                <TrendingUp className="h-5 h-5 text-emerald-600" />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-slate-900 mb-1">
-                  {overview?.totalEarnings.toFixed(2) || "0.00"} ₺
+                  {overview
+                    ? overview.totalEarnings.toFixed(2)
+                    : "0.00"}{" "}
+                  ₺
                 </div>
                 <Link href="/referral">
                   <Button
@@ -155,6 +177,7 @@ export default function CustomerWalletPage() {
             </Card>
           </motion.div>
 
+          {/* Aylık Referral Kazancı */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -170,7 +193,10 @@ export default function CustomerWalletPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-slate-900 mb-1">
-                  {overview?.monthlyEarnings.toFixed(2) || "0.00"} ₺
+                  {overview
+                    ? overview.monthlyEarnings.toFixed(2)
+                    : "0.00"}{" "}
+                  ₺
                 </div>
                 <p className="text-xs text-slate-500 mt-1">
                   Bu takvim ayındaki kazanç
@@ -240,7 +266,7 @@ export default function CustomerWalletPage() {
                   onClick={shareWhatsApp}
                 >
                   <MessageCircle className="w-4 h-4 mr-2" />
-                  WhatsApp'ta Paylaş
+                  WhatsApp&apos;ta Paylaş
                 </Button>
 
                 {/* 3 Adımlı Açıklama */}
