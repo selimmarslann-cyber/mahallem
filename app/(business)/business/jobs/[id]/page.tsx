@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Order Detail Page - Esnaf sipariş detay sayfası
  *
@@ -8,27 +10,123 @@
  * - Müşteri ile mesajlaşabilir (yakında)
  */
 
-"use client";
-
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Clock, MapPin, MessageSquare, Phone, User } from "lucide-react";
+import {
+  CheckCircle2,
+  Clock,
+  MapPin,
+  MessageSquare,
+  Phone,
+  User,
+  Package,
+  XCircle,
+} from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
-import { motion } from "framer-motion";
-
-
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
+interface OrderItem {
+  id: string;
+  quantity: number;
+  product?: {
+    name?: string;
+    price?: string | number;
+  } | null;
+}
+
+interface Customer {
+  name?: string | null;
+  phone?: string | null;
+}
+
+interface Order {
+  id: string;
+  status: string;
+  items?: OrderItem[];
+  totalAmount?: string | number;
+  commissionFee?: string | number;
+  vendorAmount?: string | number;
+  addressText?: string | null;
+  scheduledAt?: string | null;
+  createdAt: string;
+  completedAt?: string | null;
+  customer?: Customer | null;
+}
+
+type StatusKey =
+  | "PENDING_CONFIRMATION"
+  | "ACCEPTED"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "CANCELLED_BY_CUSTOMER"
+  | "CANCELLED_BY_PROVIDER"
+  | string;
+
+function getStatusInfo(status: StatusKey): {
+  text: string;
+  variant: "default" | "secondary" | "destructive" | "outline";
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+} {
+  const statusMap: Record<
+    string,
+    {
+      text: string;
+      variant: "default" | "secondary" | "destructive" | "outline";
+      icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    }
+  > = {
+    PENDING_CONFIRMATION: {
+      text: "Yeni İstek",
+      variant: "secondary",
+      icon: Clock,
+    },
+    ACCEPTED: {
+      text: "Kabul Edildi",
+      variant: "default",
+      icon: CheckCircle2,
+    },
+    IN_PROGRESS: {
+      text: "Devam Ediyor",
+      variant: "default",
+      icon: Package,
+    },
+    COMPLETED: {
+      text: "Tamamlandı",
+      variant: "default",
+      icon: CheckCircle2,
+    },
+    CANCELLED_BY_CUSTOMER: {
+      text: "Müşteri İptal Etti",
+      variant: "destructive",
+      icon: XCircle,
+    },
+    CANCELLED_BY_PROVIDER: {
+      text: "İptal Edildi",
+      variant: "destructive",
+      icon: XCircle,
+    },
+  };
+
+  return (
+    statusMap[status] || {
+      text: status,
+      variant: "outline",
+      icon: Clock,
+    }
+  );
+}
+
 export default function BusinessOrderDetailPage() {
-  const params = useParams();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { success, error, info } = useToast();
-  const [order, setOrder] = useState<any>(null);
+  const { success, error } = useToast();
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
@@ -113,48 +211,12 @@ export default function BusinessOrderDetailPage() {
     );
   }
 
-  const getStatusText = (status: string) => {
-    const statusMap: Record<string, { text: string; variant: any; icon: any }> =
-      {
-        PENDING_CONFIRMATION: {
-          text: "Yeni İstek",
-          variant: "secondary",
-          icon: Clock,
-        },
-        ACCEPTED: {
-          text: "Kabul Edildi",
-          variant: "default",
-          icon: CheckCircle2,
-        },
-        IN_PROGRESS: {
-          text: "Devam Ediyor",
-          variant: "default",
-          icon: Package,
-        },
-        COMPLETED: {
-          text: "Tamamlandı",
-          variant: "default",
-          icon: CheckCircle2,
-        },
-        CANCELLED_BY_CUSTOMER: {
-          text: "Müşteri İptal Etti",
-          variant: "destructive",
-          icon: XCircle,
-        },
-        CANCELLED_BY_PROVIDER: {
-          text: "İptal Edildi",
-          variant: "destructive",
-          icon: XCircle,
-        },
-      };
-    return (
-      statusMap[status] || { text: status, variant: "outline", icon: Clock }
-    );
-  };
-
-  const statusInfo = getStatusText(order.status);
+  const statusInfo = getStatusInfo(order.status as StatusKey);
   const StatusIcon = statusInfo.icon;
   const canComplete = ["ACCEPTED", "IN_PROGRESS"].includes(order.status);
+
+  const toNumber = (value: string | number | undefined): number =>
+    typeof value === "number" ? value : parseFloat(value || "0");
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24">
@@ -199,28 +261,30 @@ export default function BusinessOrderDetailPage() {
               <CardContent>
                 {order.items && order.items.length > 0 ? (
                   <div className="space-y-3">
-                    {order.items.map((item: any) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center justify-between p-3 border rounded-lg"
-                      >
-                        <div className="flex-1">
-                          <p className="font-medium">
-                            {item.product?.name || "Ürün"}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Adet: {item.quantity} ×{" "}
-                            {parseFloat(item.product?.price || 0).toFixed(2)} ₺
+                    {order.items.map((item) => {
+                      const unitPrice = toNumber(item.product?.price);
+                      const lineTotal = item.quantity * unitPrice;
+
+                      return (
+                        <div
+                          key={item.id}
+                          className="flex items-center justify-between p-3 border rounded-lg"
+                        >
+                          <div className="flex-1">
+                            <p className="font-medium">
+                              {item.product?.name || "Ürün"}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Adet: {item.quantity} ×{" "}
+                              {unitPrice.toFixed(2)} ₺
+                            </p>
+                          </div>
+                          <p className="font-semibold">
+                            {lineTotal.toFixed(2)} ₺
                           </p>
                         </div>
-                        <p className="font-semibold">
-                          {(
-                            item.quantity * parseFloat(item.product?.price || 0)
-                          ).toFixed(2)}{" "}
-                          ₺
-                        </p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <p className="text-gray-500">Sipariş içeriği bulunamadı</p>
@@ -263,7 +327,9 @@ export default function BusinessOrderDetailPage() {
                     </p>
                     <div className="flex items-start gap-2">
                       <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
-                      <p className="font-medium">{order.addressText}</p>
+                      <p className="font-medium">
+                        {order.addressText || "-"}
+                      </p>
                     </div>
                   </div>
 
@@ -275,13 +341,16 @@ export default function BusinessOrderDetailPage() {
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-gray-400" />
                         <p className="font-medium">
-                          {new Date(order.scheduledAt).toLocaleString("tr-TR", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
+                          {new Date(order.scheduledAt).toLocaleString(
+                            "tr-TR",
+                            {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
                         </p>
                       </div>
                     </div>
@@ -302,14 +371,14 @@ export default function BusinessOrderDetailPage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Ara Toplam</span>
                   <span className="font-medium">
-                    {parseFloat(order.totalAmount || 0).toFixed(2)} ₺
+                    {toNumber(order.totalAmount).toFixed(2)} ₺
                   </span>
                 </div>
                 {order.commissionFee && (
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Platform Komisyonu</span>
                     <span className="font-medium">
-                      {parseFloat(order.commissionFee).toFixed(2)} ₺
+                      {toNumber(order.commissionFee).toFixed(2)} ₺
                     </span>
                   </div>
                 )}
@@ -317,7 +386,7 @@ export default function BusinessOrderDetailPage() {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Sizin Payınız</span>
                     <span className="font-medium text-green-600">
-                      {parseFloat(order.vendorAmount).toFixed(2)} ₺
+                      {toNumber(order.vendorAmount).toFixed(2)} ₺
                     </span>
                   </div>
                 )}
@@ -325,7 +394,7 @@ export default function BusinessOrderDetailPage() {
                   <div className="flex justify-between">
                     <span className="font-semibold">Toplam</span>
                     <span className="text-xl font-bold text-primary">
-                      {parseFloat(order.totalAmount || 0).toFixed(2)} ₺
+                      {toNumber(order.totalAmount).toFixed(2)} ₺
                     </span>
                   </div>
                 </div>
@@ -353,7 +422,7 @@ export default function BusinessOrderDetailPage() {
                   variant="outline"
                   className="w-full"
                   onClick={() => {
-                    info("Mesajlaşma özelliği yakında eklenecek");
+                    success("Mesajlaşma özelliği yakında eklenecek");
                   }}
                 >
                   <MessageSquare className="w-4 h-4 mr-2" />
