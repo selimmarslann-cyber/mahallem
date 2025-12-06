@@ -1,19 +1,37 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-"use client";
-
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
+interface Business {
+  id: string;
+  name: string;
+  avgRating?: number | null;
+  reviewCount?: number | null;
+}
+
+interface Review {
+  id: string;
+  rating: number;
+  comment?: string | null;
+  createdAt: string;
+  reviewer: {
+    name?: string | null;
+  };
+}
+
 export default function BusinessReviewsPage() {
-  const params = useParams();
-  const router = useRouter();
-  const [business, setBusiness] = useState<any>(null);
-  const [reviews, setReviews] = useState<any[]>([]);
+  const params = useParams<{ id: string }>();
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
 
   const loadBusiness = useCallback(async () => {
@@ -33,7 +51,7 @@ export default function BusinessReviewsPage() {
       const res = await fetch(`/api/businesses/${params.id}/reviews`);
       if (res.ok) {
         const data = await res.json();
-        setReviews(data);
+        setReviews(data || []);
       }
     } catch (err) {
       console.error("Yorumlar yüklenemedi:", err);
@@ -61,16 +79,18 @@ export default function BusinessReviewsPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold">
-              {business?.name} - Tüm Yorumlar
+              {business?.name || "İşletme"} - Tüm Yorumlar
             </h1>
             {business && (
               <div className="flex items-center gap-2 mt-2">
                 <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                 <span className="text-lg font-semibold">
-                  {business.avgRating.toFixed(1)}
+                  {business.avgRating != null
+                    ? business.avgRating.toFixed(1)
+                    : "-"}
                 </span>
                 <span className="text-gray-500">
-                  ({business.reviewCount} değerlendirme)
+                  ({business.reviewCount ?? 0} değerlendirme)
                 </span>
               </div>
             )}
@@ -93,7 +113,9 @@ export default function BusinessReviewsPage() {
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-2">
                     <div>
-                      <p className="font-semibold">{review.reviewer.name}</p>
+                      <p className="font-semibold">
+                        {review.reviewer?.name || "Anonim kullanıcı"}
+                      </p>
                       <p className="text-xs text-gray-500">
                         {new Date(review.createdAt).toLocaleDateString(
                           "tr-TR",
