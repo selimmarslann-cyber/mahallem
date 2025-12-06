@@ -471,3 +471,8 @@ export default function BusinessDetailPage() {
     </div>
   );
 }
+
+
+
+
+

@@ -434,3 +434,8 @@ export default function EarnPage() {
     </div>
   );
 }
+
+
+
+
+

@@ -774,3 +774,8 @@ export default function BusinessRegisterPage() {
     </div>
   );
 }
+
+
+
+
+
