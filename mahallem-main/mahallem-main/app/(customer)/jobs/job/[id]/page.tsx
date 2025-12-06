@@ -1,13 +1,5 @@
 "use client";
 
-/**
- * Job Detail Page - Müşteri iş detay sayfası
- *
- * Bu sayfada müşteri:
- * - İş detaylarını görür
- * - Gelen teklifleri görür ve karşılaştırır
- * - Bir teklifi kabul eder
- */
 
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -21,6 +13,15 @@ import { Building2, CheckCircle2, Clock, MapPin, Star, TrendingDown } from "luci
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
 import { Dialog } from "@/components/ui/dialog";
+
+/**
+ * Job Detail Page - Müşteri iş detay sayfası
+ *
+ * Bu sayfada müşteri:
+ * - İş detaylarını görür
+ * - Gelen teklifleri görür ve karşılaştırır
+ * - Bir teklifi kabul eder
+ */
 
 
 // Static generation'ı engelle

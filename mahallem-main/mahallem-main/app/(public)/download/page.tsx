@@ -1,10 +1,5 @@
 "use client";
 
-/**
- * Download / App Landing Page
- *
- * Store butonları, screenshot'lar, app açıklaması
- */
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Briefcase, CheckCircle2, MapPin, Star, Users, Wallet } from "lucide-react";
+
+/**
+ * Download / App Landing Page
+ *
+ * Store butonları, screenshot'lar, app açıklaması
+ */
 
 
 // Static generation'ı engelle

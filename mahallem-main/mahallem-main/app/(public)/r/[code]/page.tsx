@@ -1,14 +1,7 @@
-/**
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
 import { cookies } from "next/headers";
- * Referral Landing Page
- *
- * Route: /r/[code]
- *
- * Referral link'lerine gelen kullanıcıları yönlendirir ve UTM tracking yapar.
- */
 
 
 interface PageProps {

@@ -1,12 +1,5 @@
 "use client";
 
-/**
- * Available Jobs Page - Vendor'lara uygun işleri gösterir
- *
- * Bu sayfada vendor:
- * - Kendisine uygun işleri görür
- * - Her işe teklif verebilir
- */
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -20,6 +13,14 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Building2, CheckCircle2, Clock, DollarSign, MapPin, MessageSquare, Send, User } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
+
+/**
+ * Available Jobs Page - Vendor'lara uygun işleri gösterir
+ *
+ * Bu sayfada vendor:
+ * - Kendisine uygun işleri görür
+ * - Her işe teklif verebilir
+ */
 
 
 

@@ -1,14 +1,5 @@
 "use client";
 
-/**
- * Order Detail Page - Esnaf sipariş detay sayfası
- *
- * Bu sayfada esnaf:
- * - Sipariş detaylarını görür
- * - Müşteri bilgilerini görür
- * - Sipariş durumunu güncelleyebilir
- * - Müşteri ile mesajlaşabilir (yakında)
- */
 
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -18,6 +9,16 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Clock, MapPin, MessageSquare, Phone, User } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
+
+/**
+ * Order Detail Page - Esnaf sipariş detay sayfası
+ *
+ * Bu sayfada esnaf:
+ * - Sipariş detaylarını görür
+ * - Müşteri bilgilerini görür
+ * - Sipariş durumunu güncelleyebilir
+ * - Müşteri ile mesajlaşabilir (yakında)
+ */
 
 
 

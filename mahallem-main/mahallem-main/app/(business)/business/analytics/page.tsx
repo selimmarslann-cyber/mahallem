@@ -1,16 +1,17 @@
 "use client";
 
-/**
- * Business Analytics Dashboard (Comprehensive)
- *
- * Interactive charts, trend analysis, customer insights, performance metrics
- */
 
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
+
+/**
+ * Business Analytics Dashboard (Comprehensive)
+ *
+ * Interactive charts, trend analysis, customer insights, performance metrics
+ */
   AlertCircle,
   BarChart3,
   Clock,

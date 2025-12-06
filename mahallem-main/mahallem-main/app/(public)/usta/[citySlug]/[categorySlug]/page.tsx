@@ -1,9 +1,10 @@
-/**
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
 import { searchServiceCategories } from "@/lib/services/serviceSearchService";
 import { prisma } from "@/lib/db/prisma";
+
+/**
  * SEO Category + City Page
  *
  * Route: /usta/[citySlug]/[categorySlug]
