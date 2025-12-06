@@ -1,13 +1,32 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/useToast";
 import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
-import { Clock, MapPin, TrendingUp, User, Zap } from "lucide-react";
-"use client";
-
+import {
+  ArrowLeft,
+  Clock,
+  MapPin,
+  TrendingUp,
+  User,
+  Zap,
+  FileText,
+  Star,
+  MessageCircle,
+  DollarSign,
+} from "lucide-react";
+import EmptyState from "@/components/empty-state";
+import ListSkeleton from "@/components/skeletons/ListSkeleton";
+import BadgePremium from "@/components/badge-premium";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -88,6 +107,8 @@ interface MatchedVendor {
   };
 }
 
+type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
+
 export default function JobDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -162,8 +183,10 @@ export default function JobDetailPage() {
     return subService?.name || null;
   };
 
-  const getStatusBadge = (status: string) => {
-    const statusMap: Record<string, { text: string; variant: any }> = {
+  const getStatusBadge = (
+    status: string,
+  ): { text: string; variant: BadgeVariant } => {
+    const statusMap: Record<string, { text: string; variant: BadgeVariant }> = {
       PENDING: { text: "Teklif Bekleniyor", variant: "secondary" },
       ACCEPTED: { text: "Kabul Edildi", variant: "default" },
       IN_PROGRESS: { text: "İş Devam Ediyor", variant: "default" },
@@ -460,7 +483,7 @@ export default function JobDetailPage() {
                             size="sm"
                             className="flex-1"
                             onClick={() => {
-                              // Chat sayfasına yönlendir (job için chat endpoint'i gerekli)
+                              // Chat sayfasına yönlendir
                               router.push(
                                 `/jobs/${job.id}/chat?businessId=${vendor.businessId}`,
                               );
