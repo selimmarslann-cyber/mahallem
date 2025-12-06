@@ -1,212 +1,322 @@
-import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ArrowRight, Briefcase } from "lucide-react";
-import { Card, CardDescription } from "@/components/ui/card";
 "use client";
 
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Coins,
+  Copy,
+  TrendingUp,
+  MessageCircle,
+  Sparkles,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
 
-export default function BusinessLoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+interface WalletOverview {
+  currentBalance: number;
+  totalEarnings: number;
+  monthlyEarnings: number;
+  currentReferralCode: string;
+  referralLink: string;
+}
 
-  const checkAuth = useCallback(async () => {
-    try {
-      const res = await fetch("/api/auth/me", { credentials: "include" });
-      if (res.ok) {
-        const data = await res.json();
-        // Kullanıcının esnaf olup olmadığını kontrol et
-        const businessRes = await fetch(
-          `/api/businesses/owner/${data.user.id}`,
-          {
-            credentials: "include",
-          },
-        );
-        if (businessRes.ok) {
-          const business = await businessRes.json();
-          if (business) {
-            // Esnaf ise dashboard'a yönlendir
-            router.push("/business");
-          } else {
-            // Esnaf değilse bilgilendirme sayfasına yönlendir
-            router.push("/business/not-registered");
-          }
-        }
-      }
-    } catch (err) {
-      // Giriş yapılmamış, sayfada kal
-    }
-  }, [router]);
+export default function CustomerWalletPage() {
+  const [overview, setOverview] = useState<WalletOverview | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState<null | "code" | "link">(null);
 
   useEffect(() => {
-    // Eğer zaten giriş yapılmışsa kontrol et
-    checkAuth();
-  }, [checkAuth]);
+    loadData();
+  }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
+  const loadData = async () => {
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const res = await fetch("/api/referral/overview", {
         credentials: "include",
       });
-
-      const contentType = res.headers.get("content-type");
-      let data;
-
-      if (!contentType || !contentType.includes("application/json")) {
-        const text = await res.text();
-        if (text.includes("<!DOCTYPE") || text.includes("<html")) {
-          setError(
-            "Sunucu hatası. Lütfen sayfayı yenileyin ve tekrar deneyin.",
-          );
-        } else {
-          setError(`Sunucu hatası: ${text.substring(0, 100)}`);
-        }
-        setLoading(false);
-        return;
+      if (res.ok) {
+        const data = await res.json();
+        setOverview(data);
       }
-
-      try {
-        data = await res.json();
-      } catch (jsonError) {
-        setError("Sunucu yanıtı beklenmedik formatta. Lütfen tekrar deneyin.");
-        setLoading(false);
-        return;
-      }
-
-      if (!res.ok) {
-        setError(data.error || "E-posta veya şifre hatalı.");
-        setLoading(false);
-        return;
-      }
-
-      // Giriş başarılı - esnaf kontrolü yap
-      const businessRes = await fetch(`/api/businesses/owner/${data.user.id}`, {
-        credentials: "include",
-      });
-
-      if (businessRes.ok) {
-        const business = await businessRes.json();
-        if (business) {
-          // Esnaf ise dashboard'a yönlendir
-          router.push("/business");
-        } else {
-          // Esnaf değilse bilgilendirme sayfasına yönlendir
-          router.push("/business/not-registered");
-        }
-      } else {
-        // Hata durumunda da bilgilendirme sayfasına yönlendir
-        router.push("/business/not-registered");
-      }
-
-      router.refresh();
-    } catch (err: any) {
-      console.error("Login error:", err);
-      setError(
-        err.message ||
-          "Bağlantı hatası. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.",
-      );
+    } catch (err) {
+      console.error("Cüzdan verisi yüklenemedi:", err);
+    } finally {
       setLoading(false);
     }
   };
 
+  const copyToClipboard = async (text: string, type: "code" | "link") => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(type);
+      setTimeout(() => setCopied(null), 2000);
+    } catch (err) {
+      console.error("Kopyalama hatası:", err);
+    }
+  };
+
+  const shareWhatsApp = () => {
+    if (!overview) return;
+    const text = encodeURIComponent(
+      "Hizmetgo'ya katıl, kazan! Bu link ile kayıt ol: " +
+        overview.referralLink,
+    );
+    window.open(`https://wa.me/?text=${text}`, "_blank");
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div>Yükleniyor...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-              <Briefcase className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <CardTitle>Esnaf Girişi</CardTitle>
-              <CardDescription className="mt-1">
-                Esnaf hesabınızla Hizmetgo iş panelinize giriş yapın
-              </CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="p-4 text-sm text-red-700 bg-red-50 rounded-md border border-red-200">
-                <div className="font-semibold mb-1">⚠️ Giriş Başarısız</div>
-                <div className="text-red-600">{error}</div>
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 text-white">
+        <div className="max-w-md mx-auto px-4 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+          >
+            <motion.div
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+              className="inline-block mb-4"
+            >
+              <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto shadow-xl">
+                <Coins className="w-10 h-10 text-white" />
               </div>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="email">E-posta</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="ornek@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Şifre</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Şifrenizi girin"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? (
-                "Giriş yapılıyor..."
-              ) : (
-                <>
-                  Giriş Yap
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </>
-              )}
-            </Button>
-            <div className="text-center text-sm text-gray-600">
-              <span>Henüz hesabınız yok mu? </span>
-              <Link
-                href="/auth/register"
-                className="text-primary hover:underline font-semibold"
-              >
-                Kayıt Ol
-              </Link>
-            </div>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-muted-foreground">
-                  veya
-                </span>
-              </div>
-            </div>
-            <Link href="/auth/login">
-              <Button type="button" variant="outline" className="w-full">
-                Kullanıcı Girişi
-              </Button>
-            </Link>
-          </form>
-        </CardContent>
-      </Card>
+            </motion.div>
+            <h1 className="text-2xl font-bold mb-2">Cüzdanım</h1>
+            <p className="text-white/90 text-sm">
+              Kazancını takip et, arkadaşlarını davet et
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="max-w-md mx-auto px-4 py-6 space-y-6 -mt-6">
+        {/* Üst Kartlar */}
+        <div className="grid grid-cols-1 gap-4">
+          {/* Kullanılabilir Bakiye */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            whileHover={{ scale: 1.02, y: -4 }}
+          >
+            <Card className="border-2 border-amber-200 shadow-lg bg-gradient-to-br from-white to-amber-50">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-semibold text-slate-700">
+                  Kullanılabilir Bakiyen
+                </CardTitle>
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                >
+                  <Coins className="h-5 w-5 text-amber-600" />
+                </motion.div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-slate-900 mb-1">
+                  {overview
+                    ? overview.currentBalance.toFixed(2)
+                    : "0.00"}{" "}
+                  ₺
+                </div>
+                <p className="text-xs text-slate-500 mt-1">
+                  Çekilebilir bakiye
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Toplam Referral Kazancı */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            whileHover={{ scale: 1.02, y: -4 }}
+          >
+            <Card className="border-2 border-emerald-200 shadow-lg bg-gradient-to-br from-white to-emerald-50">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-semibold text-slate-700">
+                  Referral Kazancın
+                </CardTitle>
+                <TrendingUp className="h-5 w-5 text-emerald-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-slate-900 mb-1">
+                  {overview
+                    ? overview.totalEarnings.toFixed(2)
+                    : "0.00"}{" "}
+                  ₺
+                </div>
+                <Link href="/referral">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2 text-xs text-emerald-600 hover:text-emerald-700"
+                  >
+                    Detayları gör →
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Aylık Referral Kazancı */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            whileHover={{ scale: 1.02, y: -4 }}
+          >
+            <Card className="border-2 border-blue-200 shadow-lg bg-gradient-to-br from-white to-blue-50">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-semibold text-slate-700">
+                  Bu Ay Referral Kazancın
+                </CardTitle>
+                <Sparkles className="h-5 h-5 text-blue-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-slate-900 mb-1">
+                  {overview
+                    ? overview.monthlyEarnings.toFixed(2)
+                    : "0.00"}{" "}
+                  ₺
+                </div>
+                <p className="text-xs text-slate-500 mt-1">
+                  Bu takvim ayındaki kazanç
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+
+        {/* Referral Blok */}
+        {overview && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card className="border-2 border-amber-200 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-t-lg">
+                <CardTitle className="text-lg font-bold text-slate-900">
+                  Arkadaşın sipariş verdikçe kazanç elde et
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-600 mb-2">Referral Kodun</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={overview.currentReferralCode}
+                      readOnly
+                      className="flex-1 px-3 py-2 border rounded-md bg-gray-50 font-mono font-semibold text-sm"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        copyToClipboard(overview.currentReferralCode, "code")
+                      }
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  {copied === "code" && (
+                    <p className="text-[11px] text-emerald-600 mt-1">
+                      Kod kopyalandı ✅
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-600 mb-2">Referral Linkin</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={overview.referralLink}
+                      readOnly
+                      className="flex-1 px-3 py-2 border rounded-md bg-gray-50 text-xs"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        copyToClipboard(overview.referralLink, "link")
+                      }
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  {copied === "link" && (
+                    <p className="text-[11px] text-emerald-600 mt-1">
+                      Link kopyalandı ✅
+                    </p>
+                  )}
+                </div>
+
+                <Button
+                  variant="default"
+                  className="w-full"
+                  onClick={shareWhatsApp}
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  WhatsApp&apos;ta Paylaş
+                </Button>
+
+                {/* 3 Adımlı Açıklama */}
+                <div className="pt-4 border-t space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">
+                      1
+                    </div>
+                    <p className="text-sm text-gray-700 pt-0.5">
+                      Linkini arkadaşlarınla paylaş
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">
+                      2
+                    </div>
+                    <p className="text-sm text-gray-700 pt-0.5">
+                      Onlar bu uygulamadan sipariş verdikçe
+                    </p>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold flex-shrink-0">
+                      3
+                    </div>
+                    <p className="text-sm text-gray-700 pt-0.5">
+                      Platform komisyonundan pay kazan
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* Alt Buton */}
+        <Link href="/referral">
+          <Button variant="outline" className="w-full">
+            Referral kazanç geçmişini gör
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 }
