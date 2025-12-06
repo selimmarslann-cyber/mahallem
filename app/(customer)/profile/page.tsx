@@ -1,11 +1,21 @@
+"use client";
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, CheckCircle2, MapPin, User } from "lucide-react";
-"use client";
-
+import {
+  Bell,
+  CheckCircle2,
+  MapPin,
+  User,
+  ChevronRight,
+  CreditCard,
+  HelpCircle,
+  Info,
+  LogOut,
+} from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -26,7 +36,7 @@ export default function CustomerProfilePage() {
         setHasBusiness(!!data);
       }
     } catch (err) {
-      // İşletme yok
+      // İşletme yok veya hata
     }
   }, []);
 
@@ -36,7 +46,9 @@ export default function CustomerProfilePage() {
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
-        checkBusiness(data.user.id);
+        if (data.user?.id) {
+          checkBusiness(data.user.id);
+        }
       }
     } catch (err) {
       console.error("Kullanıcı verisi yüklenemedi:", err);
@@ -64,8 +76,11 @@ export default function CustomerProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <AnimatedLoadingLogo />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin mx-auto" />
+          <p className="mt-4 text-gray-500">Yükleniyor...</p>
+        </div>
       </div>
     );
   }
@@ -196,7 +211,7 @@ export default function CustomerProfilePage() {
               >
                 <div className="flex items-center gap-3">
                   <HelpCircle className="w-5 h-5 text-gray-400" />
-                  <span>Yardım & Destek</span>
+                  <span>Yardım &amp; Destek</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="text-xs">
