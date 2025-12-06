@@ -1,12 +1,32 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Building2, CheckCircle2, Gift, Share2, TrendingUp, Users, Zap } from "lucide-react";
-"use client";
-
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ArrowRight,
+  Award,
+  Building2,
+  CheckCircle2,
+  Crown,
+  Gift,
+  Globe,
+  Share2,
+  Shield,
+  Target,
+  TrendingUp,
+  Users,
+  Zap,
+} from "lucide-react";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -54,7 +74,8 @@ export default function PartnerPage() {
             Sıfır Yatırımla Ortak Ol
           </h1>
           <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-            Hizmetgo'de her işlemden pay kazanın, ömür boyu kazanç sağlayın
+            Hizmetgo&apos;de her işlemden pay kazanın, ömür boyu kazanç
+            sağlayın
           </p>
         </div>
         {/* Hero Section */}
@@ -75,8 +96,9 @@ export default function PartnerPage() {
               </div>
               <div className="space-y-5 text-base leading-relaxed">
                 <p className="text-lg font-semibold text-gray-900">
-                  Hizmetgo'de sadece hizmet alıp vermiyorsunuz; mahallenizde
-                  dönen her işten, kurduğunuz ağ kadar pay alıyorsunuz.
+                  Hizmetgo&apos;de sadece hizmet alıp vermiyorsunuz;
+                  mahallenizde dönen her işten, kurduğunuz ağ kadar pay
+                  alıyorsunuz.
                 </p>
                 <p className="text-gray-700">
                   Ne şirket kurmanıza gerek var, ne sermaye bağlamanıza. Sadece
@@ -211,10 +233,11 @@ export default function PartnerPage() {
           <Card className="border-2 border-primary/30 shadow-lg">
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
-                <TrendingUp className="w-7 h-7 text-primary" />3 Gelir Modeli
+                <TrendingUp className="w-7 h-7 text-primary" />
+                3 Gelir Modeli
               </CardTitle>
               <CardDescription className="text-base text-gray-600 leading-relaxed mt-2">
-                Hizmetgo'de 3 farklı yoldan kazanç sağlayabilirsiniz
+                Hizmetgo&apos;de 3 farklı yoldan kazanç sağlayabilirsiniz
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -370,7 +393,7 @@ export default function PartnerPage() {
                   <div className="text-sm mb-4">
                     <p className="font-semibold mb-2">Durum:</p>
                     <ul className="list-disc list-inside space-y-1 text-gray-700">
-                      <li>1.000 TL'lik bir sipariş yapıldı</li>
+                      <li>1.000 TL&apos;lik bir sipariş yapıldı</li>
                       <li>Platform komisyonu: %10 = 100 TL</li>
                       <li>3 seviyeli referral zinciri (L1, L2, L3)</li>
                     </ul>
@@ -404,7 +427,7 @@ export default function PartnerPage() {
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-xs pt-2 border-t font-semibold">
                       <div>Toplam Dağıtım</div>
-                      <div></div>
+                      <div />
                       <div className="text-right text-primary text-base">
                         21.00 TL
                       </div>
@@ -475,7 +498,7 @@ export default function PartnerPage() {
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-xs pt-2 border-t font-semibold text-base">
                       <div>TOPLAM AYLIK KAZANÇ</div>
-                      <div></div>
+                      <div />
                       <div className="text-right text-primary">2.500 TL/ay</div>
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-xs pt-1 text-gray-600">
@@ -506,8 +529,8 @@ export default function PartnerPage() {
                   <li className="flex items-start gap-2">
                     <span className="text-primary font-bold">•</span>
                     <span>
-                      <strong>Rank yükseldikçe pay artar:</strong> Rank 0'dan
-                      Rank 4'e çıktığınızda, aynı fee'den %20 daha fazla
+                      <strong>Rank yükseldikçe pay artar:</strong> Rank 0&apos;dan
+                      Rank 4&apos;e çıktığınızda, aynı fee&apos;den %20 daha fazla
                       kazanırsınız.
                     </span>
                   </li>
@@ -533,8 +556,8 @@ export default function PartnerPage() {
                       <strong>
                         Network büyüdükçe kazanç exponansiyel artar:
                       </strong>{" "}
-                      L2, L3 network'ünüz büyüdükçe, kazançlarınız katlanarak
-                      artar.
+                      L2, L3 network&apos;ünüz büyüdükçe, kazançlarınız
+                      katlanarak artar.
                     </span>
                   </li>
                 </ul>
@@ -560,8 +583,8 @@ export default function PartnerPage() {
               <p>
                 <strong className="text-foreground">Lifetime Earnings:</strong>{" "}
                 Davet ettiğiniz kullanıcılar ve onların davet ettikleri kişiler,
-                ağınızdan çıkmadığı sürece <strong>ömür boyu</strong> size
-                kazanç sağlar.
+                ağınızdan çıkmadığı sürece{" "}
+                <strong>ömür boyu</strong> size kazanç sağlar.
               </p>
               <p>
                 Her yeni sipariş, her yeni işlem - ağınızdaki herkesin yaptığı
@@ -679,7 +702,7 @@ export default function PartnerPage() {
                   <p>
                     <strong className="text-foreground">Strateji:</strong>{" "}
                     Birkaç aktif restoran/market kayıt ettirerek aylık
-                    kazancınızı binlerce TL'ye çıkarabilirsiniz. Bu, normal
+                    kazancınızı binlerce TL&apos;ye çıkarabilirsiniz. Bu, normal
                     kullanıcı kayıt etmekten çok daha verimlidir.
                   </p>
                 </div>
@@ -717,8 +740,8 @@ export default function PartnerPage() {
                     Mahalle Lideri (1M+ GMV)
                   </h5>
                   <p className="text-xs">
-                    Ağınızın toplam cirosu 1 milyon TL'yi geçtiğinde +0.5% bonus
-                    kazanırsınız.
+                    Ağınızın toplam cirosu 1 milyon TL&apos;yi geçtiğinde +0.5%
+                    bonus kazanırsınız.
                   </p>
                 </div>
                 <div className="bg-green-50 rounded-lg p-4">
@@ -727,7 +750,7 @@ export default function PartnerPage() {
                     İlçe Yöneticisi (10M+ GMV)
                   </h5>
                   <p className="text-xs">
-                    10 milyon TL'yi geçtiğinizde +1.0% bonus ve ilçe
+                    10 milyon TL&apos;yi geçtiğinizde +1.0% bonus ve ilçe
                     yöneticiliği adaylığı.
                   </p>
                 </div>
@@ -737,8 +760,8 @@ export default function PartnerPage() {
                     İl Yöneticisi (100M+ GMV)
                   </h5>
                   <p className="text-xs">
-                    100 milyon TL'yi geçtiğinizde +1.5% bonus ve il yöneticiliği
-                    adaylığı.
+                    100 milyon TL&apos;yi geçtiğinizde +1.5% bonus ve il
+                    yöneticiliği adaylığı.
                   </p>
                 </div>
                 <div className="bg-yellow-50 rounded-lg p-4">
@@ -747,7 +770,7 @@ export default function PartnerPage() {
                     Ülke Yöneticisi (500M+ GMV)
                   </h5>
                   <p className="text-xs">
-                    500 milyon TL'yi geçtiğinizde +2.0% bonus ve ülke
+                    500 milyon TL&apos;yi geçtiğinizde +2.0% bonus ve ülke
                     yöneticiliği adaylığı.
                   </p>
                 </div>
@@ -834,7 +857,7 @@ export default function PartnerPage() {
                     Tüm kazançlar gerçek hizmet siparişlerinden doğar
                   </p>
                   <p className="text-muted-foreground text-xs mt-1">
-                    Platform fee'sinden pay alırsınız
+                    Platform fee&apos;sinden pay alırsınız
                   </p>
                 </div>
               </div>
