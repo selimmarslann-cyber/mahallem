@@ -1,14 +1,22 @@
+"use client";
+
+import type { FormEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/lib/hooks/useToast";
 import { Lock, Shield, User } from "lucide-react";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-"use client";
-
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -29,8 +37,8 @@ export default function AdminLoginPage() {
           router.push("/admin/dashboard");
         }
       }
-    } catch (err) {
-      // Giriş yapılmamış
+    } catch {
+      // Giriş yapılmamış veya hata
     }
   }, [router]);
 
@@ -38,7 +46,7 @@ export default function AdminLoginPage() {
     checkAuth();
   }, [checkAuth]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -61,7 +69,7 @@ export default function AdminLoginPage() {
       success("Admin paneline yönlendiriliyorsunuz...");
       router.push("/admin/dashboard");
       router.refresh();
-    } catch (err: any) {
+    } catch {
       error("Giriş yapılamadı. Lütfen tekrar deneyin.");
       setLoading(false);
     }
