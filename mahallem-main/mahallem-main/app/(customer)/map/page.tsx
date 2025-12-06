@@ -672,7 +672,3 @@ export default function MapPage() {
   );
 }
 
-
-
-
-

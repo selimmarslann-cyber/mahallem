@@ -775,7 +775,3 @@ export default function BusinessRegisterPage() {
   );
 }
 
-
-
-
-

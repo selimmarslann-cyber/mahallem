@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
+import SupportChatWidget from "@/components/support/SupportChatWidget";
 
 
 // Static generation'ı engelle
@@ -24,8 +25,4 @@ export default function ChatPage() {
     </div>
   );
 }
-
-
-
-
 

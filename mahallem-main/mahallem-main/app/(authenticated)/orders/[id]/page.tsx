@@ -256,7 +256,3 @@ export default function OrderDetailPage() {
   );
 }
 
-
-
-
-

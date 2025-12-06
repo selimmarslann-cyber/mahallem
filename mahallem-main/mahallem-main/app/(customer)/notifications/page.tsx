@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/lib/hooks/useToast";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bell, CheckCircle2 } from "lucide-react";
+import { AlertCircle, ArrowLeft, Bell, Briefcase, CheckCircle2, DollarSign, Gift, RefreshCw, ShoppingBag, Star, X } from "lucide-react";
+import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 /**
  * Notification Center Page
@@ -225,7 +226,7 @@ export default function NotificationsPage() {
             </Button>
             {unreadCount > 0 && (
               <Button variant="outline" size="sm" onClick={markAllAsRead}>
-                <CheckCheck className="w-4 h-4 mr-2" />
+                <CheckCircle2 className="w-4 h-4 mr-2" />
                 Tümünü Okundu İşaretle
               </Button>
             )}
@@ -387,8 +388,4 @@ export default function NotificationsPage() {
     </div>
   );
 }
-
-
-
-
 

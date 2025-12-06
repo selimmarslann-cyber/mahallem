@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { X } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { useCartStore } from "@/lib/store/useCartStore";
+import Link from "next/link";
 
 
 // Static generation'ı engelle
@@ -193,8 +194,4 @@ export default function CartPage() {
     </div>
   );
 }
-
-
-
-
 

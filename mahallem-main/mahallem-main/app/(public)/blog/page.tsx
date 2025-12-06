@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { Metadata } from "next";
 import { ArrowRight, BookOpen, Calendar, Clock, Tag, User } from "lucide-react";
 
 export const metadata: Metadata = {

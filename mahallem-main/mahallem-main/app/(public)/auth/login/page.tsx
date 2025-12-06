@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label";
 import { getMe, login } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { useToast } from "@/lib/hooks/useToast";
-import { ArrowRight, Key, Mail, Phone, UserPlus } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, Mail, Phone, UserPlus } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 
 // Static generation'ı engelle
@@ -258,8 +259,4 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
-
-
 
