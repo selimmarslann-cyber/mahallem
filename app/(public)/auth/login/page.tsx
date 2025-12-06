@@ -1,16 +1,28 @@
-import { useCallback, useEffect, useState } from "react";
+"use client";
+
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  type FormEvent,
+  type CSSProperties,
+} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getMe, login } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { useToast } from "@/lib/hooks/useToast";
-import { ArrowRight, Key, Mail, Phone, UserPlus } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-"use client";
-
+import { ArrowRight, Mail, Phone, UserPlus } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -18,7 +30,7 @@ export const dynamic = "force-dynamic";
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { error: showError } = useToast();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -34,7 +46,7 @@ export default function LoginPage() {
         searchParams.get("redirect") ||
         (isBusiness ? "/business/jobs" : "/account");
       router.push(redirect);
-    } catch (err) {
+    } catch {
       // Giriş yapılmamış, sayfada kal
     }
   }, [router, searchParams, isBusiness]);
@@ -43,7 +55,7 @@ export default function LoginPage() {
     checkAuth();
   }, [checkAuth]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
@@ -77,7 +89,7 @@ export default function LoginPage() {
         router.push(redirect);
       }
       router.refresh();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Login error:", err);
 
       if (err instanceof ApiError) {
@@ -106,12 +118,14 @@ export default function LoginPage() {
             <div className="flex items-baseline gap-1 justify-center mx-auto mb-4">
               <span
                 className="text-2xl font-bold text-black lowercase"
-                style={{
-                  fontFamily:
-                    "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
-                  letterSpacing: "-0.02em",
-                  fontWeight: 700,
-                }}
+                style={
+                  {
+                    fontFamily:
+                      "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif",
+                    letterSpacing: "-0.02em",
+                    fontWeight: 700,
+                  } as CSSProperties
+                }
               >
                 hizmet
               </span>
@@ -125,7 +139,7 @@ export default function LoginPage() {
                     fontWeight: 700,
                     color: "#FF6000",
                     WebkitTextStroke: "2px white",
-                  } as React.CSSProperties
+                  } as CSSProperties
                 }
               >
                 go
@@ -150,6 +164,7 @@ export default function LoginPage() {
               )}
             </CardDescription>
           </CardHeader>
+
           <CardContent className="space-y-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
@@ -158,6 +173,7 @@ export default function LoginPage() {
                   <div className="text-red-600">{error}</div>
                 </div>
               )}
+
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-slate-900 font-semibold">
                   E-posta
@@ -175,6 +191,7 @@ export default function LoginPage() {
                   />
                 </div>
               </div>
+
               <div className="space-y-2">
                 <Label
                   htmlFor="password"
@@ -192,6 +209,7 @@ export default function LoginPage() {
                   className="h-12 border-2 border-slate-200 focus:border-[#FF6000]"
                 />
               </div>
+
               <Button
                 type="submit"
                 className="w-full h-12 bg-[#FF6000] hover:bg-[#FF5500] text-white font-semibold"
@@ -218,6 +236,7 @@ export default function LoginPage() {
                 E-posta ile Giriş (Kod)
               </Button>
             </Link>
+
             <Link href="/auth/phone-login">
               <Button
                 type="button"
