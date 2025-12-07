@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 import { useEffect } from "react";
 
 type RootErrorProps = {
