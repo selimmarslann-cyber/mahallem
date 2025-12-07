@@ -1,5 +1,10 @@
 "use client";
 
+
+
+
+import React from "react";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -9,10 +14,14 @@ import { Label } from "@/components/ui/label";
 import { getMe, login } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { useToast } from "@/lib/hooks/useToast";
-import { ArrowRight, Mail, Phone, UserPlus } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
-
+import { ArrowRight, Key, Mail, Phone, UserPlus } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -220,6 +229,7 @@ export default function LoginPage() {
                 E-posta ile Giriş (Kod)
               </Button>
             </Link>
+
             <Link href="/auth/phone-login">
               <Button
                 type="button"
@@ -259,4 +269,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

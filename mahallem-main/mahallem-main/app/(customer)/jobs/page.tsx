@@ -1,18 +1,60 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Calendar, CheckCircle2, Clock, MapPin, Phone, User, Zap } from "lucide-react";
+import {
+  Select,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+} from "@/components/ui/select";
+import {
+  Briefcase,
+  Calendar,
+  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  Clock,
+  DollarSign,
+  Filter,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Send,
+  User,
+  Zap,
+} from "lucide-react";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
-import { getMatchingVendors, haversineDistanceKm } from "@/lib/utils/matching";
+import { haversineDistanceKm } from "@/lib/utils/matching";
 import { useToast } from "@/lib/hooks/useToast";
-import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ListSkeleton from "@/components/ui/ListSkeleton";
+import EmptyState from "@/components/ui/empty-state";
+import type { Job } from "@/lib/types/domain";
 
+// Bu sayfada kullanacağımız geniş job tipi
+// Job üstüne dinamik alanlara da izin veriyoruz ki TS bütün UI alanlarına karışmasın
+type CustomerJob = Job & {
+  title?: string;
+  description?: string;
+  type?: string;
+  priceOffered?: number;
+  distanceKm?: number;
+  listingDetails?: any;
+  keywords?: Array<{ id: string } | string>;
+  location?: { lat: number; lng: number };
+};
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -20,8 +62,9 @@ export const dynamic = "force-dynamic";
 export default function CustomerJobsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { currentUser, users } = useHizmetgoStore();
+  const { currentUser } = useHizmetgoStore();
   const { success, error } = useToast();
+
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string>("my-jobs");
   const [user, setUser] = useState<any>(null);
@@ -32,9 +75,8 @@ export default function CustomerJobsPage() {
   const [jobOfferCounts, setJobOfferCounts] = useState<Record<string, number>>(
     {},
   );
-  const [jobs, setJobs] = useState<
-    (Job & { distanceKm?: number; type?: string; listingDetails?: any })[]
-  >([]);
+
+  const [jobs, setJobs] = useState<CustomerJob[]>([]);
   const [expandedJobs, setExpandedJobs] = useState<Set<string>>(new Set());
 
   // Filters
@@ -45,7 +87,6 @@ export default function CustomerJobsPage() {
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Client-side'da "şimdiki zaman"ı belirle (SSR ve ilk client render tutarlı olsun)
     setNow(new Date());
   }, []);
 
@@ -55,8 +96,8 @@ export default function CustomerJobsPage() {
 
     try {
       const counts: Record<string, number> = {};
-      // Batch olarak teklif sayılarını çek (max 5 paralel)
       const batchSize = 5;
+
       for (let i = 0; i < jobIds.length; i += batchSize) {
         const batch = jobIds.slice(i, i + batchSize);
         await Promise.all(
@@ -69,12 +110,13 @@ export default function CustomerJobsPage() {
                 const data = await res.json();
                 counts[jobId] = data.job?.offers?.length || 0;
               }
-            } catch (err) {
+            } catch {
               // Sessizce hata yok say
             }
           }),
         );
       }
+
       setJobOfferCounts(counts);
     } catch (err) {
       console.error("Teklif sayıları yüklenemedi:", err);
@@ -136,7 +178,7 @@ export default function CustomerJobsPage() {
       const res = await fetch("/api/jobs/my-jobs", { credentials: "include" });
       if (res.ok) {
         const data = await res.json();
-        setJobs(data.jobs || []);
+        setJobs((data.jobs || []) as CustomerJob[]);
       } else {
         console.error("Jobs yüklenemedi");
       }
@@ -158,9 +200,7 @@ export default function CustomerJobsPage() {
     const created = searchParams.get("created");
     if (created === "true") {
       setShowCelebration(true);
-      // URL'den parametreyi temizle
       router.replace("/jobs", { scroll: false });
-      // 5 saniye sonra animasyonu kapat
       setTimeout(() => {
         setShowCelebration(false);
       }, 5000);
@@ -172,21 +212,20 @@ export default function CustomerJobsPage() {
   }, [searchParams, loadUser, getUserLocation, loadJobs, router]);
 
   const isVendor = currentUser?.role === "vendor" || user?.role === "vendor";
-  const isCustomer = currentUser?.role === "customer" || !isVendor;
 
   // Customer jobs - API'den zaten müşterinin jobs'ları geliyor
-  const customerJobs: (Job & { distanceKm?: number })[] = jobs;
+  const customerJobs: CustomerJob[] = jobs;
 
   // Nearby jobs (10 km radius with skill matching)
   const userSkills = currentUser?.skills || user?.skills || [];
   const userSkillIds = userSkills.map((s: any) => s.id || s);
 
-  const nearbyJobs = jobs
+  const nearbyJobs: CustomerJob[] = jobs
     .filter((job) => {
       // Only open instant jobs
-      if (job.status !== "open" || job.type !== "instant") return false;
+      if (job.status !== "PENDING" || job.type !== "instant") return false;
 
-      // Skill matching: job keywords must match user skills
+      // Skill matching
       if (userSkillIds.length > 0 && job.keywords) {
         const jobKeywordIds = job.keywords.map((k: any) => k.id || k);
         const hasSkillMatch = userSkillIds.some((skillId: string) =>
@@ -204,28 +243,26 @@ export default function CustomerJobsPage() {
       return true;
     })
     .map((job) => {
-      // Calculate distance for display
       if (userLocation && job.location) {
         return {
           ...job,
           distanceKm: haversineDistanceKm(userLocation, job.location),
-        } as Job & { distanceKm: number };
+        };
       }
-      return job as Job & { distanceKm?: number };
+      return job;
     })
     .sort((a, b) => {
-      // Sort by distance if available
-      const aDist = (a as any).distanceKm;
-      const bDist = (b as any).distanceKm;
+      const aDist = a.distanceKm;
+      const bDist = b.distanceKm;
       if (aDist && bDist) {
         return aDist - bDist;
       }
       return 0;
-    }) as (Job & { distanceKm?: number })[];
+    });
 
   // Apply filters - SSR-safe: now state kullan
   const getFilteredJobs = useCallback(
-    (jobList: (Job & { distanceKm?: number })[]) => {
+    (jobList: CustomerJob[]) => {
       let filtered = [...jobList];
 
       if (statusFilter !== "all") {
@@ -233,7 +270,6 @@ export default function CustomerJobsPage() {
       }
 
       if (dateFilter !== "all" && now) {
-        // Sadece client-side'da "now" varsa tarih filtresi uygula
         filtered = filtered.filter((j) => {
           const jobDate = new Date(j.createdAt);
           if (dateFilter === "today") {
@@ -242,7 +278,9 @@ export default function CustomerJobsPage() {
             const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
             return jobDate >= weekAgo;
           } else if (dateFilter === "month") {
-            const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+            const monthAgo = new Date(
+              now.getTime() - 30 * 24 * 60 * 60 * 1000,
+            );
             return jobDate >= monthAgo;
           }
           return true;
@@ -303,18 +341,17 @@ export default function CustomerJobsPage() {
 
       if (res.ok) {
         success("Başvurunuz gönderildi!");
-        // Refresh jobs
         loadUser();
       } else {
         const data = await res.json();
         error(data.message || "Başvuru gönderilemedi");
       }
-    } catch (err) {
+    } catch {
       error("Başvuru gönderilemedi");
     }
   };
 
-  // Teklif sayılarını yükle - useEffect'i early return'lerden önce taşıdık
+  // Teklif sayılarını yükle
   useEffect(() => {
     if (loading || isVendor) return;
 
@@ -483,17 +520,18 @@ export default function CustomerJobsPage() {
               filteredMyJobs.map((job) => {
                 const statusInfo = getStatusBadge(job.status);
                 const isExpanded = expandedJobs.has(job.id);
-                // Check if this is a listing based on listingDetails (not type, since JobType doesn't include 'listing')
-                const jobWithDetails = job as typeof job & {
-                  listingDetails?: any;
-                };
+                const jobWithDetails = job as CustomerJob;
                 const isListing = !!jobWithDetails.listingDetails;
 
                 return (
                   <motion.div
                     key={job.id}
                     whileHover={{ y: -2 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 400,
+                      damping: 17,
+                    }}
                   >
                     <Card className="border-2 border-gray-200 hover:border-[#FF6000]/30 hover:shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-all bg-white">
                       <CardContent className="p-6">
@@ -525,7 +563,9 @@ export default function CustomerJobsPage() {
                               {job.title || "İş Talebi"}
                             </h3>
                             <p
-                              className={`text-sm text-slate-600 mb-4 ${!isExpanded ? "line-clamp-2" : ""}`}
+                              className={`text-sm text-slate-600 mb-4 ${
+                                !isExpanded ? "line-clamp-2" : ""
+                              }`}
                             >
                               {job.description}
                             </p>
@@ -534,248 +574,254 @@ export default function CustomerJobsPage() {
                             {isExpanded && (
                               <div className="mt-4 pt-4 border-t border-slate-200 space-y-4">
                                 {/* Listing Detayları */}
-                                {isListing && jobWithDetails.listingDetails && (
-                                  <div className="space-y-3">
-                                    {jobWithDetails.listingDetails
-                                      .serviceCategory && (
-                                      <div>
-                                        <span className="text-xs font-medium text-slate-500">
-                                          Kategori:
-                                        </span>
-                                        <p className="text-sm text-slate-900">
-                                          {
-                                            jobWithDetails.listingDetails
-                                              .serviceCategory.name
-                                          }
-                                        </p>
-                                      </div>
-                                    )}
-                                    {jobWithDetails.listingDetails.level && (
-                                      <div>
-                                        <span className="text-xs font-medium text-slate-500">
-                                          Level:
-                                        </span>
-                                        <Badge className="ml-2 bg-brand-100 text-brand-700">
-                                          L{jobWithDetails.listingDetails.level}
-                                        </Badge>
-                                      </div>
-                                    )}
-                                    {jobWithDetails.listingDetails.leadFee && (
-                                      <div>
-                                        <span className="text-xs font-medium text-slate-500">
-                                          İletişim Açma Ücreti:
-                                        </span>
-                                        <p className="text-sm text-slate-900 font-semibold">
-                                          {
-                                            jobWithDetails.listingDetails
-                                              .leadFee
-                                          }{" "}
-                                          TL
-                                        </p>
-                                      </div>
-                                    )}
-                                    {jobWithDetails.listingDetails.date && (
-                                      <div className="flex items-center gap-2">
-                                        <Calendar className="w-4 h-4 text-slate-400" />
-                                        <span className="text-sm text-slate-600">
-                                          {jobWithDetails.listingDetails.date}
-                                        </span>
-                                      </div>
-                                    )}
-                                    {jobWithDetails.listingDetails.address && (
-                                      <div className="flex items-start gap-2">
-                                        <MapPin className="w-4 h-4 text-slate-400 mt-0.5" />
-                                        <span className="text-sm text-slate-600">
-                                          {
-                                            jobWithDetails.listingDetails
-                                              .address
-                                          }
-                                        </span>
-                                      </div>
-                                    )}
-                                    {jobWithDetails.listingDetails
-                                      .priceRange && (
-                                      <div className="flex items-center gap-2">
-                                        <DollarSign className="w-4 h-4 text-slate-400" />
-                                        <span className="text-sm text-slate-600">
-                                          {
-                                            jobWithDetails.listingDetails
-                                              .priceRange
-                                          }
-                                        </span>
-                                      </div>
-                                    )}
-                                    {jobWithDetails.listingDetails.priority && (
-                                      <div>
-                                        <span className="text-xs font-medium text-slate-500">
-                                          Öncelik:
-                                        </span>
-                                        <Badge className="ml-2">
-                                          {
-                                            jobWithDetails.listingDetails
-                                              .priority
-                                          }
-                                        </Badge>
-                                      </div>
-                                    )}
-
-                                    {/* Profil ve İletişim Bilgileri */}
-                                    <div className="pt-3 border-t border-slate-200 space-y-2">
-                                      {job.customerId && (
-                                        <Link
-                                          href={`/profile/${job.customerId}`}
-                                        >
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
-                                            className="w-full"
-                                          >
-                                            <User className="w-4 h-4 mr-2" />
-                                            Profili Görüntüle
-                                          </Button>
-                                        </Link>
+                                {isListing &&
+                                  jobWithDetails.listingDetails && (
+                                    <div className="space-y-3">
+                                      {jobWithDetails.listingDetails
+                                        .serviceCategory && (
+                                        <div>
+                                          <span className="text-xs font-medium text-slate-500">
+                                            Kategori:
+                                          </span>
+                                          <p className="text-sm text-slate-900">
+                                            {
+                                              jobWithDetails.listingDetails
+                                                .serviceCategory.name
+                                            }
+                                          </p>
+                                        </div>
+                                      )}
+                                      {jobWithDetails.listingDetails.level && (
+                                        <div>
+                                          <span className="text-xs font-medium text-slate-500">
+                                            Level:
+                                          </span>
+                                          <Badge className="ml-2 bg-brand-100 text-brand-700">
+                                            {
+                                              jobWithDetails.listingDetails
+                                                .level
+                                            }
+                                          </Badge>
+                                        </div>
+                                      )}
+                                      {jobWithDetails.listingDetails
+                                        .leadFee && (
+                                        <div>
+                                          <span className="text-xs font-medium text-slate-500">
+                                            İletişim Açma Ücreti:
+                                          </span>
+                                          <p className="text-sm text-slate-900 font-semibold">
+                                            {
+                                              jobWithDetails.listingDetails
+                                                .leadFee
+                                            }{" "}
+                                            TL
+                                          </p>
+                                        </div>
+                                      )}
+                                      {jobWithDetails.listingDetails.date && (
+                                        <div className="flex items-center gap-2">
+                                          <Calendar className="w-4 h-4 text-slate-400" />
+                                          <span className="text-sm text-slate-600">
+                                            {jobWithDetails.listingDetails.date}
+                                          </span>
+                                        </div>
+                                      )}
+                                      {jobWithDetails.listingDetails
+                                        .address && (
+                                        <div className="flex items-start gap-2">
+                                          <MapPin className="w-4 h-4 text-slate-400 mt-0.5" />
+                                          <span className="text-sm text-slate-600">
+                                            {
+                                              jobWithDetails.listingDetails
+                                                .address
+                                            }
+                                          </span>
+                                        </div>
+                                      )}
+                                      {jobWithDetails.listingDetails
+                                        .priceRange && (
+                                        <div className="flex items-center gap-2">
+                                          <DollarSign className="w-4 h-4 text-slate-400" />
+                                          <span className="text-sm text-slate-600">
+                                            {
+                                              jobWithDetails.listingDetails
+                                                .priceRange
+                                            }
+                                          </span>
+                                        </div>
+                                      )}
+                                      {jobWithDetails.listingDetails
+                                        .priority && (
+                                        <div>
+                                          <span className="text-xs font-medium text-slate-500">
+                                            Öncelik:
+                                          </span>
+                                          <Badge className="ml-2">
+                                            {
+                                              jobWithDetails.listingDetails
+                                                .priority
+                                            }
+                                          </Badge>
+                                        </div>
                                       )}
 
-                                      {/* İletişim Bilgileri */}
-                                      {(() => {
-                                        // Kendi ilanını gören kullanıcı için özel kontrol
-                                        const isOwnListing =
-                                          job.customerId ===
-                                          (currentUser?.id || user?.id);
+                                      {/* Profil ve İletişim Bilgileri */}
+                                      <div className="pt-3 border-t border-slate-200 space-y-2">
+                                        {job.customerId && (
+                                          <Link
+                                            href={`/profile/${job.customerId}`}
+                                          >
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              className="w-full"
+                                            >
+                                              <User className="w-4 h-4 mr-2" />
+                                              Profili Görüntüle
+                                            </Button>
+                                          </Link>
+                                        )}
 
-                                        // Kendi ilanıysa veya ödeme yapılmışsa iletişim bilgilerini göster
-                                        if (
-                                          isOwnListing ||
-                                          (jobWithDetails.listingDetails
-                                            ?.canViewContact &&
-                                            jobWithDetails.listingDetails
-                                              ?.contact)
-                                        ) {
-                                          // Kendi ilanıysa kullanıcı bilgilerini çek
-                                          const contactInfo =
-                                            isOwnListing && user
-                                              ? {
-                                                  customerName:
-                                                    user.name || "Kullanıcı",
-                                                  customerEmail:
-                                                    user.email || "",
-                                                }
-                                              : jobWithDetails.listingDetails
-                                                  ?.contact;
+                                        {/* İletişim Bilgileri */}
+                                        {(() => {
+                                          const isOwnListing =
+                                            job.customerId ===
+                                            (currentUser?.id || user?.id);
 
-                                          return (
-                                            <div className="bg-green-50 border border-green-200 rounded-lg p-3 space-y-2">
-                                              <div className="flex items-center gap-2 text-green-700">
-                                                <CheckCircle2 className="w-4 h-4" />
-                                                <span className="text-sm font-medium">
-                                                  İletişim Bilgileri
-                                                </span>
+                                          if (
+                                            isOwnListing ||
+                                            (jobWithDetails.listingDetails
+                                              ?.canViewContact &&
+                                              jobWithDetails.listingDetails
+                                                ?.contact)
+                                          ) {
+                                            const contactInfo =
+                                              isOwnListing && user
+                                                ? {
+                                                    customerName:
+                                                      user.name || "Kullanıcı",
+                                                    customerEmail:
+                                                      user.email || "",
+                                                  }
+                                                : jobWithDetails.listingDetails
+                                                    ?.contact;
+
+                                            return (
+                                              <div className="bg-green-50 border border-green-200 rounded-lg p-3 space-y-2">
+                                                <div className="flex items-center gap-2 text-green-700">
+                                                  <CheckCircle2 className="w-4 h-4" />
+                                                  <span className="text-sm font-medium">
+                                                    İletişim Bilgileri
+                                                  </span>
+                                                </div>
+                                                {contactInfo && (
+                                                  <div className="space-y-1 text-sm">
+                                                    {contactInfo.customerEmail && (
+                                                      <div className="flex items-center gap-2">
+                                                        <Mail className="w-4 h-4 text-green-600" />
+                                                        <span className="text-green-900">
+                                                          {
+                                                            contactInfo.customerEmail
+                                                          }
+                                                        </span>
+                                                      </div>
+                                                    )}
+                                                    {contactInfo.customerName && (
+                                                      <div className="flex items-center gap-2">
+                                                        <span className="text-green-700">
+                                                          {
+                                                            contactInfo.customerName
+                                                          }
+                                                        </span>
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                )}
+                                                {!isOwnListing && (
+                                                  <div className="flex gap-2 pt-2">
+                                                    <Button
+                                                      size="sm"
+                                                      variant="outline"
+                                                      className="flex-1 border-green-300 text-green-700 hover:bg-green-100"
+                                                    >
+                                                      <MessageCircle className="w-4 h-4 mr-1" />
+                                                      Mesaj Gönder
+                                                    </Button>
+                                                    <Button
+                                                      size="sm"
+                                                      variant="outline"
+                                                      className="flex-1 border-green-300 text-green-700 hover:bg-green-100"
+                                                    >
+                                                      <Phone className="w-4 h-4 mr-1" />
+                                                      Ara
+                                                    </Button>
+                                                  </div>
+                                                )}
                                               </div>
-                                              {contactInfo && (
-                                                <div className="space-y-1 text-sm">
-                                                  {contactInfo.customerEmail && (
-                                                    <div className="flex items-center gap-2">
-                                                      <Mail className="w-4 h-4 text-green-600" />
-                                                      <span className="text-green-900">
-                                                        {
-                                                          contactInfo.customerEmail
-                                                        }
-                                                      </span>
-                                                    </div>
-                                                  )}
-                                                  {contactInfo.customerName && (
-                                                    <div className="flex items-center gap-2">
-                                                      <span className="text-green-700">
-                                                        {
-                                                          contactInfo.customerName
-                                                        }
-                                                      </span>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              )}
-                                              {!isOwnListing && (
-                                                <div className="flex gap-2 pt-2">
-                                                  <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="flex-1 border-green-300 text-green-700 hover:bg-green-100"
-                                                  >
-                                                    <MessageCircle className="w-4 h-4 mr-1" />
-                                                    Mesaj Gönder
-                                                  </Button>
-                                                  <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="flex-1 border-green-300 text-green-700 hover:bg-green-100"
-                                                  >
-                                                    <Phone className="w-4 h-4 mr-1" />
-                                                    Ara
-                                                  </Button>
-                                                </div>
-                                              )}
-                                            </div>
-                                          );
-                                        }
+                                            );
+                                          }
 
-                                        // Başkasının ilanı ve ödeme yapılmamışsa ödeme butonu göster
-                                        if (
-                                          jobWithDetails.listingDetails?.leadFee
-                                        ) {
-                                          return (
-                                            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
-                                              <p className="text-sm text-slate-600 mb-2">
-                                                İletişim bilgilerini görmek için{" "}
-                                                {
-                                                  jobWithDetails.listingDetails
-                                                    .leadFee
-                                                }{" "}
-                                                TL ödeme yapmanız gerekmektedir.
-                                              </p>
-                                              <Button
-                                                size="sm"
-                                                className="w-full bg-brand-500 hover:bg-brand-600"
-                                                onClick={() =>
-                                                  router.push(
-                                                    `/listings/${job.id}`,
-                                                  )
-                                                }
-                                              >
-                                                İletişim Aç (
-                                                {
-                                                  jobWithDetails.listingDetails
-                                                    .leadFee
-                                                }{" "}
-                                                TL)
-                                              </Button>
-                                            </div>
-                                          );
-                                        }
+                                          if (
+                                            jobWithDetails.listingDetails
+                                              ?.leadFee
+                                          ) {
+                                            return (
+                                              <div className="bg-slate-50 border border-slate-200 rounded-lg p-3">
+                                                <p className="text-sm text-slate-600 mb-2">
+                                                  İletişim bilgilerini görmek
+                                                  için{" "}
+                                                  {
+                                                    jobWithDetails
+                                                      .listingDetails.leadFee
+                                                  }{" "}
+                                                  TL ödeme yapmanız
+                                                  gerekmektedir.
+                                                </p>
+                                                <Button
+                                                  size="sm"
+                                                  className="w-full bg-brand-500 hover:bg-brand-600"
+                                                  onClick={() =>
+                                                    router.push(
+                                                      `/listings/${job.id}`,
+                                                    )
+                                                  }
+                                                >
+                                                  İletişim Aç (
+                                                  {
+                                                    jobWithDetails
+                                                      .listingDetails.leadFee
+                                                  }{" "}
+                                                  TL)
+                                                </Button>
+                                              </div>
+                                            );
+                                          }
 
-                                        return null;
-                                      })()}
+                                          return null;
+                                        })()}
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
+                                  )}
 
                                 {/* Standart Job Detayları */}
                                 {!isListing && (
                                   <>
-                                    {(job as any).addressText && (
+                                    {job.addressText && (
                                       <div className="flex items-start gap-2">
                                         <MapPin className="w-4 h-4 text-slate-400 mt-0.5" />
                                         <span className="text-sm text-slate-600">
-                                          {(job as any).addressText}
+                                          {job.addressText}
                                         </span>
                                       </div>
                                     )}
-                                    {(job as any).district && (
+                                    {job.district && (
                                       <div>
                                         <span className="text-xs font-medium text-slate-500">
                                           İlçe:
                                         </span>
                                         <p className="text-sm text-slate-900">
-                                          {(job as any).district}
+                                          {job.district}
                                         </p>
                                       </div>
                                     )}
@@ -818,7 +864,6 @@ export default function CustomerJobsPage() {
                                 ))}
                               </div>
                             )}
-                            {/* Teklif sayısı */}
                             {jobOfferCounts[job.id] !== undefined &&
                               jobOfferCounts[job.id] > 0 && (
                                 <div className="mt-3">
@@ -916,8 +961,8 @@ export default function CustomerJobsPage() {
                                 <div className="flex items-center gap-1">
                                   <MapPin className="w-3.5 h-3.5" />
                                   <span>
-                                    {(job as any).distanceKm
-                                      ? `${(job as any).distanceKm.toFixed(1)} km`
+                                    {job.distanceKm
+                                      ? `${job.distanceKm.toFixed(1)} km`
                                       : job.city || "Belirtilmemiş"}
                                   </span>
                                 </div>
@@ -929,7 +974,6 @@ export default function CustomerJobsPage() {
                                   </div>
                                 )}
                               </div>
-                              {/* Teklif sayısı - Yakınımdaki işler için */}
                               {jobOfferCounts[job.id] !== undefined &&
                                 jobOfferCounts[job.id] > 0 && (
                                   <div className="mt-3">
@@ -967,8 +1011,3 @@ export default function CustomerJobsPage() {
     </div>
   );
 }
-
-
-
-
-

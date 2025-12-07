@@ -1,4 +1,5 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import {
   AlertTriangle,
@@ -12,6 +13,7 @@ import {
   Key,
   Lock,
   Mail,
+  MessageSquare,
   Phone,
   Server,
   Shield,

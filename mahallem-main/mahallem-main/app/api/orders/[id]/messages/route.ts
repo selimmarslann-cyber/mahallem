@@ -269,21 +269,25 @@ async function sendMessageHandler(
 
 // TS2345 fix: withRateLimit expects (req) => Promise<NextResponse>, but route handlers have params
 // Wrap handlers to match the expected signature by extracting orderId from URL
-async function wrappedSendMessageHandler(req: NextRequest) {
+async function wrappedSendMessageHandler(
+  req: NextRequest,
+): Promise<NextResponse> {
   // Extract orderId from URL path: /api/orders/[id]/messages
   const url = new URL(req.url);
   const pathMatch = url.pathname.match(/\/api\/orders\/([^/]+)\/messages/);
   const orderId = pathMatch?.[1] || "";
-  
+
   return sendMessageHandler(req, { params: { id: orderId } });
 }
 
-async function wrappedGetOrderMessagesHandler(req: NextRequest) {
+async function wrappedGetOrderMessagesHandler(
+  req: NextRequest,
+): Promise<NextResponse> {
   // Extract orderId from URL path: /api/orders/[id]/messages
   const url = new URL(req.url);
   const pathMatch = url.pathname.match(/\/api\/orders\/([^/]+)\/messages/);
   const orderId = pathMatch?.[1] || "";
-  
+
   return getOrderMessagesHandler(req, { params: { id: orderId } });
 }
 

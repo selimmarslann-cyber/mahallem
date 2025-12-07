@@ -1,11 +1,22 @@
 "use client";
 
+
+
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Coins, Copy, MessageCircle, Share2, Sparkles, TrendingUp } from "lucide-react";
+import {
+  Coins,
+  Copy,
+  TrendingUp,
+  Share2,
+  MessageCircle,
+  Sparkles,
+} from "lucide-react";
 
 export default function CustomerWalletPage() {
   const router = useRouter();
@@ -279,8 +290,3 @@ export default function CustomerWalletPage() {
     </div>
   );
 }
-
-
-
-
-

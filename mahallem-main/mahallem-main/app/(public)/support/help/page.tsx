@@ -1,5 +1,8 @@
 "use client";
 
+
+
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, CheckCircle2, Send, X } from "lucide-react";
@@ -345,8 +348,3 @@ export default function SupportHelpPage() {
     </div>
   );
 }
-
-
-
-
-

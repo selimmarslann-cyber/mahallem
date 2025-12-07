@@ -1,5 +1,8 @@
 "use client";
 
+
+
+
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -8,7 +11,13 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Bell, Lock, MapPin, Phone, Save, Shield } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 
 // Static generation'ı engelle
@@ -466,4 +475,3 @@ export default function AccountSettingsPage() {
     </div>
   );
 }
-

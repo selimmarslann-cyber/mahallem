@@ -1,5 +1,8 @@
 "use client";
 
+
+
+
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -8,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/lib/hooks/useToast";
 import { ArrowRight, Lock, Mail } from "lucide-react";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 
 // Static generation'ı engelle
@@ -484,8 +487,3 @@ export default function EmailLoginPage() {
     </div>
   );
 }
-
-
-
-
-

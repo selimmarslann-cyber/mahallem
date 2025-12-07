@@ -1,10 +1,22 @@
 "use client";
 
+
+
+
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Mail, MapPin, Phone, Search, Store, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  Mail,
+  MapPin,
+  Phone,
+  Search,
+  Store,
+  XCircle,
+} from "lucide-react";
 
 
 export default function AdminBusinessesPage() {
@@ -132,8 +144,3 @@ export default function AdminBusinessesPage() {
     </div>
   );
 }
-
-
-
-
-

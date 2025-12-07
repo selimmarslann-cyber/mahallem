@@ -1,9 +1,3 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
-import { searchServiceCategories } from "@/lib/services/serviceSearchService";
-import { prisma } from "@/lib/db/prisma";
-
 /**
  * SEO Category + City Page
  *
@@ -14,6 +8,11 @@ import { prisma } from "@/lib/db/prisma";
  * Bu sayfa SEO için kategori ve şehir bazlı dinamik sayfalar oluşturur.
  */
 
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
+import { prisma } from "@/lib/db/prisma";
 
 // Ana şehirler (SEO için)
 const MAJOR_CITIES = [
@@ -64,8 +63,8 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${category.name} Ustası ${city.name}'de | HizmetGO`;
-  const description = `${city.name}'de ${category.name} hizmeti veren güvenilir ustalar. Hızlı teklif al, en iyi fiyatı bul.`;
+  const title = `${category.name} Ustası ${city.name}\u2019de | HizmetGO`;
+  const description = `${city.name}\u2019de ${category.name} hizmeti veren güvenilir ustalar. Hızlı teklif al, en iyi fiyatı bul.`;
 
   return {
     title,
@@ -85,29 +84,9 @@ export async function generateMetadata({
 }
 
 /**
- * Generate static params for popular combinations
- */
-export async function generateStaticParams() {
-  const popularCategories = SERVICE_CATEGORIES.slice(0, 20); // İlk 20 kategori
-  const params: Array<{ citySlug: string; categorySlug: string }> = [];
-
-  for (const city of MAJOR_CITIES) {
-    for (const category of popularCategories) {
-      const categorySlug = category.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-");
-      params.push({
-        citySlug: city.slug,
-        categorySlug,
-      });
-    }
-  }
-
-  return params;
-}
-
-/**
  * Page component
+ * Note: generateStaticParams removed because this page uses dynamic = "force-dynamic"
+ * to avoid useContext errors during prerendering (layout is a client component)
  */
 export default async function CategoryCityPage({ params }: PageProps) {
   const { citySlug, categorySlug } = params;
@@ -158,10 +137,10 @@ export default async function CategoryCityPage({ params }: PageProps) {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-slate-900 mb-2">
-            {category.name} Ustası {city.name}'de
+            {category.name} Ustası {city.name}&apos;de
           </h1>
           <p className="text-slate-600 text-lg">
-            {city.name}'de {category.name} hizmeti veren {businesses.length}{" "}
+            {city.name}&apos;de {category.name} hizmeti veren {businesses.length}{" "}
             güvenilir usta
           </p>
         </div>
@@ -208,7 +187,7 @@ export default async function CategoryCityPage({ params }: PageProps) {
         ) : (
           <div className="bg-white rounded-lg shadow-md p-12 text-center">
             <p className="text-slate-600">
-              {city.name}'de {category.name} kategorisinde henüz usta
+              {city.name}&apos;de {category.name} kategorisinde henüz usta
               bulunmuyor.
             </p>
             <Link
@@ -238,5 +217,6 @@ export default async function CategoryCityPage({ params }: PageProps) {
   );
 }
 
-// Revalidate every 24 hours
-export const revalidate = 86400;
+// Force dynamic rendering to avoid useContext errors during prerendering
+// This page uses a client component layout (PublicLayout) which uses context
+export const dynamic = "force-dynamic";

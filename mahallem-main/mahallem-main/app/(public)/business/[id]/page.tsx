@@ -1,13 +1,17 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/useToast";
-import { MapPin, MessageSquare, Phone, Store } from "lucide-react";
+import { ArrowLeft, MapPin, MessageSquare, Phone, ShoppingCart, Star, Store } from "lucide-react";
 
 
 // Static generation'ı engelle
@@ -471,8 +475,3 @@ export default function BusinessDetailPage() {
     </div>
   );
 }
-
-
-
-
-

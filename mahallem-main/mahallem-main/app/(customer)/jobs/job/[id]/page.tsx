@@ -1,5 +1,17 @@
 "use client";
 
+
+
+
+/**
+ * Job Detail Page - Müşteri iş detay sayfası
+ *
+ * Bu sayfada müşteri:
+ * - İş detaylarını görür
+ * - Gelen teklifleri görür ve karşılaştırır
+ * - Bir teklifi kabul eder
+ */
+
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,17 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Building2, CheckCircle2, Clock, MapPin, Star, TrendingDown } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
-import { Dialog } from "@/components/ui/dialog";
-
-/**
- * Job Detail Page - Müşteri iş detay sayfası
- *
- * Bu sayfada müşteri:
- * - İş detaylarını görür
- * - Gelen teklifleri görür ve karşılaştırır
- * - Bir teklifi kabul eder
- */
-
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -441,8 +443,3 @@ export default function JobDetailPage() {
     </div>
   );
 }
-
-
-
-
-

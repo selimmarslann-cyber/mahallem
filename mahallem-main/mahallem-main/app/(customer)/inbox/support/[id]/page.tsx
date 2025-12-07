@@ -1,5 +1,8 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -7,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/lib/hooks/useToast";
+import { ArrowLeft, Bot, Loader2, Send, Shield } from "lucide-react";
 
 
 // Static generation'ı engelle
@@ -301,8 +305,3 @@ export default function SupportTicketPage() {
     </div>
   );
 }
-
-
-
-
-

@@ -1,11 +1,22 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, Briefcase, CheckCircle2, MapPin, Menu, Store } from "lucide-react";
+import {
+  Briefcase,
+  CheckCircle2,
+  MapPin,
+  Store,
+  Menu,
+  ArrowRight,
+} from "lucide-react";
 
 export default function BusinessNotRegisteredPage() {
   const router = useRouter();
@@ -174,8 +185,3 @@ export default function BusinessNotRegisteredPage() {
     </div>
   );
 }
-
-
-
-
-

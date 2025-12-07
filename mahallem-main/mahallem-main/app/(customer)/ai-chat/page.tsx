@@ -1,8 +1,12 @@
 "use client";
 
+
+
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import AIChatBox from "@/components/AIChat/AIChatBox";
 
 
 // Static generation'ı engelle
@@ -72,8 +76,3 @@ export default function AIChatPage() {
     </div>
   );
 }
-
-
-
-
-

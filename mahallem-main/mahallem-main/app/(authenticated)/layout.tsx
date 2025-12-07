@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 
@@ -7,7 +8,7 @@ import { getSession } from "@/lib/auth/session";
 export default async function AuthenticatedLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const session = await getSession();
 

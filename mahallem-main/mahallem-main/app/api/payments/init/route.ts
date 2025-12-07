@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
             id: true,
             name: true,
             email: true,
-            // TS2353 fix: phone field does not exist in User model
           },
         },
         payment: true,
@@ -66,7 +65,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if payment already initiated
-    if (order.payment && order.payment.status !== "INITIATED") {
+    const existingPayment = order.payment;
+    if (existingPayment && existingPayment.status !== "INITIATED") {
       return NextResponse.json(
         { error: "Bu sipariş için ödeme zaten işlenmiş" },
         { status: 400 },
@@ -79,14 +79,15 @@ export async function POST(request: NextRequest) {
     const cancelUrl = `${appUrl}/orders/${validated.orderId}/payment/cancel`;
 
     // Initialize payment
+    const customer = order.customer;
     const paymentInit = await paymentService.initPayment(
       {
         orderId: validated.orderId,
         amount: parseFloat(order.totalAmount.toString()),
         customerId: order.customerId,
-        customerEmail: order.customer.email,
-        customerName: order.customer.name,
-        // TS2551 fix: phone field does not exist in User model, using undefined
+        customerEmail: customer.email,
+        customerName: customer.name,
+        // Phone field does not exist in User model
         customerPhone: undefined,
         returnUrl,
         cancelUrl,
@@ -104,9 +105,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Update payment record with provider info
-    if (order.payment) {
+    if (existingPayment) {
       await prisma.payment.update({
-        where: { id: order.payment.id },
+        where: { id: existingPayment.id },
         data: {
           provider: paymentInit.provider,
           externalId: paymentInit.paymentId || undefined,

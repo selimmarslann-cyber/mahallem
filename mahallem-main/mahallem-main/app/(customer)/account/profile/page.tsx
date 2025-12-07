@@ -1,5 +1,8 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -17,8 +20,15 @@ import { Bell, Camera, LinkIcon, Lock, LogOut, MapPin, Save, Store, User, X, Zap
 import { getSectors, getSkillsBySector } from "@/lib/data/skills";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { useToast } from "@/lib/hooks/useToast";
-import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+import type { SkillKeyword } from "@/lib/types/mahallem";
 
 
 // Static generation'ı engelle
@@ -651,8 +661,3 @@ export default function AccountProfilePage() {
     </div>
   );
 }
-
-
-
-
-

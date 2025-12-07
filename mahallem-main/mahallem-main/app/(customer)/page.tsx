@@ -1,6 +1,11 @@
-import dynamic from "next/dynamic";
+"use client";
 
-const ClientHero = dynamic(() => import("./ClientHero"), {
+
+
+
+import nextDynamic from "next/dynamic";
+
+const ClientHero = nextDynamic(() => import("./ClientHero"), {
   ssr: false,
   loading: () => null,
 });

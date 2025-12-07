@@ -1,5 +1,8 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,6 +11,9 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Send, User, Wifi, WifiOff } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { useRealtimeChat } from "@/lib/hooks/useRealtimeChat";
+import FilePreview from "@/components/chat/FilePreview";
+import FileCountBadge from "@/components/chat/FileCountBadge";
+import FileUploadButton from "@/components/chat/FileUploadButton";
 
 
 // Static generation'ı engelle
@@ -468,8 +474,3 @@ export default function OrderChatPage() {
     </div>
   );
 }
-
-
-
-
-

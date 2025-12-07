@@ -1,7 +1,11 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +18,7 @@ import { AlertTriangle, CheckCircle2, Edit, Plus, Save, Store, Trash2, Upload, X
 import { useToast } from "@/lib/hooks/useToast";
 import { useConfirmDialog } from "@/lib/hooks/useConfirmDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
 
 
 // Static generation'ı engelle
@@ -892,8 +897,3 @@ export default function BusinessStorePage() {
     </div>
   );
 }
-
-
-
-
-

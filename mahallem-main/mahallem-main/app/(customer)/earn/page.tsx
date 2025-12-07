@@ -1,7 +1,11 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,9 +14,27 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/lib/hooks/useToast";
 import { haversineDistanceKm } from "@/lib/utils/matching";
-import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Briefcase, Clock, MapPin, Plus, TrendingUp, Zap } from "lucide-react";
+import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Section from "@/components/layout/Section";
+import ListSkeleton from "@/components/ui/ListSkeleton";
+import EmptyState from "@/components/ui/empty-state";
+import {
+  Briefcase,
+  Clock,
+  DollarSign,
+  MapPin,
+  Plus,
+  TrendingUp,
+  Zap,
+  Search,
+} from "lucide-react";
 
 
 
@@ -434,8 +456,3 @@ export default function EarnPage() {
     </div>
   );
 }
-
-
-
-
-

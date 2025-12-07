@@ -13,10 +13,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { Client } from "pg";
 
 const OTP_TABLE_SQL = `
--- ============================================
+-- ==
 -- OTP SYSTEM MIGRATION
 -- Email doğrulama kodları: otps
--- ============================================
+-- ==
 
 -- 1. OTPS TABLE
 CREATE TABLE IF NOT EXISTS otps (

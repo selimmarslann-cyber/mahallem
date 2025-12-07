@@ -1,7 +1,19 @@
 "use client";
 
+
+
+
+/**
+ * Available Jobs Page - Vendor'lara uygun işleri gösterir
+ *
+ * Bu sayfada vendor:
+ * - Kendisine uygun işleri görür
+ * - Her işe teklif verebilir
+ */
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,14 +24,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Building2, CheckCircle2, Clock, DollarSign, MapPin, MessageSquare, Send, User } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
 import { motion } from "framer-motion";
-
-/**
- * Available Jobs Page - Vendor'lara uygun işleri gösterir
- *
- * Bu sayfada vendor:
- * - Kendisine uygun işleri görür
- * - Her işe teklif verebilir
- */
 
 
 
@@ -350,8 +354,3 @@ export default function AvailableJobsPage() {
     </div>
   );
 }
-
-
-
-
-

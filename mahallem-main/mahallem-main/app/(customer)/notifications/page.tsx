@@ -1,5 +1,14 @@
 "use client";
 
+
+
+
+/**
+ * Notification Center Page
+ *
+ * Comprehensive notification center with filtering, real-time updates
+ */
+
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,14 +17,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/lib/hooks/useToast";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertCircle, ArrowLeft, Bell, Briefcase, CheckCircle2, DollarSign, Gift, RefreshCw, ShoppingBag, Star, X } from "lucide-react";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
-
-/**
- * Notification Center Page
- *
- * Comprehensive notification center with filtering, real-time updates
- */
+import {
+  AlertCircle,
+  ArrowLeft,
+  Bell,
+  Briefcase,
+  CheckCheck,
+  CheckCircle2,
+  DollarSign,
+  Gift,
+  RefreshCw,
+  ShoppingBag,
+  Star,
+  X,
+} from "lucide-react";
 
 
 // Static generation'ı engelle
@@ -226,7 +242,7 @@ export default function NotificationsPage() {
             </Button>
             {unreadCount > 0 && (
               <Button variant="outline" size="sm" onClick={markAllAsRead}>
-                <CheckCircle2 className="w-4 h-4 mr-2" />
+                <CheckCheck className="w-4 h-4 mr-2" />
                 Tümünü Okundu İşaretle
               </Button>
             )}
@@ -388,4 +404,3 @@ export default function NotificationsPage() {
     </div>
   );
 }
-

@@ -1,12 +1,21 @@
 "use client";
 
+
+
+
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Briefcase, CheckCircle2, Home, Sparkles } from "lucide-react";
+import {
+  Briefcase,
+  CheckCircle2,
+  Sparkles,
+  ArrowRight,
+  Home,
+} from "lucide-react";
 
 // Renk array'i - component scope'ta sabit
 const CONFETTI_COLORS = [
@@ -143,7 +152,7 @@ export default function RequestSuccessPage() {
               teklif verecek.
               <br />
               <span className="text-sm text-slate-500 mt-2 block">
-                Gelen teklifleri 'İşlerim' sekmesinden görebilirsiniz.
+                Gelen teklifleri &apos;İşlerim&apos; sekmesinden görebilirsiniz.
               </span>
             </motion.p>
 
@@ -201,8 +210,3 @@ export default function RequestSuccessPage() {
     </div>
   );
 }
-
-
-
-
-

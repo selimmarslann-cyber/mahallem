@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import { getOrCreateReferralCodeForUser } from "@/lib/services/referralService";
 import { getUserId } from "@/lib/auth/session";

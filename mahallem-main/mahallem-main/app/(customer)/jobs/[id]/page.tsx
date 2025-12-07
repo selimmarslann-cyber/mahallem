@@ -1,5 +1,8 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +10,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/lib/hooks/useToast";
 import { SERVICE_CATEGORIES } from "@/lib/data/service-categories";
-import { Clock, MapPin, TrendingUp, User, Zap } from "lucide-react";
+import ListSkeleton from "@/components/ui/ListSkeleton";
+import EmptyState from "@/components/ui/empty-state";
+import BadgePremium from "@/components/ui/BadgePremium";
+import { ArrowLeft, Clock, DollarSign, FileText, MapPin, MessageCircle, Star, TrendingUp, User, Zap } from "lucide-react";
 
 
 // Static generation'ı engelle
@@ -524,7 +530,7 @@ export default function JobDetailPage() {
                     </div>
                     {offer.message && (
                       <p className="text-sm text-gray-700 mb-3 italic">
-                        "{offer.message}"
+                        &quot;{offer.message}&quot;
                       </p>
                     )}
                     <div className="flex gap-2">
@@ -613,8 +619,3 @@ export default function JobDetailPage() {
     </div>
   );
 }
-
-
-
-
-

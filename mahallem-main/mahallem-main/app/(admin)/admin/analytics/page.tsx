@@ -1,8 +1,18 @@
 "use client";
 
+
+
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, TrendingUp, Users } from "lucide-react";
+import {
+  CheckCircle2,
+  TrendingUp,
+  Users,
+  Loader2,
+  AlertCircle,
+  DollarSign,
+} from "lucide-react";
 
 
 
@@ -262,8 +272,3 @@ export default function AnalyticsPage() {
     </div>
   );
 }
-
-
-
-
-

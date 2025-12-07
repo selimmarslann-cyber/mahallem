@@ -1,12 +1,15 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Bell, CheckCircle2, ChevronRight, CreditCard, HelpCircle, Info, LogOut, MapPin, User } from "lucide-react";
 import AnimatedLoadingLogo from "@/components/ui/AnimatedLoadingLogo";
+import { Bell, CheckCircle2, ChevronRight, CreditCard, HelpCircle, Info, LogOut, MapPin, User } from "lucide-react";
 
 
 // Static generation'ı engelle
@@ -248,4 +251,3 @@ export default function CustomerProfilePage() {
     </div>
   );
 }
-

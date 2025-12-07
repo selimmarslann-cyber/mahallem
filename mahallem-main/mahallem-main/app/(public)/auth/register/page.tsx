@@ -1,7 +1,11 @@
 "use client";
 
+
+
+
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,8 +13,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/lib/hooks/useToast";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, CheckCircle2, MessageSquare, Phone, Zap } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import CategoryAutocomplete from "@/components/forms/CategoryAutocomplete";
+import { AlertCircle, ArrowRight, Brain, CheckCircle2, Mail, MessageSquare, Phone, Sparkles, UserPlus, Zap } from "lucide-react";
 
 
 // Static generation'ı engelle
@@ -134,7 +139,7 @@ export default function RegisterPage() {
               Kayıt Ol
             </CardTitle>
             <CardDescription>
-              Hizmetgo'e katılın ve mahallendeki esnaflarla buluşun. Zaten
+              Hizmetgo&apos;e katılın ve mahallendeki esnaflarla buluşun. Zaten
               hesabınız var mı?{" "}
               <Link
                 href="/auth/login"
@@ -237,8 +242,8 @@ export default function RegisterPage() {
                     />
                   </div>
                   <p className="text-xs text-slate-600">
-                    50 km çevredeki anlık işlerden bildirim al. Örnek: "Ödevimi
-                    yapacak birini arıyorum"
+                    50 km çevredeki anlık işlerden bildirim al. Örnek: &quot;Ödevimi
+                    yapacak birini arıyorum&quot;
                   </p>
                 </div>
 
@@ -251,7 +256,7 @@ export default function RegisterPage() {
                         htmlFor="whatsappNotifications"
                         className="text-sm font-medium text-slate-900 cursor-pointer"
                       >
-                        WhatsApp API'den bildirim almak ister misiniz?
+                        WhatsApp API&apos;den bildirim almak ister misiniz?
                       </Label>
                     </div>
                     <Switch
@@ -353,7 +358,7 @@ export default function RegisterPage() {
                         <span>
                           <strong>Önemli:</strong> Bu kısım çok önemlidir!
                           Bildirimler seçeceğiniz kategorilerden gelecektir.
-                          Örneğin "Elektrik" seçerseniz, elektrik ile ilgili tüm
+                          Örneğin &quot;Elektrik&quot; seçerseniz, elektrik ile ilgili tüm
                           işlerden bildirim alırsınız. Yetenekli olduğunuz veya
                           hizmet vermek istediğiniz ana kategorileri seçin.
                         </span>
@@ -444,7 +449,7 @@ export default function RegisterPage() {
                 >
                   Gizlilik Politikası
                 </Link>
-                'nı kabul etmiş olursunuz.
+                &apos;nı kabul etmiş olursunuz.
               </p>
             </div>
           </CardContent>
@@ -453,8 +458,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
-
-
-
-

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
 export default function DownloadLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return <>{children}</>;
 }

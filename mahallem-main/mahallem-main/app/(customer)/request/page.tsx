@@ -1,7 +1,11 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/lib/hooks/useToast";
 import { getKeywordSuggestions } from "@/lib/utils/keywords";
-import { MapPin } from "lucide-react";
+import RequestFlow from "@/components/request/RequestFlow";
+import AIChatModal from "@/components/AIChat/AIChatModal";
+import EmptyState from "@/components/ui/empty-state";
+import { ChevronRight, FileText, Loader2, MapPin, MessageCircle, Search, Sparkles, Star } from "lucide-react";
 
 
 // Static generation'ı engelle
@@ -426,8 +433,3 @@ export default function ServicesPage() {
     </div>
   );
 }
-
-
-
-
-

@@ -1,6 +1,11 @@
+"use client";
+
+
+
+
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield } from "lucide-react";
-
 export default function CookiesPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">

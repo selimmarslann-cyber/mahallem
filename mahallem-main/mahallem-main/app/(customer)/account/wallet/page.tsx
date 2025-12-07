@@ -1,5 +1,8 @@
 "use client";
 
+
+
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -7,9 +10,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Briefcase, CheckCircle2, Clock, TrendingUp, Users, Wallet, XCircle } from "lucide-react";
+import {
+  Briefcase,
+  CheckCircle2,
+  Clock,
+  TrendingUp,
+  Users,
+  Wallet,
+  XCircle,
+  ArrowDownCircle,
+  ArrowUpCircle,
+  CreditCard,
+  History,
+} from "lucide-react";
 import { useHizmetgoStore } from "@/lib/store/useHizmetgoStore";
 import { useToast } from "@/lib/hooks/useToast";
+import EarningsChart from "@/components/wallet/EarningsChart";
 
 
 // Static generation'ı engelle
@@ -660,8 +676,3 @@ export default function AccountWalletPage() {
     </div>
   );
 }
-
-
-
-
-

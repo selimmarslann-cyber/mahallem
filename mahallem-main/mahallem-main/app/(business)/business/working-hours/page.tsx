@@ -1,5 +1,14 @@
 "use client";
 
+
+
+
+/**
+ * Working Hours Management Page
+ *
+ * Esnaf çalışma saatlerini yönetir
+ */
+
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,12 +19,6 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Plus, Save } from "lucide-react";
 import { useToast } from "@/lib/hooks/useToast";
-
-/**
- * Working Hours Management Page
- *
- * Esnaf çalışma saatlerini yönetir
- */
 
 // Static generation'ı engelle
 export const dynamic = "force-dynamic";
@@ -266,8 +269,3 @@ export default function WorkingHoursPage() {
     </div>
   );
 }
-
-
-
-
-

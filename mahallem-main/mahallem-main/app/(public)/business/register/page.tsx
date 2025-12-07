@@ -1,8 +1,11 @@
 "use client";
 
+
+
+
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
+import nextDynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { ArrowRight, Info, MapPin, Plus, Save, Trash2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -11,15 +14,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/cn";
-import { Select, SelectItem, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   findProductByName,
   getProductSuggestions,
   type ProductData,
 } from "@/lib/data/product-database";
 
-const LeafletMap = dynamic(
+const LeafletMap = nextDynamic(
   () => import("@/components/map/LeafletMapRegister"),
   { ssr: false },
 );
@@ -774,4 +777,3 @@ export default function BusinessRegisterPage() {
     </div>
   );
 }
-
