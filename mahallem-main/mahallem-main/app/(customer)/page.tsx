@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 import nextDynamic from "next/dynamic";
 
 const ClientHero = nextDynamic(() => import("./ClientHero"), {

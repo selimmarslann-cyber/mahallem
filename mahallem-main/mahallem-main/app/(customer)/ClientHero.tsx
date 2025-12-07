@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 import { RotatingHeadline } from "@/components/home/RotatingHeadline";
 import SmartSearchBar from "@/components/ui/SmartSearchBar";
 import { PopularCategoriesSection } from "@/components/home/PopularCategoriesTabs";

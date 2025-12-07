@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 /**
  * Download / App Landing Page
  *

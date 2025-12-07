@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import SupportChatWidget from "@/components/support/SupportChatWidget";

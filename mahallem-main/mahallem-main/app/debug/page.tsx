@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 export default function DebugPage() {
   return (
     <div style={{ padding: 40 }}>

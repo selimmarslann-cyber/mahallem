@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 /**
  * Job Detail Page - Müşteri iş detay sayfası
  *

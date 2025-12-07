@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 import { ReactNode } from "react";
 import AppHeader from "@/components/layout/AppHeader";
 import AppFooter from "@/components/layout/AppFooter";

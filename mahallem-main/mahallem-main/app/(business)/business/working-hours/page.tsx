@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 /**
  * Working Hours Management Page
  *

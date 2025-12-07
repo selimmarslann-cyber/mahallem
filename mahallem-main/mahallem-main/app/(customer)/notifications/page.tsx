@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 /**
  * Notification Center Page
  *

@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 /**
  * Order Detail Page - Esnaf sipariş detay sayfası
  *

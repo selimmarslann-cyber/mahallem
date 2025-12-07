@@ -1,8 +1,4 @@
 "use client";
-
-
-
-
 /**
  * Available Jobs Page - Vendor'lara uygun işleri gösterir
  *
